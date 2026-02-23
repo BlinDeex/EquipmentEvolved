@@ -1,0 +1,5 @@
+displayName = Equipment Evolved
+author = BlinDeex
+version = 0.1
+includeSource = true
+//buildIgnore = Assets/DEBUG/*

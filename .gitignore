@@ -1,0 +1,42 @@
+﻿# =========================
+# C# & .NET Compiled Output
+# =========================
+bin/
+obj/
+TestResults/
+*.cache
+*.log
+
+# =========================
+# JetBrains Rider / ReSharper
+# =========================
+.idea/
+*.DotSettings.user
+*.sln.iml
+*.user
+*.suo
+*.rsuser
+
+# =========================
+# Visual Studio (Just in case)
+# =========================
+.vs/
+*.userosscache
+*.sln.docstates
+
+# =========================
+# OS Generated Files
+# =========================
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# =========================
+# tModLoader Specific
+# =========================
+# Ignore any built .tmod files if you accidentally compile them into your workspace
+*.tmod

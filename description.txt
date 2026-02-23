@@ -1,0 +1,263 @@
+[Mod Name Placeholder] - Early Access
+Current Version: Early Release (Beta)
+Status: Active Development
+Warning: As this is an early release, you may encounter bugs or balance issues. Feedback is highly appreciated!
+
+⚔️ Overview
+This mod aims to completely overhaul the Terraria reforge system, replacing vanilla prefixes with game-changing mechanics that become a crucial aspect of your build.
+
+Core Changes:
+
+Vanilla Prefixes Disabled: By default, vanilla prefixes are disabled to prevent pool dilution (configurable). Note: Existing items with vanilla prefixes will retain them.
+
+Stat Squish: To accommodate the high power level of these new reforges, global weapon damage is reduced by 30% and armor defense by 25%. This encourages players to engage with the reforge system immediately.
+
+Earlier Access: The Goblin Tinkerer is now available as soon as you acquire your first reforged weapon.
+
+[WIP] He will not sell items until vanilla requirements are met.
+
+[IDEA] All items will drop pre-reforged with random new prefixes.
+
+Recommendation: I highly recommend using the "Auto Reforge" mod alongside this one. It allows you to see exactly which custom reforges are available for your item and displays their exact stats, making it much easier to cook up specific builds.
+
+🗡️ Melee Reforges
+Arcane Infused: Requires mana to attack and suffers from Mana Sickness, but deals vastly increased damage. [IDEA: Benefits from Magic damage bonuses].
+
+Gigantic: Extremely increased weapon size with slightly decreased use speed.
+
+Perceptive: Extremely increased Critical Strike chance. Crit damage multiplier scales with critical strike chance with a cap of 8x damage at 800% crit chance
+
+Titan Force: Extremely increased knockback; slightly increased damage.
+
+Ultra Light: Extremely increased speed and auto-swing capability. Moderately decreased damage and slightly decreased size.
+
+Untouchable: Damage ramps up infinitely as long as you do not take damage. Past 200% damage bonus, swing time gets reduced.
+
+Risk: If you are hit, you lose the accumulated damage bonus and take multiplied damage based on your current ramp-up level.
+
+Sealed [IDEA]: Rolls random, rare stats on the weapon (e.g., Healing Amplification, True Damage), stats will only appear after item is taken out of the menu while holding shift and you wont be able to reforge it again.
+
+Mechanic: Applying a Charm before reforging boosts the rolled stats based on Charm Tier. Stats are hidden until you leave the reforge menu. The weapon cannot be reforged again.
+
+Gambler [IDEA]: Enemies killed with this weapon will drop more coins, coins in inventory will increase damage dealt, required amount of coins for max bonus scales with all coins you ever picked up, destroys portion of coins on death
+
+🏹 Ranged Reforges
+Adaptable: Accepts any ammo type and moderately increases firing speed. Disabled for Rocket Launchers.
+
+Ascendant (Renaming to: Infernal) [IDEA]: The weapon grows stronger as it deals damage. Eventually, it "burns out," preventing further use. Near the end of its life, projectiles emit secondary explosions that burn and damage enemies in an area.
+
+Challenger: Activates a difficult minigame requiring you to shoot specific colored orbs. Stats are multiplied by your accumulated minigame score.
+
+Controlled: Changes firing mechanism to burst-fire. Fire rate is tremendously increased during the burst. Incompatible with weapons that already have custom firing mechanics.
+
+Equalizer: Converts physical damage into True Damage equal to a small percentage of the enemy's total health (displayed in white; ignores defense/resistance).
+
+Vampiric: Chance to heal on hit; decreased firing speed.
+
+Thaumic: Applies a random positive buff to the player on hit. If the rolled buff is already active, its duration is extended instead.
+The weapon prioritizes buffs you don't currently have, allowing you to rapidly build up an arsenal of buffs during combat.
+
+Flow State: Applies an infinitely stacking bleed to enemies on hit (1-second duration).
+The bleed deals a percentage of the weapon's base damage per stack, mitigated by the enemy's defense. If you fail to maintain hits, the stacks decay rapidly.
+
+🔮 Magic Reforges
+Chaotic: Stats randomize wildly twice per second. This can range from increasing DPS by 10x to making the gun useless, damaging the player, or forcing you to drop coins.
+
+Endless: Requires 0 Mana to use; moderately decreased damage.
+
+Inverted: Replaces Mana Sickness with Mana Surge.
+
+Effect: Increases damage dealt but deals constant damage to the player. Dying causes a massive explosion, damaging everything (including other players).
+
+Mana Charged: Damage scales based on how full your mana bar is.
+
+Splintering: Hits have a chance to emit mana shards in random directions. Critical strikes emit more shards. Shards cannot hit the original target.
+
+Triple Shot: Each projectile spawns two additional projectiles with slightly altered trajectories. Slightly decreased damage; extremely increased mana cost.
+
+🦇 Summoner Reforges
+Minion Weapons:
+
+Frenzied: Minions move and attack significantly faster; moderately decreased damage.
+
+Monarch: Summoning a minion that is already active will not spawn a new one; instead, it multiplies the existing minion's size and damage. Stacks infinitely.
+
+Whips:
+
+Sacrificial [WIP]: Hitting an enemy applies a buff. Upon taking lethal damage, all your minions are sacrificed to prevent death, providing invincibility time scaling with the number of minions sacrificed.
+
+Debuff: You cannot summon minions for a duration after activation. Fails if no minions are alive.
+
+💍 Accessory Reforges
+Aerodynamic: Increases movement speed and flight time.
+
+Blood Forged: Greatly increased damage (currently bugged as defense—will fix ASAP); moderately decreased Max HP.
+
+Earth Shaper: Increased mining speed.
+
+Efficient: Decreased mana usage.
+
+Equilibrium: Slight increase to Defense, Minion slots, Move speed, Flight time, and Regen.
+
+Fortified: Increased Defense.
+
+Lethal: Increased Critical Strike damage.
+
+Revitalizing: Increased Life Regeneration.
+
+Risky: Increased Damage; Decreased Defense.
+
+Sharpshooter: Increased Critical Strike chance.
+
+Stoic: Increased Defense; Decreased Damage.
+
+Warlord: Increased Max Minions.
+
+Voidpiercer [IDEA]: Increases True Damage dealt.
+
+⛏️ Tool Reforges
+Fortune (Axe): Chance to drop additional items when cutting trees.
+
+Revealing (Pickaxe): Chance to briefly reveal valuable tiles around you when mining.
+
+Vein Miner (Pickaxe): Mines entire ore veins at once (limit based on Pickaxe Power).
+
+Clearing (Pickaxe, Hammer): Mines a 5x5 area. High chance for mined tiles to not drop items.
+
+🛡️ Armor Reforges
+There are two distinct categories of armor reforges:
+
+1. Universal Reforges
+These exist for all armor pieces. They are individually weaker but grant a Set Bonus when all three pieces share the reforge.
+
+Mechanic: Set bonuses can be Passive or Active (keybind). Activating a set bonus applies a global cooldown to all armor abilities. You cannot "hot swap" armor during combat to cycle abilities.
+
+Universal Types:
+
+Phalanx:
+
+Piece Bonus: Increased Damage.
+
+Set Bonus (Passive) - Reactive Plating: If a projectile dealing substantial damage (or lethal damage) is about to hit you, the armor shoots a piece of itself to intercept it, creating an explosion. Long Cooldown.
+
+Symbiotic [IDEA]:
+
+Piece Bonus: Increases stats gained from Charms (Charms can only be applied once). Equipment cannot be removed without destroying it.
+
+Set Bonus (Passive): Increases applied Charm level by +1. If a new Charm is Legendary or higher, an Augmentation is forcibly applied.
+
+Augmented:
+
+Piece Bonus: Grants 1-3 random buffs at specific defense thresholds.
+
+Set Bonus (Passive): % Damage increase for every active buff on the player.
+
+Chrono:
+
+Piece Bonus: Increased movement speed.
+
+Set Bonus (Active): Time Stop. Freezes enemies and projectiles in a radius. Player becomes intangible. [Balance Note: May need windup time].
+
+Phantom [WIP]:
+
+Set Bonus (Active): Summons two clones that mimic your actions. Reactivate to make them charge and explode.
+
+Cost: While active, you are inflicted with these debuffs:
+Voidseal - Completely stops all health and mana regeneration and prevents respective potions usage.
+Soulburn - Causes hallucinations and damage over time. Effects grow stronger the longer it lasts.
+
+Cursed:
+
+Piece Bonus: +1 Lifesteal.
+
+Set Bonus (Passive): Ignore all damage that is less than 5% of your Max HP. However, any damage above 5% instantly deals 80% Max HP damage regardless of the actual amount.
+
+2. Specialized Reforges
+These are unique to specific armor slots (Head, Chest, or Legs). They have no set bonus, but the individual effect is much stronger.
+
+Headwear:
+
+Water Breathing: Dramatically increases breath time.
+
+Aware [IDEA]: Displays all aggregate stats from armor/accessories.
+
+Enraging [IDEA]: Increases enemy aggro range/chance.
+
+Berserker [IDEA]: Damage increases as Health decreases.
+
+Exposing [IDEA]: Reveals weak points on bosses. Hitting the weak point shreds boss defense and makes the next weak point more narrow
+
+Reinforced: Increases Defense by a percentage.
+
+Weak Link [IDEA]: Reduces Defense from this item but boosts Defense from other equipped armor.
+
+Chestplate:
+
+Vitalis: Increases healing from potions and lifesteal.
+
+Void [IDEA]: Amplifies all True Damage sources.
+
+Unyielding [IDEA]: Gain Damage Reduction as Health decreases.
+
+Rebounding [IDEA]: Emits piercing shrapnel when hit with huge knockback (damage scales with total Defense). Grants temporary Defense boost from this armor piece after getting hit, can stack. Too many stacks will cause this armor piece to shatter
+
+Leggings:
+
+Silent: Decreases enemy aggro by a flat amount, making enemies significantly less likely to target you.
+
+Terra: Increases the native Defense of this specific armor piece by a percentage as long as your character is touching the ground.
+
+Desperate: Increases your movement speed as your Health decreases, scaling up to a massive percentage bonus when you are near death.
+
+🧿 Charm System
+Charms are obtained by killing enemies (varying chances) and bosses (10x chance).
+
+How to use: Hold the Charm and Right-Click an item to equip it.
+
+Tiers: Common (2%) > Rare (1%) > Epic (0.5%) > Legendary (0.1%) > Mythical (0.02%) > Exalted (0%).
+
+Pity System: Guaranteed Legendary every 30 drops; Guaranteed Mythical every 100 drops.
+
+Shapes: Circle (Weapon), Square (Armor), Triangle (Accessory). Shapes are random.
+
+Restriction: Applied Charms cannot be recovered, only replaced.
+
+Augmentations [IDEA]:
+Legendary+ Charms may have an "Augmentation" that specifically buffs a certain Reforge (e.g., Phantom Augmentation reduces the Soulburn penalty of Phantom Armor).
+
+🧠 Strategy Guide: Synergies & "Downgrades"
+At first glance, some reforges in this mod may look like "downgrades" or detrimental to your character. However, these mechanics are designed for niche, high-level theory-crafting.
+ By combining specific negative traits with the right synergies, you can break the game's standard limitations.
+
+The "Cursed" Armor:
+The Cursed set bonus forces you to take damage equal to 80% of your Max HP whenever a hit exceeds 5% of your health. Normally, this means you will die in exactly two hits, regardless of your defense.
+However, if you are fighting a boss while severely undergeared, this reforge bypasses your lack of defense and effectively doubles your survivability. This set can also serve for drain tank playstyle by
+combining high lifesteal and health reducing reforges on accessories which would help you heal back to 80% of hp faster, combine all of this with additional iframes from charms or accessories and window
+where you can die will get very narrow.
+
+
+"Untouchable" Weapons:
+The Untouchable reforge continuously scales your damage up for as long as you avoid taking damage. The catch is that getting hit multiplies the damage you receive based on your ramp-up level,
+ meaning a heavy blow could easily one-shot you. While beating a boss flawlessly without taking a single hit is incredibly difficult, you can mitigate this risk heavily in multiplayer.
+  By combining an Untouchable weapon with the "Silent" leggings reforge to reduce your aggro, enemies are highly likely to ignore you, allowing you to safely stack massive damage from the backlines.
+
+"Inverted" Magic:
+The Inverted reforge applies a lethal damage-over-time effect to your character with prolonged use. However, if you are wielding a mana-hungry, high-DPS weapon,
+this turns the fight into a thrilling DPS race. Not only does this reforge completely prevent the Vanilla "Mana Sickness" debuff, it actually inverts it—causing your
+damage output to increase instead. With the right setup, you can burn down the boss's health bar faster than the reforge burns down yours.
+  
+"Equalizer" Weapons:
+The Equalizer reforge converts your damage into True Damage equal to a set percentage of the target's maximum health. Because of this unique scaling,
+an Equalizer weapon will kill an early-game boss and a post-Moon Lord boss in the exact same amount of time! For this reforge, raw damage is meaningless—fire rate is everything.
+Finding the fastest-firing gun available is crucial to maximizing your DPS. You can amplify this even further by using the Phantom armor's active ability, which can effectively triple
+your damage output for as long as you can sustain the penalties. Combine this setup with True Damage amplifiers from Charms and accessory reforges, and you will effortlessly shred
+through bosses with massive health pools.
+
+⚠️ Early Access & Balance Note
+This is the first release of the mod, so you may encounter some balancing issues and boring reforges might be later replaced. If you find a mechanic or combination that feels
+completely broken, please let me know!
+
+A Note on Modded Weapons: Please keep in mind that applying these custom reforges to modded weapons 
+will inevitably result in some completely broken, god-tier synergies. I will not be keeping track of all these cross-mod interactions,
+nor will I attempt to balance this mod around them. Balancing around the most overpowered modded weapons would force me to make the baseline reforges
+incredibly weak, which would ruin the fun for standard playthroughs. If you find a combination that completely breaks the game—enjoy it!

@@ -1,0 +1,479 @@
+SharedLocalization: {
+	AscendantDesc: Damage done with this weapon: {0} / {1}
+	XDamageAdded: "{0}% Increased damage"
+	XDamageDecreased: "{0}% Decreased damage"
+	XCritAdded: "{0}% Increased critical strike chance"
+	XCritDecreased: "{0}% Decreased critical strike chance"
+	XDecreasedManaUsage: "{0}% Decreased mana usage"
+	XIncreasedManaUsage: "{0}% Increased mana usage"
+	XUseTimeReduced: "{0}% Increased using speed"
+	XUseTimeIncreased: -{0}% Speed
+	XCritDamageIncreased: "{0}% Increased critical strike damage"
+	XCritDamageDecreased: "{0}% Decreased critical strike damage"
+	XOnHitIncreasedCoinDropChance: "{0}% Increased chance to drop coins on hit"
+	XOnHitDecreasedCoinDropChance: "{0}% Decreased chance to drop coins on hit"
+	XIncreasedCoinDropValue: "{0}% Increased average value of dropped coins"
+	XDecreasedCoinDropValue: "{0}% Decreased average value of dropped coins (player itself drops coins if negative)"
+	XIncreasedLifesteal: "{0} Increased lifesteal on hit"
+	XDecreasedLifesteal: "{0} Decreased lifesteal on hit"
+	XNegativeMaxHealthDamage: "{0}% Decreased target max health damage on hit (heals if negative)"
+	XPositiveMaxHealthDamage: "{0}% Increased target max health damage on hit"
+	NoArmorSetBonus: No armor set bonus available for this reforge
+}
+
+Accessory: {
+	Aerodynamic: {
+		Desc: Increases movement speed by {0}% and maximum flight time by additional {1} ticks
+		DisplayName: Aerodynamic
+	}
+
+	BloodForged: {
+		MaxHealth: "{0}% Decreased maximum health"
+		Defense: "{0}% Increased defense"
+		DisplayName: Blood Forged
+	}
+
+	EarthShaper: {
+		Desc: "{0}% Increased mining speed"
+		DisplayName: Earth Shaper
+	}
+
+	Efficient: {
+		Desc: "{0}% Reduced mana usage"
+		DisplayName: Efficient
+	}
+
+	Equilibrium: {
+		FortifiedDesc: Total defense increased by {0}%
+		WarlordDesc: Minions available increased by {0}
+		AerodynamicDesc: Increases movement speed by {0}% and maximum flight time by additional {1} ticks
+		RevitalizingDesc: "{0} hp/s Increased life regeneration"
+		DisplayName: Equilibrium
+	}
+
+	Fortified: {
+		Desc: Total defense increased by {0}%
+		DisplayName: Fortified
+	}
+
+	Lethal: {
+		Desc: "{0}% Increased critical strike damage"
+		DisplayName: Lethal
+	}
+
+	Revitalizing: {
+		Desc: "{0} hp/s Increased life regeneration"
+		DisplayName: Revitalizing
+	}
+
+	Risky: {
+		DescDefense: "{0}% Decreased defense"
+		DisplayName: Risky
+	}
+
+	Sharpshooter: {
+		Desc: "{0}% Increased critical strike chance"
+		DisplayName: Sharpshooter
+	}
+
+	Stoic: {
+		DescDefense: "{0}% Increased defense"
+		DescDamage: "{0}% Decreased damage"
+		DisplayName: Stoic
+	}
+
+	Warlord: {
+		Desc: Minions available increased by {0}
+		DisplayName: Warlord
+	}
+}
+
+Armor: {
+	Chestplate: {
+		Vitalis: {
+			Desc: Increases all lifesteal received and health potion potency by {0}%
+			DisplayName: Vitalis
+		}
+
+		Void: {
+			DisplayName: Void
+			Desc: Amplifies all True Damage sources by {0}%.
+		}
+
+		Unyielding: {
+			DisplayName: Unyielding
+			Desc: Gain up to {0}% Damage Reduction as your Health decreases.
+		}
+
+		Rebounding: {
+			DisplayName: Rebounding
+			Desc:
+				'''
+				Emits piercing shrapnel when hit with huge knockback.
+				Shrapnel damage scales at {0}% of your total Defense.
+				Grants a temporary Defense boost when hit, which can stack.
+				WARNING: Reaching {1} stacks rapidly will SHATTER and destroy this armor piece!
+				'''
+		}
+	}
+
+	Headwear: {
+		WaterBreathing: {
+			Desc: Triples amount of time you can spend underwater before drowning
+			DisplayName: Water Breathing
+		}
+
+		Reinforced: {
+			Desc: Increases defense gained from this equipment by {0} ({1}%)
+			DisplayName: Reinforced
+		}
+	}
+
+	Leggings: {
+		Silent: {
+			DisplayName: Silent
+			Desc: Decreases enemy aggro by {0}.
+		}
+
+		Terra: {
+			DisplayName: Terra
+			Desc: Increases this item's Defense by {0}% while touching the ground.
+		}
+
+		Desperate: {
+			DisplayName: Desperate
+			Desc: Increases movement speed by up to {0}% as your Health decreases.
+		}
+	}
+
+	Universal: {
+		Phalanx: {
+			SetBonus:
+				'''
+				SET BONUS [Passive]: Reactive armor plating, detects powerful projectiles around you and shoots piece of itself
+				to collide with them, results in explosion damaging enemies outwards. Applies {0} {^0:second;seconds} armor ability cooldown
+				'''
+			DisplayName: Phalanx
+		}
+
+		Chrono: {
+			SetBonus:
+				'''
+				SET BONUS [Active]: Disrupts time flow in area around you resulting in enemies and all projectiles
+				completely stopping for {0} {^0:second;seconds}, while time stop is active enemies dont deal damage on contact
+				'''
+			Desc: "{0}% Increased movement speed"
+			DisplayName: Chrono
+		}
+
+		Augmented: {
+			SetBonus: SET BONUS [Passive]: Damage is increased by {0}% for each buff active
+			Desc: You gain buffs for each armor piece equipped, scales with defense:
+			DisplayName: Augmented
+			LeggingsLvl3: "{0} Defense > Gain gravitation buff"
+			LeggingsLvl2: "{0} Defense > Gain rage buff"
+			LeggingsLvl1: "{0} Defense > Gain swiftness buff"
+			ChestplateLvl3: "{0} Defense > Gain endurance buff"
+			ChestplateLvl2: "{0} Defense > Gain wrath buff"
+			ChestplateLvl1: "{0} Defense > Gain iron skin buff"
+			HeadwearLvl3: "{0} Defense > Gain life force buff"
+			HeadwearLvl2: "{0} Defense > Gain exquisitely stuffed buff"
+			HeadwearLvl1: "{0} Defense > Gain hunter buff"
+		}
+
+		Phantom: {
+			SetBonus:
+				'''
+				SET BONUS [Active]: Calls forth {0} identical clones capable of repeating all your actions for as long as they
+				are active, clones require tremendous focus to maintain hence apply these debuffs for as long as they are active:
+				Voidseal: Completely stops all health and mana regeneration, health and mana potions cannot be consumed
+				Soulburn: Deals damage over time and impairs vision, grows more intense the longer it lasts
+				'''
+			Desc: TODO: Add Phantom Description
+			DisplayName: Phantom
+		}
+
+		Cursed: {
+			SetBonus:
+				'''
+				SET BONUS [Passive]: Ignores all damage which would reduce health by less than {0}% of maximum health,
+				take {1}% maximum health damage otherwise, no matter how much damage would have been inflicted
+				'''
+			DisplayName: Cursed
+		}
+	}
+}
+
+Tool: {
+	Axe: {
+		Fortune: {
+			Desc: Trees cut by this item has chance for additional drops
+			DisplayName: Fortune
+		}
+	}
+
+	Pickaxe: {
+		Revealing: {
+			RevealingDesc: "{0}% Chance to briefly reveal valuable things around you"
+			DisplayName: Revealing
+		}
+
+		VeinMiner: {
+			VeinMinerDesc: This pickaxe mines whole ore vein at once
+			DisplayName: Vein Miner
+		}
+	}
+
+	MultipleTools: {
+		Clearing: {
+			ClearingAreaImprovement: This tool mines in 3x3 area
+			ClearingChanceToLoseBlocks: "{0}% chance for loss of mined item"
+			DisplayName: Clearing
+		}
+	}
+}
+
+Weapon: {
+	MagicWeapon: {
+		Inverted: {
+			Desc: Get inflicted with mana surge instead of sickness when drinking mana potions
+			DisplayName: Inverted
+		}
+
+		ManaCharged: {
+			Desc: Damage depends on current percentage of mana available
+			DisplayName: Mana Charged
+		}
+
+		Splintering: {
+			Desc: Hits have {0}% chance to emit mana shards in random directions repeating same damage
+			DisplayName: Splintering
+		}
+
+		TripleShot: {
+			Desc: Weapon shoots 2 extra projectiles
+			DisplayName: Triple Shot
+		}
+
+		Chaotic: {
+			DisplayName: Chaotic
+			Desc: This weapon rapidly changes its own stats ranging from very bad to incredibly powerful!
+		}
+
+		Endless.DisplayName: Endless
+	}
+
+	MeleeWeapon: {
+		ArcaneInfused: {
+			ManaPerSwing: Consumes {0} mana per swing
+			ManaSicknessWorks: Mana sickness affects this weapon
+			DisplayName: Arcane Infused
+		}
+
+		Perceptive: {
+			Desc: "{0}% Chance to deal quadruple damage"
+			DisplayName: Perceptive
+		}
+
+		UltraLight: {
+			AutoReuse: Weapon is capable of auto reuse
+			DisplayName: Ultra Light
+		}
+
+		Untouchable: {
+			Desc: Damage keeps increasing as long as you dont get hit!
+			IncreasedDamageTaken: When hit, damage taken is multiplied by how much weapon was ramped up
+			DisplayName: Untouchable
+		}
+
+		Gigantic.DisplayName: Gigantic
+		TitanForce.DisplayName: Titan Force
+	}
+
+	RangedWeapon: {
+		Adaptable: {
+			Desc: Accepts any type of ammo
+			DisplayName: Adaptable
+		}
+
+		Ascendant: {
+			Desc: Damage done with this weapon: {0} / {1}
+			DisplayName: Ascendant
+		}
+
+		Challenger: {
+			Title: Holding weapon enables difficult minigame but with great rewards:
+			GreenOrb: Green orb - Increases both damage and defense by {0}%
+			BlueOrb: Blue orb - Increases projectile velocity by {0}% and critical strike chance by {1}%
+			YellowOrb: Yellow orb - Adds both green and blue orb effects, heals you by {0}hp
+			RedOrb: Red orb - Resets score and stats completely, damages you by {0}hp
+			Desc: Hitting Beneficial orbs increase stats pool and current score, score multiplies all stats before they are applied
+			Desc2: Score must reach {0} for stats to start being applied, falling down to {1} score will disable all stats
+			DisplayName: Challenger
+		}
+
+		Controlled: {
+			BurstFire: Modified trigger mechanism to shoot in bursts
+			IncreasedVelocity: "{0}% Increased projectile velocity"
+			DisplayName: Controlled
+		}
+
+		GiantSlayer: {
+			GiantSlayerDesc: Deals {0}% target total health in true damage, weapon no longer deal its own damage
+			DisplayName: Giant Slayer
+		}
+
+		Tracer: {
+			Desc: TODO: Add Tracer Description
+			DisplayName: Tracer
+		}
+
+		Vampiric: {
+			Desc: "{0} Increased lifesteal"
+			DisplayName: Vampiric
+		}
+
+		Thaumic: {
+			Desc:
+				'''
+				Applies a random positive buff for {0} seconds on hit.
+				If the rolled buff is already active, its duration is extended by {1} seconds instead.
+				Prioritizes missing buffs.
+				'''
+			DisplayName: Thaumic
+		}
+
+		FlowState: {
+			Desc:
+				'''
+				Applies an infinitely stacking bleed to enemies on hit ({0}-second duration).
+				The bleed deals {1}% of the weapon's base damage per stack.
+				Stacks decay rapidly if hits are not maintained.
+				'''
+			DisplayName: Flow State
+		}
+	}
+
+	Summoner: {
+		MinionWeapon: {
+			Frenzied: {
+				Desc: Minions move and attack a lot faster
+				DisplayName: Frenzied
+			}
+
+			Monarch: {
+				DisplayName: Monarch
+				Desc:
+					'''
+					Consumes all minion slots to summon one Ruler
+					Gains +{0}% Damage and +{1}% Size per slot consumed
+					'''
+			}
+		}
+
+		Whip: {
+			Sacrificial: {
+				SacrificialDesc: TODO: Add Sacrificial Description
+				DisplayName: Sacrificial
+			}
+		}
+	}
+}
+
+Augmentations: {
+}
+
+Buffs: {
+	InvertedDisplayName: Mana Surge
+	InvertedDesc: Your damage is increased by {0}%
+	ArmorAbilityCooldownBuff: Armor Ability Cooldown
+	SacrificialBuff: Sacrificial
+	SacrificialBuffDesc: Minions recently sacrificed to keep you alive preventing to summon them again
+	ArmorAbilityCooldownBuffDesc: TODO: Add Cooldown Description
+	SoulBurnBuff: Soul Burn
+	SoulBurnBuffDesc: Phantoms are draining your life force causing hallucinations and damage growing more intense by the second!
+	VoidSealBuff: Void Seal
+	VoidSealBuffDesc: Completely stops all health and mana regeneration
+}
+
+NPCs: {
+	ChallengerOrb.DisplayName: Challenger Orb
+	DebugNPC.DisplayName: Debug N P C
+}
+
+Prefixes.DebugPrefix.DisplayName: Debug Prefix
+
+Projectiles: {
+	InvertedProjectile.DisplayName: Inverted Projectile
+	PhalanxPlatingProjectile.DisplayName: Phalanx Plating Projectile
+	SplinteringProjectile.DisplayName: Splintering Projectile
+	PhantomArmorProjectile.DisplayName: Phantom Armor Projectile
+}
+
+Configs: {
+	PrefixConfig: {
+		DisplayName: Prefix Config
+
+		AllowVanillaPrefixes: {
+			Label: Allow Vanilla Prefixes
+			Tooltip: ""
+		}
+
+		ExperimentalReforges: {
+			Label: Experimental Reforges
+			Tooltip: ""
+		}
+	}
+}
+
+Keybinds.ArmorActivationKeybind.DisplayName: Armor Activation Keybind
+
+Items: {
+	Charm: {
+		DisplayName: Charm
+		Tooltip: ""
+	}
+
+	asdasdads: {
+	}
+}
+
+Charms: {
+	notInitializedNotInitialized: Not Initialized
+
+	Rare: {
+		Damage: "{0}% Increased damage [Rare]"
+		WingTime: Wing time increased by {0} {^0:tick;ticks} [Rare]
+		UseSpeed: "{0}% Increased using speed [Rare]"
+		ManaUsage: "{0}% Decreased mana usage [Rare]"
+		Regen: "{0}hp/s Increased life regeneration [Rare]"
+	}
+
+	Common: {
+		MeleeDamage: "{0}% Increased melee damage [Common]"
+		RangedDamage: "{0}% Increased ranged damage [Common]"
+		MagicDamage: "{0}% Increased magic damage [Common]"
+		SummonDamage: "{0}% Increased summon damage [Common]"
+		MoveSpeed: "{0}% Increased movement speed [Common]"
+		CharmLuck: "{0}% Increased charm luck [Common]"
+		PickSpeed: "{0}% Increased mining speed [Common]"
+		Crit: "{0}% Increased critical strike chance [Common]"
+	}
+
+	Epic: {
+		LifeSteal: "{0} Increased lifesteal [Epic]"
+		CritDamage: "{0}% Increased critical strike damage [Epic]"
+		HealingMul: "{0}% Increased lifesteal and health potions potency [Epic]"
+		MaxHealthMul: "{0}% Increased maximum health [Epic]"
+	}
+
+	Legendary: {
+		Iframes: "{0} Additional iframes after being hit [Legendary]"
+		DamageReduction: "{0}% Increased damage reduction [Legendary]"
+	}
+
+	Mythical: {
+		TrueDamage: "{0} Flat true damage on-hit [Mythical]"
+		TrueDamageMul: "{0}% Increased true damage [Mythical]"
+	}
+}
