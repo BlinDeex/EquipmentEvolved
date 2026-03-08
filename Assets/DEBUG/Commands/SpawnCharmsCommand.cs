@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
-using EquipmentEvolved.Assets.CharmsModule;
-using EquipmentEvolved.Assets.CharmsModule.Manager;
+using EquipmentEvolved.Assets.CharmsModule.Core;
+using EquipmentEvolved.Assets.CharmsModule.Data;
 using Terraria.ModLoader;
 
 namespace EquipmentEvolved.Assets.DEBUG.Commands;
@@ -16,7 +16,11 @@ public class SpawnCharmsCommand : ModCommand
         { "mythical", CharmRarity.Mythical },
         { "exalted", CharmRarity.Exalted }
     };
-    
+
+    public override string Command => "SpawnCharm";
+    public override CommandType Type => CommandType.Chat;
+    public override string Usage => "</SpawnCharm Rare 4> </SpawnCharm Mythical 10> </SpawnCharm Common 1>";
+
     public override void Action(CommandCaller caller, string input, string[] args)
     {
         if (args.Length != 2)
@@ -42,14 +46,10 @@ public class SpawnCharmsCommand : ModCommand
 
         for (int i = 0; i < countArgInt; i++)
         {
-            CharmsManager.SpawnCharms([(rarity, CharmsManager.RollCharmType())], caller.Player.whoAmI, spawnPos: caller.Player.Center);
+            CharmsManager.SpawnCharms([(rarity, CharmsManager.RollCharmType())], caller.Player.whoAmI, caller.Player.Center);
         }
 
         string charmCharms = countArg.EndsWith('1') ? "charm" : "charms";
         caller.Reply($"Successfully spawned {countArgInt} {rarity.ToString()} {charmCharms}!");
     }
-
-    public override string Command => "SpawnCharm";
-    public override CommandType Type => CommandType.Chat;
-    public override string Usage => "</SpawnCharm Rare 4> </SpawnCharm Mythical 10> </SpawnCharm Common 1>";
 }

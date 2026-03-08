@@ -16,6 +16,8 @@ namespace EquipmentEvolved.Assets.Utilities;
 
 public static class UtilMethods
 {
+    private static bool hasLoggedFirstError;
+
     public static string FormatNumber(float number)
     {
         return number switch
@@ -27,7 +29,7 @@ public static class UtilMethods
             _ => number.ToString(CultureInfo.InvariantCulture)
         };
     }
-    
+
     public static bool IsArmor(this Item item)
     {
         return IsHeadwear(item) || IsChestplate(item) || IsLeggings(item);
@@ -38,27 +40,69 @@ public static class UtilMethods
         return item.fishingPole > 0;
     }
 
-    public static bool IsHeadwear(this Item item) => item.headSlot != -1;
+    public static bool IsWeapon(this Item item)
+    {
+        bool isPickaxe = item.pick > 0;
+        bool isAxe = item.axe > 0;
+        bool isHammer = item.hammer > 0;
+        return item.damage > 0 && !isPickaxe && !isAxe && !isHammer;
+    }
 
-    public static bool IsChestplate(this Item item) => item.bodySlot != -1;
+    public static bool IsHeadwear(this Item item)
+    {
+        return item.headSlot != -1;
+    }
 
-    public static bool IsLeggings(this Item item) => item.legSlot != -1;
-    
-    public static bool IsPickaxe(this Item item) => item.pick > 0;
-    
-    public static bool IsAxe(this Item item) => item.axe > 0;
-    
-    public static bool IsHammer(this Item item) => item.hammer > 0;
-    
-    public static bool IsWhip(this Item item) => item.DamageType == DamageClass.SummonMeleeSpeed && !Main.projPet[item.shoot];
-    public static bool IsMinionWeapon(this Item item) => Main.projPet[item.shoot];
-    
-    public static bool IsMeleeWeapon(this Item item) => item.CountsAsClass(DamageClass.Melee) && !item.IsPickaxe() && !item.IsAxe() && !item.IsHammer();
+    public static bool IsChestplate(this Item item)
+    {
+        return item.bodySlot != -1;
+    }
 
-    public static bool IsRangedWeapon(this Item item) => item.CountsAsClass(DamageClass.Ranged);
+    public static bool IsLeggings(this Item item)
+    {
+        return item.legSlot != -1;
+    }
 
-    public static bool IsMagicWeapon(this Item item) => item.CountsAsClass(DamageClass.Magic);
-    
+    public static bool IsPickaxe(this Item item)
+    {
+        return item.pick > 0;
+    }
+
+    public static bool IsAxe(this Item item)
+    {
+        return item.axe > 0;
+    }
+
+    public static bool IsHammer(this Item item)
+    {
+        return item.hammer > 0;
+    }
+
+    public static bool IsWhip(this Item item)
+    {
+        return item.DamageType == DamageClass.SummonMeleeSpeed && !Main.projPet[item.shoot];
+    }
+
+    public static bool IsMinionWeapon(this Item item)
+    {
+        return Main.projPet[item.shoot];
+    }
+
+    public static bool IsMeleeWeapon(this Item item)
+    {
+        return item.CountsAsClass(DamageClass.Melee) && !item.IsPickaxe() && !item.IsAxe() && !item.IsHammer();
+    }
+
+    public static bool IsRangedWeapon(this Item item)
+    {
+        return item.CountsAsClass(DamageClass.Ranged);
+    }
+
+    public static bool IsMagicWeapon(this Item item)
+    {
+        return item.CountsAsClass(DamageClass.Magic);
+    }
+
     public static void BroadcastOrNewText(string message, Color color)
     {
         if (Main.dedServ)
@@ -66,39 +110,8 @@ public static class UtilMethods
             ChatHelper.BroadcastChatMessage(NetworkText.FromLiteral(message), color);
             return;
         }
-        
+
         Main.NewText(message, color);
-    }
-    
-    public static byte[] IntListToByteArray(List<int> intList)
-    {
-        byte[] byteArray = new byte[intList.Count * 4];
-
-        for (int i = 0; i < intList.Count; i++)
-        {
-            byte[] bytes = BitConverter.GetBytes(intList[i]);
-            Buffer.BlockCopy(bytes, 0, byteArray, i * 4, 4);
-        }
-
-        return byteArray;
-    }
-    
-    public static Vector3 ColorToVector3(this Color color)
-    {
-        return new Vector3(color.R, color.G, color.B);
-    }
-    
-    public static List<int> ByteArrayToIntList(byte[] byteArray)
-    {
-        List<int> intList = [];
-
-        for (int i = 0; i < byteArray.Length; i += 4)
-        {
-            int value = BitConverter.ToInt32(byteArray, i);
-            intList.Add(value);
-        }
-
-        return intList;
     }
 
     public static List<Point> GetConnectedTiles(int startX, int startY, int maxTiles, int type)
@@ -114,7 +127,7 @@ public static class UtilMethods
             new(0, 1) // down
         ];
 
-        Queue<Point> toExplore = new Queue<Point>();
+        Queue<Point> toExplore = new();
         toExplore.Enqueue(new Point(startX, startY));
         visited.Add((startX, startY));
 
@@ -128,8 +141,7 @@ public static class UtilMethods
                 int newX = currentExplore.X + direction.X;
                 int newY = currentExplore.Y + direction.Y;
 
-                if (!IsWithinBounds(newX, newY) || visited.Contains((newX, newY)) ||
-                    Main.tile[newX, newY].TileType != type) continue;
+                if (!IsWithinBounds(newX, newY) || visited.Contains((newX, newY)) || Main.tile[newX, newY].TileType != type) continue;
 
                 toExplore.Enqueue(new Point(newX, newY));
                 visited.Add((newX, newY));
@@ -168,9 +180,9 @@ public static class UtilMethods
     {
         int tVal = Unsafe.As<TEnum, int>(ref target);
         int fVal = Unsafe.As<TEnum, int>(ref flag);
-        
+
         int result = tVal ^ fVal;
-        
+
         return Unsafe.As<int, TEnum>(ref result);
     }
 
@@ -191,24 +203,32 @@ public static class UtilMethods
 
         ILog log = EquipmentEvolved.Instance.Logger;
         
-        message = $"[{nameof(EquipmentEvolved)}] {message}";
-        
+        if (logType == LogType.Error && !hasLoggedFirstError)
+        {
+            hasLoggedFirstError = true;
+            
+            string warningMessage = "[Equipment Evolved] A critical error has occurred. The mod may not behave as expected. Please check your client.log file.";
+            BroadcastOrNewText(warningMessage, Color.Red);
+        }
+
+        string formattedMessage = $"[{nameof(EquipmentEvolved)}] {message}";
+
         switch (logType)
         {
             case LogType.Debug:
-                log.Debug(message);
+                log.Debug(formattedMessage);
                 break;
             case LogType.Log:
-                log.Info(message);
+                log.Info(formattedMessage);
                 break;
             case LogType.Warning:
-                log.Warn(message);
+                log.Warn(formattedMessage);
                 break;
             case LogType.Error:
-                log.Error(message);
+                log.Error(formattedMessage);
                 break;
             default:
-                throw new ArgumentOutOfRangeException(nameof(logType), logType, null);
+                throw new ArgumentOutOfRangeException(nameof(logType), logType, null); //
         }
     }
 
@@ -216,24 +236,20 @@ public static class UtilMethods
     {
         return new Rectangle((int)target.position.X, (int)target.position.Y, 20, 20);
     }
-    
+
     public static Rectangle GetCombatTextRect(Player target)
     {
         return new Rectangle((int)target.position.X, (int)target.position.Y, 20, 20);
     }
-    
+
     public static void AnnounceNegated(Player player)
     {
-        // 1. Show locally immediately
         CombatText.NewText(player.getRect(), Color.Green, "Negated!");
 
-        // 2. Send packet to others
-        if (Main.netMode == NetmodeID.MultiplayerClient)
-        {
-            ModPacket packet = ModContent.GetInstance<EquipmentEvolved>().GetPacket();
-            packet.Write((byte)MessageType.NegatedText);
-            packet.Write((byte)player.whoAmI);
-            packet.Send();
-        }
+        if (Main.netMode != NetmodeID.MultiplayerClient) return;
+        ModPacket packet = ModContent.GetInstance<EquipmentEvolved>().GetPacket();
+        packet.Write((byte)MessageType.NegatedText);
+        packet.Write((byte)player.whoAmI);
+        packet.Send();
     }
 }

@@ -3,9 +3,15 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace EquipmentEvolved.Assets.Utilities.Spritebatch;
 
-// found on discord by prim lord
-public struct SpriteBatchSnapshot(SpriteSortMode sortMode, BlendState blendState, SamplerState samplerState, DepthStencilState depthStencilState,
-    RasterizerState rasterizerState, Effect effect, Matrix transformMatrix)
+// found posted on discord by prim lord
+public struct SpriteBatchSnapshot(
+    SpriteSortMode sortMode,
+    BlendState blendState,
+    SamplerState samplerState,
+    DepthStencilState depthStencilState,
+    RasterizerState rasterizerState,
+    Effect effect,
+    Matrix transformMatrix)
 {
     public SpriteSortMode SortMode = sortMode;
     public BlendState BlendState = blendState;
@@ -28,17 +34,14 @@ public struct SpriteBatchSnapshot(SpriteSortMode sortMode, BlendState blendState
 
         SamplerState samplerState = (SamplerState)SpriteBatchSnapshotCache.SamplerStateField.GetValue(spriteBatch);
 
-        DepthStencilState depthStencilState =
-            (DepthStencilState)SpriteBatchSnapshotCache.DepthStencilStateField.GetValue(spriteBatch);
+        DepthStencilState depthStencilState = (DepthStencilState)SpriteBatchSnapshotCache.DepthStencilStateField.GetValue(spriteBatch);
 
-        RasterizerState rasterizerState =
-            (RasterizerState)SpriteBatchSnapshotCache.RasterizerStateField.GetValue(spriteBatch);
+        RasterizerState rasterizerState = (RasterizerState)SpriteBatchSnapshotCache.RasterizerStateField.GetValue(spriteBatch);
 
         Effect effect = (Effect)SpriteBatchSnapshotCache.EffectField.GetValue(spriteBatch);
 
         Matrix transformMatrix = (Matrix)SpriteBatchSnapshotCache.TransformMatrixField.GetValue(spriteBatch)!;
 
-        return new SpriteBatchSnapshot(sortMode, blendState, samplerState, depthStencilState, rasterizerState, effect,
-            transformMatrix);
+        return new SpriteBatchSnapshot(sortMode, blendState, samplerState, depthStencilState, rasterizerState, effect, transformMatrix);
     }
 }

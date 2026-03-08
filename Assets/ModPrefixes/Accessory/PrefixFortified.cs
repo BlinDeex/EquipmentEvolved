@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using EquipmentEvolved.Assets.Balance;
+using EquipmentEvolved.Assets.Core;
 using EquipmentEvolved.Assets.Misc;
-using EquipmentEvolved.Assets.ModPlayers;
 using Terraria;
 using Terraria.Localization;
 using Terraria.ModLoader;
@@ -12,7 +12,9 @@ public class PrefixFortified : ModPrefix
 {
     public override PrefixCategory Category => PrefixCategory.Accessory;
 
-    public override LocalizedText DisplayName => LocalizationManager.GetPrefixLocalization(this,"Fortified", "DisplayName");
+    public override LocalizedText DisplayName =>
+        LocalizationManager.GetPrefixLocalization(this, "Fortified", "DisplayName");
+
     public static LocalizedText Desc { get; private set; }
 
     public override void ModifyValue(ref float valueMult)
@@ -22,16 +24,15 @@ public class PrefixFortified : ModPrefix
 
     public override void SetStaticDefaults()
     {
-        Desc = LocalizationManager.GetPrefixLocalization(this,"Fortified", nameof(Desc));
+        Desc = LocalizationManager.GetPrefixLocalization(this, "Fortified", nameof(Desc));
     }
 
     public override IEnumerable<TooltipLine> GetTooltipLines(Item item)
     {
-        TooltipLine newLine =
-            new TooltipLine(Mod, "newLine", Desc.Format(PrefixBalance.FORTIFIED_INCREASED_DEFENSE * 100))
-            {
-                IsModifier = true
-            };
+        TooltipLine newLine = new(Mod, "newLine", Desc.Format(PrefixBalance.FORTIFIED_INCREASED_DEFENSE * 100))
+        {
+            IsModifier = true
+        };
 
         yield return newLine;
     }
@@ -39,6 +40,6 @@ public class PrefixFortified : ModPrefix
     public override void ApplyAccessoryEffects(Player player)
     {
         StatPlayer statPlayer = player.GetModPlayer<StatPlayer>();
-        statPlayer.DefenseMul += PrefixBalance.FORTIFIED_INCREASED_DEFENSE;
+        statPlayer.DefenseMul += statPlayer.CalculateStatBonus(PrefixBalance.FORTIFIED_INCREASED_DEFENSE, StatSource.AccessoryReforge);
     }
 }

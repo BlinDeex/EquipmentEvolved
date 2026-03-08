@@ -6,39 +6,27 @@ namespace EquipmentEvolved.Assets.Misc;
 public enum SpecializedPrefixType
 {
     Empty = 0,
-    // Tools
-    Pickaxe = 1,
-    Axe = 2,
-    Hammer = 4,
-    
-    // Summoner
-    MinionWeapon = 8,
-    Whip = 16,
-    
-    // Armor
-    Headwear = 32,
-    Chestplate = 64,
-    Leggings = 128,
-    
-    // NEW: Standard Weapons
-    MeleeWeapon = 256, // Swords, Spears, Yoyos
-    RangedWeapon = 512, // Bows, Guns
-    MagicWeapon = 1024, // Staffs, Tomes
-    
-    // Combinations
+
+    Pickaxe = 1 << 0,
+    Axe = 1 << 1,
+    Hammer = 1 << 2,
+
+    MinionWeapon = 1 << 3,
+    Whip = 1 << 4,
+
+    Headwear = 1 << 5,
+    Chestplate = 1 << 6,
+    Leggings = 1 << 7,
+
+    MeleeWeapon = 1 << 8,
+    RangedWeapon = 1 << 9,
+    MagicWeapon = 1 << 10,
+
     AnyArmor = Headwear | Chestplate | Leggings,
     AnyTool = Pickaxe | Axe | Hammer,
-    
-    // Updated Any
-    Any = Pickaxe | Axe | Hammer | MinionWeapon | Whip | Headwear | Chestplate | Leggings | MeleeWeapon | RangedWeapon | MagicWeapon
-}
+    StandardWeapons = MeleeWeapon | RangedWeapon | MagicWeapon,
 
-public enum ChallengerOrbType
-{
-    Green = 0,
-    Blue = 1,
-    Yellow = 2,
-    Red = 3
+    Any = Pickaxe | Axe | Hammer | MinionWeapon | Whip | Headwear | Chestplate | Leggings | MeleeWeapon | RangedWeapon | MagicWeapon
 }
 
 public enum MessageType
@@ -47,10 +35,10 @@ public enum MessageType
     TrueDamageText,
     TimeStop,
     CharmOnKilled,
-    SyncPrefixPlayer,
+    SyncInvertedModPlayer,
     PerceptiveCritEffect,
     SilentTileKill,
-    SyncToolPlayer,
+    SyncFortuneModPlayer,
     NegatedText
 }
 

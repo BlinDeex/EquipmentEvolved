@@ -1,4 +1,4 @@
-SharedLocalization: {
+LocalizationManager: {
 	AscendantDesc: Damage done with this weapon: {0} / {1}
 	XDamageAdded: "{0}% Increased damage"
 	XDamageDecreased: "{0}% Decreased damage"
@@ -19,6 +19,16 @@ SharedLocalization: {
 	XNegativeMaxHealthDamage: "{0}% Decreased target max health damage on hit (heals if negative)"
 	XPositiveMaxHealthDamage: "{0}% Increased target max health damage on hit"
 	NoArmorSetBonus: No armor set bonus available for this reforge
+	XMovementSpeedIncreased: "{0}% Increased movement speed"
+	XMovementSpeedDecreased: "{0}% Decreased movement speed"
+	XSizeIncreased: "{0}% Increased weapon size"
+	XSizeDecreased: "{0}% Decreased weapon size"
+	XDefenseIncreased: "{0} Increased defense"
+	XDefenseDecreased: "{0} Decreased defense"
+	XRegenIncreased: "{0} Increased life regeneration"
+	XRegenDecreased: "{0} Decreased life regeneration"
+	XIframesIncreased: "{0} Increased immunity frames"
+	XIframesDecreased: "{0} Decreased immunity frames"
 }
 
 Accessory: {
@@ -86,6 +96,39 @@ Accessory: {
 		Desc: Minions available increased by {0}
 		DisplayName: Warlord
 	}
+
+	Hollow: {
+		DisplayName: Hollow
+		Description:
+			'''
+			Decreases maximum health by {0}%
+			Increases movement speed and wing mobility by {1}%
+			'''
+	}
+
+	Lucky: {
+		DisplayName: Lucky
+		Description: Increases charm luck by {0}%
+	}
+
+	Zealous: {
+		DisplayName: Zealous
+		Description: Increases attack speed by {0}%
+	}
+
+	Greedy: {
+		DisplayName: Greedy
+		Description: Increases coin drops from enemies by {0}%
+	}
+
+	Description: Mods.EquipmentEvolved.Accessory.Description
+	DisplayName: Mods.EquipmentEvolved.Accessory.DisplayName
+
+	Conduit: {
+		Description: Mods.EquipmentEvolved.Accessory.Conduit.Description
+		SetBonusDescription: Mods.EquipmentEvolved.Accessory.Conduit.SetBonusDescription
+		DisplayName: Mods.EquipmentEvolved.Accessory.Conduit.DisplayName
+	}
 }
 
 Armor: {
@@ -115,6 +158,16 @@ Armor: {
 				WARNING: Reaching {1} stacks rapidly will SHATTER and destroy this armor piece!
 				'''
 		}
+
+		Dashing: {
+			DisplayName: Dashing
+			Description:
+				'''
+				Allows dashing towards the cursor using the Armor Activation key
+				Stores up to {0} charges
+				Dashing does not grant invulnerability
+				'''
+		}
 	}
 
 	Headwear: {
@@ -126,6 +179,34 @@ Armor: {
 		Reinforced: {
 			Desc: Increases defense gained from this equipment by {0} ({1}%)
 			DisplayName: Reinforced
+		}
+
+		Enraging: {
+			DisplayName: Enraging
+			Description: Increases enemy aggro by {0}
+		}
+
+		Berserker: {
+			DisplayName: Berserker
+			Description: Damage increases as Health decreases, up to {0}%
+		}
+
+		WeakLink: {
+			DisplayName: Weak Link
+			Description:
+				'''
+				Reduces this item's Defense by {0}%
+				Increases Defense of equipped chestplate and leggings by {1}%
+				'''
+		}
+
+		Psionic: {
+			DisplayName: Psionic
+			Description:
+				'''
+				Vastly increases item pickup range
+				Dropped Hearts and Stars restore {0}% more Health and Mana
+				'''
 		}
 	}
 
@@ -143,6 +224,11 @@ Armor: {
 		Desperate: {
 			DisplayName: Desperate
 			Desc: Increases movement speed by up to {0}% as your Health decreases.
+		}
+
+		Resonant: {
+			DisplayName: Resonant
+			Description: Boosts all accessory reforge stats by {0}%
 		}
 	}
 
@@ -201,7 +287,37 @@ Armor: {
 				'''
 			DisplayName: Cursed
 		}
+
+		Symbiotic: {
+			DisplayName: Symbiotic
+			Desc: Piece Bonus: Applying a Charm grants an instant +{0}% quality boost to its rolls.
+			CurseDesc: "[c/FF0000:Curse: This armor physically binds to you. Shift-Click to shatter and remove it.]"
+			SetBonus:
+				'''
+				Set Bonus (3 pieces): Temporarily raises applied Charm tier by 1 and grants a new stat roll.
+				Set Bonus: Consumes the Charm's Augmentation to grant an additional +{0}% quality boost.
+				'''
+		}
+
+		Conduit: {
+			DisplayName: Conduit
+			Desc: Increases maximum mana by {0}
+			SetBonus: Conduit Set Bonus: Replaces standard mana regeneration with a fast, uninterrupted constant flow
+		}
+
+		RaidBoss: {
+			DisplayName: Raid Boss
+			Desc: Increases Defense gained by this item by {0}%
+			SetBonus: Raid Boss Set Bonus: Decreases mobility by {0}%, but increases total Defense by {1}, Damage Reduction by {2}%, and vastly increases enemy aggro
+		}
 	}
+}
+
+Augmentations: {
+	ClearingAugmentation: "[Clearing Augmentation] Boosts mined area by clearing tools from 3x3 to 7x7"
+	OmniFailedAugmentation: ØVɆⱤⱠØ₳Đ... [ FAILED TO INITIALIZE ]
+	OmniAugmentation: "[0xFFFFFFFF] ⚠ S Y S T E M . O V E R L O A D ⚠ ▓▓▒▒░"
+	CursedAugmentation: "[Cursed Augmentation]: Increases damage negation cap from {0}% to {1}%, decreases damage taken from {2}% to {3}%."
 }
 
 Tool: {
@@ -221,6 +337,11 @@ Tool: {
 		VeinMiner: {
 			VeinMinerDesc: This pickaxe mines whole ore vein at once
 			DisplayName: Vein Miner
+		}
+
+		Geological: {
+			DisplayName: Geological
+			Description: Mining dirt or stone has a {0}% chance to drop a random gem
 		}
 	}
 
@@ -260,6 +381,16 @@ Weapon: {
 			Desc: This weapon rapidly changes its own stats ranging from very bad to incredibly powerful!
 		}
 
+		Overloaded: {
+			DisplayName: Overloaded
+			Description:
+				'''
+				Hold attack to infinitely charge the spell
+				Mana drain increases rapidly over time
+				Deals {0}% damage per weapon mana cost consumed!
+				'''
+		}
+
 		Endless.DisplayName: Endless
 	}
 
@@ -284,6 +415,34 @@ Weapon: {
 			Desc: Damage keeps increasing as long as you dont get hit!
 			IncreasedDamageTaken: When hit, damage taken is multiplied by how much weapon was ramped up
 			DisplayName: Untouchable
+		}
+
+		Sealed: {
+			DisplayName: Sealed
+			HiddenDesc: ??? Unidentified Anomalous Properties ???
+			Instruction: Right-Click in inventory to permanently reveal. Cannot be reforged once revealed!
+			LockedWarning: Permanently Sealed (Cannot be reforged)
+		}
+
+		Kinetic: {
+			DisplayName: Kinetic
+			Description: Damage scales based on how fast you are moving upon striking
+		}
+
+		Sundering: {
+			DisplayName: Sundering
+			Description: Striking enemies permanently tears away their armor.
+		}
+
+		Payback: {
+			DisplayName: Payback
+			Description:
+				'''
+				Melee strikes hurl {0}-{1} coins from your inventory.
+				Coins home in to deal damage based on tier:
+				Copper: {2}% | Silver: {3}% | Gold: {4}% | Platinum: {5}%
+				There is a {6}% chance to recover coins after impact.
+				'''
 		}
 
 		Gigantic.DisplayName: Gigantic
@@ -352,6 +511,25 @@ Weapon: {
 				'''
 			DisplayName: Flow State
 		}
+
+		Delayed: {
+			DisplayName: Delayed
+			Description:
+				'''
+				Fires a delayed laser pulse every {0} seconds
+				Lasers deal {1}% weapon damage
+				'''
+		}
+
+		Ricochet: {
+			DisplayName: Ricochet
+			Description:
+				'''
+				Projectiles split into {1} when hitting terrain
+				Can split up to {0} times
+				Split projectiles deal {2}% damage and shrink in size
+				'''
+		}
 	}
 
 	Summoner: {
@@ -369,6 +547,11 @@ Weapon: {
 					Gains +{0}% Damage and +{1}% Size per slot consumed
 					'''
 			}
+
+			Proxy: {
+				DisplayName: Proxy
+				Desc: Minions freeze in place for {0} seconds.\nThey replicate all fired projectiles, dealing {1}% of combined weapon and minion damage
+			}
 		}
 
 		Whip: {
@@ -377,10 +560,45 @@ Weapon: {
 				DisplayName: Sacrificial
 			}
 		}
-	}
-}
 
-Augmentations: {
+		"Whip, MeleeWeapon": {
+			ArcaneInfused: {
+				ManaPerSwing: Mods.EquipmentEvolved.Weapon.Summoner.Whip, MeleeWeapon.ArcaneInfused.ManaPerSwing
+				ManaSicknessWorks: Mods.EquipmentEvolved.Weapon.Summoner.Whip, MeleeWeapon.ArcaneInfused.ManaSicknessWorks
+				DisplayName: Mods.EquipmentEvolved.Weapon.Summoner.Whip, MeleeWeapon.ArcaneInfused.DisplayName
+			}
+
+			Payback: {
+				Description: Mods.EquipmentEvolved.Weapon.Summoner.Whip, MeleeWeapon.Payback.Description
+				DisplayName: Mods.EquipmentEvolved.Weapon.Summoner.Whip, MeleeWeapon.Payback.DisplayName
+			}
+
+			Sealed: {
+				HiddenDesc: Mods.EquipmentEvolved.Weapon.Summoner.Whip, MeleeWeapon.Sealed.HiddenDesc
+				Instruction: Mods.EquipmentEvolved.Weapon.Summoner.Whip, MeleeWeapon.Sealed.Instruction
+				LockedWarning: Mods.EquipmentEvolved.Weapon.Summoner.Whip, MeleeWeapon.Sealed.LockedWarning
+				DisplayName: Mods.EquipmentEvolved.Weapon.Summoner.Whip, MeleeWeapon.Sealed.DisplayName
+			}
+
+			Sundering: {
+				Description: Mods.EquipmentEvolved.Weapon.Summoner.Whip, MeleeWeapon.Sundering.Description
+				DisplayName: Mods.EquipmentEvolved.Weapon.Summoner.Whip, MeleeWeapon.Sundering.DisplayName
+			}
+
+			UltraLight: {
+				AutoReuse: Mods.EquipmentEvolved.Weapon.Summoner.Whip, MeleeWeapon.UltraLight.AutoReuse
+				DisplayName: Mods.EquipmentEvolved.Weapon.Summoner.Whip, MeleeWeapon.UltraLight.DisplayName
+			}
+
+			Untouchable: {
+				Desc: Mods.EquipmentEvolved.Weapon.Summoner.Whip, MeleeWeapon.Untouchable.Desc
+				IncreasedDamageTaken: Mods.EquipmentEvolved.Weapon.Summoner.Whip, MeleeWeapon.Untouchable.IncreasedDamageTaken
+				DisplayName: Mods.EquipmentEvolved.Weapon.Summoner.Whip, MeleeWeapon.Untouchable.DisplayName
+			}
+
+			Gigantic.DisplayName: Mods.EquipmentEvolved.Weapon.Summoner.Whip, MeleeWeapon.Gigantic.DisplayName
+		}
+	}
 }
 
 Buffs: {
@@ -389,7 +607,7 @@ Buffs: {
 	ArmorAbilityCooldownBuff: Armor Ability Cooldown
 	SacrificialBuff: Sacrificial
 	SacrificialBuffDesc: Minions recently sacrificed to keep you alive preventing to summon them again
-	ArmorAbilityCooldownBuffDesc: TODO: Add Cooldown Description
+	ArmorAbilityCooldownBuffDesc: Armor ability cooldown
 	SoulBurnBuff: Soul Burn
 	SoulBurnBuffDesc: Phantoms are draining your life force causing hallucinations and damage growing more intense by the second!
 	VoidSealBuff: Void Seal
@@ -408,20 +626,50 @@ Projectiles: {
 	PhalanxPlatingProjectile.DisplayName: Phalanx Plating Projectile
 	SplinteringProjectile.DisplayName: Splintering Projectile
 	PhantomArmorProjectile.DisplayName: Phantom Armor Projectile
+	PaybackCoinProjectile.DisplayName: Payback Coin Projectile
+	DelayedExplosionProjectile.DisplayName: Delayed Explosion Projectile
+	DelayedLaserProjectile.DisplayName: Delayed Laser Projectile
+	OverloadedChargeProjectile.DisplayName: Overloaded Charge Projectile
 }
 
 Configs: {
 	PrefixConfig: {
-		DisplayName: Prefix Config
+		DisplayName: Equipment Evolved Configuration
 
-		AllowVanillaPrefixes: {
-			Label: Allow Vanilla Prefixes
-			Tooltip: ""
+		Headers: {
+			CoreSystems: "[c/ff8888:Core Systems]"
+			EquipmentTypes: "[c/88ff88:Equipment Types]"
+			Advanced: "[c/8888ff:Advanced Settings]"
 		}
 
-		ExperimentalReforges: {
-			Label: Experimental Reforges
-			Tooltip: ""
+		EnableCharms: {
+			Label: Enable Charms System
+			Tooltip: Toggles the entire Charms drop and application system. If disabled, enemies will no longer drop charms.
+		}
+
+		EnableModdedReforges: {
+			Label: Enable Custom Reforges
+			Tooltip: Enables all the unique, mechanic-altering weapon reforges introduced by this mod.
+		}
+
+		EnableArmorReforging: {
+			Label: Enable Armor Reforging
+			Tooltip: Allows armor pieces to be reforged with powerful universal and specialized traits.
+		}
+
+		EnableToolReforging: {
+			Label: Enable Tool Reforging
+			Tooltip: Allows pickaxes, axes, and hammers to roll unique utility prefixes.
+		}
+
+		EnableExperimentalReforges: {
+			Label: Enable Experimental Reforges
+			Tooltip: Enables work-in-progress or highly volatile reforges. Balance is not guaranteed!
+		}
+
+		EnableVanillaReforges: {
+			Label: Enable Vanilla Reforges
+			Tooltip: If enabled, vanilla modifiers (like 'Legendary' or 'Warding') will remain in the Goblin Tinkerer's pool.
 		}
 	}
 }
@@ -435,6 +683,11 @@ Items: {
 	}
 
 	asdasdads: {
+	}
+
+	DebugStatAccessory: {
+		DisplayName: Debug Stat Accessory
+		Tooltip: ""
 	}
 }
 
@@ -458,22 +711,24 @@ Charms: {
 		CharmLuck: "{0}% Increased charm luck [Common]"
 		PickSpeed: "{0}% Increased mining speed [Common]"
 		Crit: "{0}% Increased critical strike chance [Common]"
+		Damage: "{0}% Increased all damage [Common]"
 	}
 
 	Epic: {
-		LifeSteal: "{0} Increased lifesteal [Epic]"
 		CritDamage: "{0}% Increased critical strike damage [Epic]"
 		HealingMul: "{0}% Increased lifesteal and health potions potency [Epic]"
 		MaxHealthMul: "{0}% Increased maximum health [Epic]"
+		DamageLifesteal: "{0}% Increased damage lifesteal"
 	}
 
 	Legendary: {
 		Iframes: "{0} Additional iframes after being hit [Legendary]"
-		DamageReduction: "{0}% Increased damage reduction [Legendary]"
+		TrueDamageMul: "{0}% Increased true damage [Legendary]"
+		LifeSteal: "{0} Increased on-hit lifesteal [Epic]"
 	}
 
 	Mythical: {
 		TrueDamage: "{0} Flat true damage on-hit [Mythical]"
-		TrueDamageMul: "{0}% Increased true damage [Mythical]"
+		DamageReduction: "{0}% Increased damage reduction [Mythical]"
 	}
 }

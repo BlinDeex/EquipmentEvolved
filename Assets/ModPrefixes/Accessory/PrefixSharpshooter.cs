@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using EquipmentEvolved.Assets.Balance;
+using EquipmentEvolved.Assets.Core;
 using EquipmentEvolved.Assets.Misc;
-using EquipmentEvolved.Assets.ModPlayers;
 using Terraria;
 using Terraria.Localization;
 using Terraria.ModLoader;
@@ -12,7 +12,9 @@ public class PrefixSharpshooter : ModPrefix
 {
     public override PrefixCategory Category => PrefixCategory.Accessory;
 
-    public override LocalizedText DisplayName => LocalizationManager.GetPrefixLocalization(this,"Sharpshooter", "DisplayName");
+    public override LocalizedText DisplayName =>
+        LocalizationManager.GetPrefixLocalization(this, "Sharpshooter", "DisplayName");
+
     public static LocalizedText Desc { get; private set; }
 
     public override void ModifyValue(ref float valueMult)
@@ -22,16 +24,15 @@ public class PrefixSharpshooter : ModPrefix
 
     public override void SetStaticDefaults()
     {
-        Desc = LocalizationManager.GetPrefixLocalization(this,"Sharpshooter", nameof(Desc));
+        Desc = LocalizationManager.GetPrefixLocalization(this, "Sharpshooter", nameof(Desc));
     }
 
     public override IEnumerable<TooltipLine> GetTooltipLines(Item item)
     {
-        TooltipLine newLine =
-            new TooltipLine(Mod, "newLine", Desc.Format(PrefixBalance.SHARPSHOOTER_CRIT))
-            {
-                IsModifier = true
-            };
+        TooltipLine newLine = new(Mod, "newLine", Desc.Format(PrefixBalance.SHARPSHOOTER_CRIT))
+        {
+            IsModifier = true
+        };
 
         yield return newLine;
     }
@@ -40,6 +41,6 @@ public class PrefixSharpshooter : ModPrefix
     {
         if (!player.TryGetModPlayer(out StatPlayer statPlayer)) return;
 
-        statPlayer.Crit += PrefixBalance.SHARPSHOOTER_CRIT;
+        statPlayer.Crit += statPlayer.CalculateStatBonus(PrefixBalance.SHARPSHOOTER_CRIT, StatSource.AccessoryReforge);
     }
 }

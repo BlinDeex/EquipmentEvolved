@@ -7,13 +7,7 @@ public static class SpriteBatchSnapshotCache
 {
     private const BindingFlags SBBindingFlags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
 
-    private static FieldInfo _sortModeField,
-        _blendStateField,
-        _samplerStateField,
-        _depthStencilStateField,
-        _rasterizerStateField,
-        _effectField,
-        _transformMatrixField;
+    private static FieldInfo _sortModeField, _blendStateField, _samplerStateField, _depthStencilStateField, _rasterizerStateField, _effectField, _transformMatrixField;
 
     internal static FieldInfo SortModeField =>
         _sortModeField ??= typeof(SpriteBatch).GetField("sortMode", SBBindingFlags);
@@ -24,8 +18,7 @@ public static class SpriteBatchSnapshotCache
     internal static FieldInfo SamplerStateField =>
         _samplerStateField ??= typeof(SpriteBatch).GetField("samplerState", SBBindingFlags);
 
-    internal static FieldInfo DepthStencilStateField => _depthStencilStateField ??=
-        typeof(SpriteBatch).GetField("depthStencilState", SBBindingFlags);
+    internal static FieldInfo DepthStencilStateField => _depthStencilStateField ??= typeof(SpriteBatch).GetField("depthStencilState", SBBindingFlags);
 
     internal static FieldInfo RasterizerStateField =>
         _rasterizerStateField ??= typeof(SpriteBatch).GetField("rasterizerState", SBBindingFlags);
@@ -38,8 +31,7 @@ public static class SpriteBatchSnapshotCache
 
     public static void Begin(this SpriteBatch spriteBatch, in SpriteBatchSnapshot snapshot)
     {
-        spriteBatch.Begin(snapshot.SortMode, snapshot.BlendState, snapshot.SamplerState, snapshot.DepthStencilState,
-            snapshot.RasterizerState, snapshot.Effect, snapshot.TransformMatrix);
+        spriteBatch.Begin(snapshot.SortMode, snapshot.BlendState, snapshot.SamplerState, snapshot.DepthStencilState, snapshot.RasterizerState, snapshot.Effect, snapshot.TransformMatrix);
     }
 
     public static SpriteBatchSnapshot CaptureSnapshot(this SpriteBatch spriteBatch)

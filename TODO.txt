@@ -1,0 +1,1 @@
+﻿localization manager messes up melee, whip reforges keys.
