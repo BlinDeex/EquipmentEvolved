@@ -50,7 +50,7 @@ public class PrefixBloodForged : ModPrefix
     public override void ApplyAccessoryEffects(Player player)
     {
         StatPlayer statPlayer = player.GetModPlayer<StatPlayer>();
-        statPlayer.MaxHealthMul += statPlayer.CalculateStatBonus(PrefixBalance.BLOOD_FORGED_MAX_HEALTH, StatSource.AccessoryReforge);
+        statPlayer.HealthCapMul *= 1 + statPlayer.CalculateStatBonus(PrefixBalance.BLOOD_FORGED_MAX_HEALTH, StatSource.AccessoryReforge);
         statPlayer.DefenseMul += statPlayer.CalculateStatBonus(PrefixBalance.BLOOD_FORGED_DEFENSE, StatSource.AccessoryReforge);
     }
 }

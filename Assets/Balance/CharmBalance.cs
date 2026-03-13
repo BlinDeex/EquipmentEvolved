@@ -9,6 +9,7 @@ using EquipmentEvolved.Assets.ModPrefixes.Ranged.Challenger;
 using EquipmentEvolved.Assets.Utilities;
 using Microsoft.Xna.Framework;
 using Terraria;
+using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace EquipmentEvolved.Assets.Balance;
@@ -29,13 +30,17 @@ public static class CharmBalance
         { CharmRarity.Epic, (3, 5) },
         { CharmRarity.Legendary, (4, 6) },
         { CharmRarity.Mythical, (5, 7) },
-        { CharmRarity.Exalted, (20, 30) }
+        { CharmRarity.Exalted, (10, 10) }
     };
 
     public static int LegendaryPity = 250;
     public static int MythicalPity = 1000;
 
-    public static List<int> ExcludedNPCSFromCharmDrops = [ModContent.NPCType<ChallengerOrb>()];
+    public static List<int> ExcludedNPCSFromCharmDrops = 
+    [
+        ModContent.NPCType<ChallengerOrb>(),
+        NPCID.EaterofWorldsBody
+    ];
 
     public static Dictionary<float, CharmType> CharmTypeChance = new()
     {
@@ -86,12 +91,13 @@ public static class CharmBalance
         { PlayerStat.RangedDamage, (CharmRarity.Common, 0.015f, 0.03f) },
         { PlayerStat.MagicDamage, (CharmRarity.Common, 0.015f, 0.03f) },
         { PlayerStat.SummonDamage, (CharmRarity.Common, 0.015f, 0.03f) },
-        { PlayerStat.Crit, (CharmRarity.Common, 0.01f, 0.03f) }, // 1-3% base
+        { PlayerStat.Crit, (CharmRarity.Common, 1f, 2f) },
         { PlayerStat.CritDamage, (CharmRarity.Epic, 0.02f, 0.05f) },
         { PlayerStat.TrueDamageMul, (CharmRarity.Legendary, 0.02f, 0.04f) },
 
         // --- Utility Stats ---
         { PlayerStat.UseSpeed, (CharmRarity.Rare, 0.01f, 0.02f) },
+        { PlayerStat.HealthCapMul, (CharmRarity.Rare, -0.02f, -0.03f) },
         { PlayerStat.PickSpeed, (CharmRarity.Common, 0.02f, 0.05f) },
         { PlayerStat.MoveSpeed, (CharmRarity.Common, 0.01f, 0.02f) },
         { PlayerStat.WingTime, (CharmRarity.Rare, 5f, 15f) },
@@ -102,9 +108,7 @@ public static class CharmBalance
         { PlayerStat.MaxHealthMul, (CharmRarity.Epic, 0.01f, 0.02f) },
         { PlayerStat.Regen, (CharmRarity.Rare, 0.25f, 0.75f) },
         { PlayerStat.HealingMul, (CharmRarity.Epic, 0.01f, 0.03f) },
-        {
-            PlayerStat.LifeSteal, (CharmRarity.Legendary, 0.002f, 0.005f)
-        },
+        { PlayerStat.LifeSteal, (CharmRarity.Legendary, 0.008f, 0.016f) },
         { PlayerStat.DamageLifesteal, (CharmRarity.Epic, 0.01f, 0.03f) },
         { PlayerStat.DamageReduction, (CharmRarity.Mythical, 0.01f, 0.02f) },
         { PlayerStat.Iframes, (CharmRarity.Legendary, 1.0f, 3.0f) } 

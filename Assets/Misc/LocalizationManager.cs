@@ -82,6 +82,12 @@ public static class LocalizationManager
 
     private static LocalizedText GetSpecializedText(SpecializedPrefixType specializedPrefixType, string group = null, string locName = null)
     {
+        // --- SPECIAL CASE: Melee/Whip Hybrid Prefixes ---
+        if ((specializedPrefixType & SpecializedPrefixType.MeleeWeapon) != 0 && (specializedPrefixType & SpecializedPrefixType.Whip) != 0)
+        {
+            specializedPrefixType = SpecializedPrefixType.MeleeWeapon;
+        }
+        
         StringBuilder path = new();
         
         bool isArmor = CountCommonFlags(SpecializedPrefixType.AnyArmor, specializedPrefixType) > 0;

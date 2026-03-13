@@ -78,6 +78,11 @@ public static class UtilMethods
         return item.hammer > 0;
     }
 
+    public static bool IsTool(this Item item)
+    {
+        return IsPickaxe(item) | IsAxe(item) | IsHammer(item);
+    }
+
     public static bool IsWhip(this Item item)
     {
         return item.DamageType == DamageClass.SummonMeleeSpeed && !Main.projPet[item.shoot];

@@ -33,6 +33,9 @@ public class Charm : ModItem
     private int ownerPickUpOnlyTicks;
     public CharmType CharmType { get; set; } = CharmType.NotInitialized;
     public CharmRarity CharmRarity { get; set; } = CharmRarity.NotInitialized;
+    
+    // magic storage fix TODO didnt work
+    public Guid UniqueID { get; set; } = Guid.NewGuid();
 
     public int CharmNameID
     {
@@ -40,7 +43,7 @@ public class Charm : ModItem
         set
         {
             charmNameID = value;
-            Item.SetNameOverride(CharmBalance.SplitCamelCase((CharmName)value));
+            Item.SetNameOverride(CharmName + " Charm"); 
         }
     }
 
@@ -57,7 +60,7 @@ public class Charm : ModItem
     {
         Item.width = 16;
         Item.height = 16;
-        Item.maxStack = 1;
+        Item.maxStack = 99; // magic storage fix
         Item.value = 0;
     }
 
@@ -72,6 +75,28 @@ public class Charm : ModItem
         {
             if (!StatTexts.ContainsKey(stat)) StatTexts.Add(stat, LocalizationManager.GetCharmText(stat));
         }
+    }
+    
+    public override ModItem Clone(Item newEntity)
+    {
+        Charm clone = (Charm)base.Clone(newEntity);
+
+        if (Stats != null) clone.Stats = [..Stats];
+        if (Augmentations != null) clone.Augmentations = [..Augmentations];
+        clone.UniqueID = UniqueID;
+        
+        // Without this, Magic Storage search bar only sees default name
+        if (CharmNameID != 0)
+        {
+            newEntity.SetNameOverride(CharmName + " Charm");
+        }
+
+        return clone;
+    }
+    
+    public override bool CanStack(Item source)
+    {
+        return false;
     }
 
     public override void PostUpdate()
@@ -158,8 +183,50 @@ public class Charm : ModItem
         return player.whoAmI == owner;
     }
 
+    public override void ModifyTooltips(List<TooltipLine> tooltips)
+    {
+        tooltips[0].Text = CharmName;
+        tooltips[0].OverrideColor = CharmColor;
+
+        TooltipLine rarity = new(Mod, "charmRarity", CharmRarity.ToString())
+        {
+            OverrideColor = CharmColor
+        };
+        tooltips.Add(rarity);
+
+        string typeTranslation = CharmType switch
+        {
+            CharmType.NotInitialized => " Not Initialized",
+            CharmType.Circle => " [Weapon]",
+            CharmType.Square => " [Armor]",
+            CharmType.Triangle => " [Accessory]",
+            _ => throw new ArgumentOutOfRangeException()
+        };
+
+        tooltips.Add(new TooltipLine(Mod, "charmType", "Charm Type: " + CharmType + typeTranslation));
+
+        foreach (CharmRoll roll in Stats)
+        {
+            float str = roll.GetStrength();
+            float perfection = CharmBalance.GetRollQualityPercentage(CharmRarity, roll.Stat, roll.RawStrength);
+            string text = StatTexts[roll.Stat].Format(str) + $" [{perfection}%]";
+            tooltips.Add(new TooltipLine(Mod, "statLine", text) { OverrideColor = CharmBalance.GetStatColor(roll.Stat) });
+        }
+
+        if (Augmentations == null || Augmentations.Count <= 0) return;
+
+        for (int i = 0; i < Augmentations.Count; i++)
+        {
+            tooltips.Add(new TooltipLine(Mod, $"augmentation_{i}", Augmentations[i].LocalizedTooltip)
+            {
+                OverrideColor = Color.Lerp(Main.DiscoColor, Color.LightGray, 0.4f)
+            });
+        }
+    }
+    
     public override void SaveData(TagCompound tag)
     {
+        tag.Add(nameof(UniqueID), UniqueID.ToString());
         tag.Add(nameof(CharmType), (int)CharmType);
         tag.Add(nameof(CharmRarity), (int)CharmRarity);
 
@@ -186,6 +253,7 @@ public class Charm : ModItem
             CharmType = tag.ContainsKey(nameof(CharmType)) ? (CharmType)tag.GetInt(nameof(CharmType)) : CharmType.NotInitialized;
             CharmRarity = tag.ContainsKey(nameof(CharmRarity)) ? (CharmRarity)tag.GetInt(nameof(CharmRarity)) : CharmRarity.NotInitialized;
             CharmNameID = tag.ContainsKey(nameof(CharmNameID)) ? tag.GetInt(nameof(CharmNameID)) : 0;
+            UniqueID = tag.ContainsKey(nameof(UniqueID)) ? Guid.Parse(tag.GetString(nameof(UniqueID))) : Guid.NewGuid();
             
             Stats.Clear();
             if (tag.ContainsKey(statTypesTag) && tag.ContainsKey(strengthsTag))
@@ -225,49 +293,10 @@ public class Charm : ModItem
         }
     }
 
-    public override void ModifyTooltips(List<TooltipLine> tooltips)
-    {
-        tooltips[0].Text = CharmName;
-        tooltips[0].OverrideColor = CharmColor;
-
-        TooltipLine rarity = new(Mod, "charmRarity", CharmRarity.ToString())
-        {
-            OverrideColor = CharmColor
-        };
-        tooltips.Add(rarity);
-
-        string typeTranslation = CharmType switch
-        {
-            CharmType.NotInitialized => "Not Initialized",
-            CharmType.Circle => " [Weapon]",
-            CharmType.Square => " [Armor]",
-            CharmType.Triangle => " [Accessory]",
-            _ => throw new ArgumentOutOfRangeException()
-        };
-
-        tooltips.Add(new TooltipLine(Mod, "charmType", CharmType + typeTranslation));
-
-        foreach (CharmRoll roll in Stats)
-        {
-            float str = roll.GetStrength();
-            float perfection = CharmBalance.GetRollQualityPercentage(CharmRarity, roll.Stat, roll.RawStrength);
-            string text = StatTexts[roll.Stat].Format(str) + $" [{perfection}%]";
-            tooltips.Add(new TooltipLine(Mod, "statLine", text) { OverrideColor = CharmBalance.GetStatColor(roll.Stat) });
-        }
-
-        if (Augmentations == null || Augmentations.Count <= 0) return;
-
-        for (int i = 0; i < Augmentations.Count; i++)
-        {
-            tooltips.Add(new TooltipLine(Mod, $"augmentation_{i}", Augmentations[i].LocalizedTooltip)
-            {
-                OverrideColor = Color.Lerp(Main.DiscoColor, Color.LightGray, 0.4f)
-            });
-        }
-    }
-
     public override void NetSend(BinaryWriter writer)
     {
+        writer.Write(UniqueID.ToByteArray());
+
         writer.Write((sbyte)CharmRarity);
         writer.Write((byte)CharmType);
         writer.Write((byte)CharmNameID);
@@ -288,6 +317,8 @@ public class Charm : ModItem
 
     public override void NetReceive(BinaryReader reader)
     {
+        UniqueID = new Guid(reader.ReadBytes(16));
+
         CharmRarity = (CharmRarity)reader.ReadSByte();
         CharmType = (CharmType)reader.ReadByte();
         CharmNameID = reader.ReadByte();

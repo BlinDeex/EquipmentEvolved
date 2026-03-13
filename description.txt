@@ -51,7 +51,8 @@ Accessories: A combination of Blood Forged and Hollow accessories. Blood Forged 
 How it works: The goal of this build is to intentionally shrink your maximum health pool to be as small as possible using the Blood Forged and Hollow accessory reforges. 
 Because the Cursed armor set punishes heavy, threshold-breaking strikes by dealing damage based entirely on a percentage of your maximum health, having a tiny health pool means the 
 actual numerical damage you take is incredibly low. You then leverage the flat lifesteal from your Vampiric weapon and the innate lifesteal piece bonuses from the Cursed armor to instantly 
-heal that small amount of missing health back to full before the enemy can land another attack!
+heal that small amount of missing health back to full before the enemy can land another attack, on the other side of spectrum you can try to get so much defense and hp that enemies rarely hit
+you for more than minimum damage threshold of cursed armor resulting in damage being negated altogether
 
 
 The "Momentum Striker" Build
@@ -61,9 +62,17 @@ Weapon: A Kinetic melee weapon. This reforge actively boosts your damage dealt d
 Armor: The complete Chrono universal armor set. Each individual piece provides a bonus of increased movement speed. When all three pieces are equipped together, 
 the active set bonus grants you a Time Stop ability that freezes enemies and projectiles in a radius around you. Frozen objects do not deal contact damage.
 
-Accessories: A full set of Aerodynamic accessories. This reforge straight up increases your movement speed and flight time.
+Accessories: A full set of Aerodynamic accessories. This reforge increases your movement speed and flight time.
 
 How it works: The goal of this build is to stack as much passive movement speed as possible using the Aerodynamic accessories and Chrono 
-armor piece bonuses to constantly maximize the damage multiplier of your Kinetic weapon. When combat gets too chaotic or a boss prepares a massive attack, 
-activate the Chrono set's Time Stop to freeze everything safely in place. This gives you the perfect, risk-free window to back up, build up maximum velocity by sprinting or 
-flying directly at the frozen target, and deliver a devastating, full-speed Kinetic strike without any fear of intercepting a stray projectile!
+armor piece bonuses to constantly maximize the damage multiplier of your Kinetic weapon. Chrono armor set bonus is time stop, it will completely freeze everything within range
+for a few seconds, if you want to maximize speed you would use desperate leggings which give tons of extra movement speed when losing health, and since majority of reduced hp sources
+in the mod use a custom stat "max health cap" it will reduce maximum point to which you can heal yourself, instead of reducing max health itself, because of this you can effectively
+always gain low hp bonuses from other reforges assuming you reduce your health cap low enough
+
+Some reforges are extremely good on their own and other equipment can be utility based, for example delayed ranger reforge makes all your bullets freeze when shot, after a delay
+all of them instantly travel along their trajectory passing blocks leaving a laser beam behind damaging everything caught in path, it is designed to kill worm type enemies. 
+On the other side of spectrum we got flow state ranger reforge, it applies infinitely stacking bleeding debuff on enemy as long as you maintain it, each stack adds a percentage of weapon 
+damage to the bleed, as you can guess it is extremely good against immobile and big singular bosses with lots of hp.
+
+

@@ -16,13 +16,13 @@ namespace EquipmentEvolved.Assets.Balance;
 [SuppressMessage("ReSharper", "ConvertToConstant.Local")]
 public static class PrefixBalance
 {
-    public static bool DEV_MODE = true;
+    public static bool DEV_MODE = false;
 
     // Reforge cost multipliers
-    public static float ACCESSORY_REFORGING_MULTIPLIER = 2.5f;
-    public static float WEAPON_REFORGING_MULTIPLIER = 2f;
-    public static float TOOL_REFORGING_MULTIPLIER = 1.5f;
-    public static float ARMOR_REFORGING_MULTIPLIER = 3f;
+    public static float ACCESSORY_REFORGING_MULTIPLIER = 0.7f;
+    public static float WEAPON_REFORGING_MULTIPLIER = 0.7f;
+    public static float TOOL_REFORGING_MULTIPLIER = 0.7f;
+    public static float ARMOR_REFORGING_MULTIPLIER = 0.7f;
 
     // Global nerf multipliers
     public static float GLOBAL_WEAPON_DAMAGE_NERF_MUL = 0.70f;
@@ -59,7 +59,7 @@ public static class PrefixBalance
     public static float GIGANTIC_USE = 1.15f; // 15% slower
     
     // Ultra Light
-    public static float ULTRA_LIGHT_USE = 0.40f; // 2.5x swing speed
+    public static float ULTRA_LIGHT_USE = 0.5f; // 2x swing speed
     public static float ULTRA_LIGHT_DAMAGE = 0.65f; // 35% less damage
     public static float ULTRA_LIGHT_SIZE = 0.85f; // 15% smaller
 
@@ -69,7 +69,7 @@ public static class PrefixBalance
     public static float ARCANE_INFUSED_MANA_PER_SWING = 12f;
 
     // Titan Force
-    public static float TITAN_FORCE_KB = 3.5f; // Enormous knockback
+    public static float TITAN_FORCE_KB = 5f; // Enormous knockback
     public static float TITAN_FORCE_DAMAGE = 1.25f; // Covers the global damage nerf nicely
 
     // Perceptive
@@ -147,12 +147,12 @@ public static class PrefixBalance
 
     // Flow State
     public static int FLOW_STATE_DURATION_TICKS = 60; // 1 second
-    public static float FLOW_STATE_DPS_PERCENT_PER_STACK = 0.25f; // 25% DPS per stack
+    public static float FLOW_STATE_DPS_PERCENT_PER_STACK = 0.15f; 
     public static int FLOW_STATE_DECAY_RATE_TICKS = 2;
 
     // Delayed
     public static int DELAYED_PULSE_TIMER = 180; // 3 seconds
-    public static float DELAYED_LASER_DAMAGE_MULT = 1.75f;
+    public static float DELAYED_LASER_DAMAGE_MULT = 0.33f;
 
     // Ricochet
     public static int RICOCHET_MAX_SPLITS = 2;
@@ -217,21 +217,19 @@ public static class PrefixBalance
     public static float CHAOTIC_RARE_ROLL_CHANCE = 5f;
     public static float CHAOTIC_EPIC_ROLL_CHANCE = 3f;
     public static float CHAOTIC_LEGENDARY_ROLL_CHANCE = 1.5f;
-    public static float CHAOTIC_NEGATIVE_ROLL_CHANCE = 4f;
-    public static float CHAOTIC_DEBUG_GUARANTEED_ROLL_CHANCE = 9999999f;
+    public static float CHAOTIC_NEGATIVE_ROLL_CHANCE = 9f;
 
     public static readonly Color CHAOTIC_COMMON_ROLL_COLOR = Color.LightGray;
     public static readonly Color CHAOTIC_RARE_ROLL_COLOR = Color.LightBlue;
     public static readonly Color CHAOTIC_EPIC_ROLL_COLOR = Color.Purple;
     public static readonly Color CHAOTIC_LEGENDARY_ROLL_COLOR = Color.YellowGreen;
-    public static readonly Color CHAOTIC_DEBUG_ROLL_COLOR = Color.DarkGray;
     public static readonly Color CHAOTIC_NEGATIVE_ROLL_COLOR = Color.Red;
 
     // Triple Shot
     public static float TRIPLE_SHOT_DEGREES = 10f;
     public static float TRIPLE_SHOT_DEGREES_VARIATION = 5f;
     public static float TRIPLE_SHOT_USE_TIME_MUL = 1.0f; // Left at 1.0 so fire rate remains unchanged
-    public static float TRIPLE_SHOT_DAMAGE_MUL = 0.60f; // 40% damage penalty per projectile
+    public static float TRIPLE_SHOT_DAMAGE_MUL = 0.60f; 
     public static float TRIPLE_SHOT_MANA_MUL = 3.5f;
 
     // Overloaded
@@ -341,8 +339,8 @@ public static class PrefixBalance
     public static float CLEARING_CHANCE_TO_LOSE_MINED_BLOCK = 0.60f;
 
     // Vein miner
-    public static int VEIN_MINER_MAXIMUM_BLOCKS_MINED = 50;
-    public static float VEIN_MINER_MINING_SPEED = 0.50f; // 50% slower swing to compensate for mining 50 blocks at once
+    //public static int VEIN_MINER_MAXIMUM_BLOCKS_MINED = 50; // currently using pickaxe power as the cap
+    public static float VEIN_MINER_MINING_SPEED = 0.25f; // slower swing to compensate for mining 50 blocks at once
 
     // Fortune
     public static float FORTUNE_CHANCE_FOR_EXTRA_DROPS = 0.75f;
@@ -368,9 +366,9 @@ public static class PrefixBalance
     #region Armor
 
     // Phalanx
-    public static int PHALANX_MIN_DAMAGE_TO_REACT = 1;
+    public static int PHALANX_MIN_DAMAGE_TO_REACT = 10;
     public static int PHALANX_BURN_EFFECT_TICKS = 180;
-    public static int PHALANX_REACT_COOLDOWN_TICKS = 60 * 1;
+    public static int PHALANX_REACT_COOLDOWN_TICKS = 60 * 30;
     public static float PHALANX_DAMAGE_INCREASE = 1.08f; // 8% increase per piece (+24% total)
 
     #region Specialized
@@ -422,12 +420,12 @@ public static class PrefixBalance
 
     // Chrono
     public static float CHRONO_MOVEMENT_SPEED = 1.08f; // +8% per piece
-    public static int CHRONO_ABILITY_COOLDOWN = 60 * 8;
+    public static int CHRONO_ABILITY_COOLDOWN = 60 * 60;
     public static float CHRONO_ABILITY_RANGE = 400000f;
     public static int CHRONO_ABILITY_LENGTH = 60 * 7;
 
     // Phantom
-    public static int PHANTOM_ABILITY_COOLDOWN = 60 * 4;
+    public static int PHANTOM_ABILITY_COOLDOWN = 60 * 20; //TODO soulburn doesnt deal damage to the player
     public static int PHANTOM_CLONES_COUNT = 2;
     public static int PHANTOM_CLONES_COUNT_AUGMENTED = 3;
     public static int PHANTOM_RECOVERY_SPEED = 5;
@@ -479,7 +477,7 @@ public static class PrefixBalance
     // Cursed
     public static float CURSED_IGNORED_DAMAGE_PERCENT_THRESHOLD = 0.05f;
     public static float CURSED_DAMAGE_TAKEN_PERCENT = 0.8f;
-    public static float CURSED_LIFESTEAL = 1f; // Flat +1 Lifesteal per piece
+    public static float CURSED_FLAT_LIFESTEAL = 0.25f;
     public static float AUGMENTATION_CURSED_IGNORED_DAMAGE_PERCENT_THRESHOLD = 0.2f;
     public static float AUGMENTATION_CURSED_DAMAGE_TAKEN_PERCENT = 0.6f;
 

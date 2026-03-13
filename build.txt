@@ -1,4 +1,4 @@
-displayName = Equipment Evolved
+displayName = [c/FFD700:E][c/FDCA04:q][c/FBBD08:u][c/F9B00C:i][c/F7A310:p][c/F59614:m][c/F38918:e][c/F17C1C:n][c/EF6F20:t] [c/ED6224:E][c/EB5528:v][c/E9482C:o][c/E73B30:l][c/E52E34:v][c/E32138:e][c/DC143C:d]
 author = BlinDeex
 version = 0.1
 includeSource = true

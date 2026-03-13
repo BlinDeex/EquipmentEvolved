@@ -36,4 +36,12 @@ public class PrefixConfig : ModConfig
     [BackgroundColor(40, 40, 80)]
     [DefaultValue(false)]
     public bool EnableVanillaReforges { get; set; }
+    
+    [BackgroundColor(40, 40, 80)]
+    [DefaultValue(false)]
+    public bool EnableOtherModPrefixes { get; set; }
+    
+    [BackgroundColor(40, 40, 80)]
+    [DefaultValue(false)]
+    public bool EnableEnvironmentalCharmDrops { get; set; }
 }

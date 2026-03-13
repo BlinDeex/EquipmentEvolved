@@ -19,39 +19,38 @@ public static class SealedRollManager
 {
     private static readonly Dictionary<float, int> rollCountProbabilities = new()
     {
-        { 0.05f, 1 },
-        { 0.1f, 2 },
-        { 0.3f, 3 },
-        { 0.5f, 4 },
-        { 0.7f, 5 },
-        { 0.8f, 6 },
-        { 0.95f, 7 },
-        { 0.998f, 10 }
+        { 0.30f, 1 },      // 30.0% chance (0.000 to 0.300)
+        { 0.55f, 2 },      // 25.0% chance (0.300 to 0.550)
+        { 0.75f, 3 },      // 20.0% chance (0.550 to 0.750)
+        { 0.85f, 4 },      // 10.0% chance (0.750 to 0.850)
+        { 0.92f, 5 },      //  7.0% chance (0.850 to 0.920)
+        { 0.97f, 6 },      //  5.0% chance (0.920 to 0.970)
+        { 0.998f, 7 },     //  2.8% chance (0.970 to 0.998)
+        { 1.00f, 10 }      //  0.2% chance (0.998 to 1.000)
     };
 
     private static readonly Dictionary<float, float> rollStrengthProbabilities = new()
     {
-        { 0.05f, 1f },
-        { 0.1f, 1.2f },
-        { 0.3f, 1.4f },
-        { 0.5f, 1.8f },
-        { 0.7f, 2.4f },
-        { 0.8f, 3f },
-        { 0.95f, 5f },
-        { 0.998f, 20f }
+        { 0.30f, 1f },     // 30.0% chance
+        { 0.60f, 1.2f },   // 30.0% chance
+        { 0.80f, 1.4f },   // 20.0% chance
+        { 0.90f, 1.8f },   // 10.0% chance
+        { 0.95f, 2.4f },   //  5.0% chance
+        { 0.98f, 3f },     //  3.0% chance
+        { 0.998f, 5f },    //  1.8% chance
+        { 1.00f, 10f }     //  0.2% chance
     };
 
     private static readonly List<SealedRollDefinition> rollPool =
     [
-        // Percentages: 0.20f means 20%, 0.30f means 30%
-        new() { Stat = PlayerStat.CharmLuck, MinValue = 0.20f, MaxValue = 1.00f, Weight = 1.0f },
-        new() { Stat = PlayerStat.CritDamage, MinValue = 0.01f, MaxValue = 0.40f, Weight = 0.7f },
-        new() { Stat = PlayerStat.Damage, MinValue = 0.01f, MaxValue = 0.30f, Weight = 0.5f },
-
-        // Flat Stats: 2f means 2 frames, 4f means 4 health/sec
-        new() { Stat = PlayerStat.Regen, MinValue = 0.5f, MaxValue = 4f, Weight = 0.8f },
-        new() { Stat = PlayerStat.LifeSteal, MinValue = 0.5f, MaxValue = 2f, Weight = 0.2f },
-        new() { Stat = PlayerStat.Iframes, MinValue = 2f, MaxValue = 16f, Weight = 0.2f }
+        new() { Stat = PlayerStat.CharmLuck, MinValue = 0.05f, MaxValue = 0.15f, Weight = 1.0f },
+        new() { Stat = PlayerStat.CritDamage, MinValue = 0.01f, MaxValue = 0.05f, Weight = 0.7f },
+        new() { Stat = PlayerStat.Damage, MinValue = 0.01f, MaxValue = 0.05f, Weight = 0.5f },
+        
+        new() { Stat = PlayerStat.Regen, MinValue = 0.1f, MaxValue = 0.5f, Weight = 0.8f },
+        
+        new() { Stat = PlayerStat.LifeSteal, MinValue = 0.005f, MaxValue = 0.015f, Weight = 0.2f },
+        new() { Stat = PlayerStat.Iframes, MinValue = 1f, MaxValue = 3f, Weight = 0.2f }
     ];
 
     private static int GetRollsCount()

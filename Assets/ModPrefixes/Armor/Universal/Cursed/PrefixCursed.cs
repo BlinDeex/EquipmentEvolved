@@ -35,7 +35,7 @@ public class PrefixCursed : ModPrefix, ISpecializedPrefix
     {
         bool setBonusActive = Main.LocalPlayer.GetModPlayer<CursedArmorPlayer>().CursedSetBonus;
 
-        TooltipLine newLine = new(Mod, "newLine", LocalizationManager.GetSharedLocalizedText(LocalizationManager.XIncreasedLifesteal).Format(Math.Round(PrefixBalance.CURSED_LIFESTEAL, 2)))
+        TooltipLine newLine = new(Mod, "newLine", LocalizationManager.GetSharedLocalizedText(LocalizationManager.XIncreasedLifesteal).Format(Math.Round(PrefixBalance.CURSED_FLAT_LIFESTEAL, 2)))
         {
             IsModifier = true
         };
@@ -54,6 +54,6 @@ public class PrefixCursed : ModPrefix, ISpecializedPrefix
     public override void ApplyAccessoryEffects(Player player)
     {
         player.GetModPlayer<CursedArmorPlayer>().CursedPiecesEquipped++;
-        player.GetModPlayer<StatPlayer>().OnHitLifesteal += PrefixBalance.CURSED_LIFESTEAL;
+        player.GetModPlayer<StatPlayer>().OnHitLifesteal += PrefixBalance.CURSED_FLAT_LIFESTEAL;
     }
 }

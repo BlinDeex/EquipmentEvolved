@@ -560,44 +560,6 @@ Weapon: {
 				DisplayName: Sacrificial
 			}
 		}
-
-		"Whip, MeleeWeapon": {
-			ArcaneInfused: {
-				ManaPerSwing: Mods.EquipmentEvolved.Weapon.Summoner.Whip, MeleeWeapon.ArcaneInfused.ManaPerSwing
-				ManaSicknessWorks: Mods.EquipmentEvolved.Weapon.Summoner.Whip, MeleeWeapon.ArcaneInfused.ManaSicknessWorks
-				DisplayName: Mods.EquipmentEvolved.Weapon.Summoner.Whip, MeleeWeapon.ArcaneInfused.DisplayName
-			}
-
-			Payback: {
-				Description: Mods.EquipmentEvolved.Weapon.Summoner.Whip, MeleeWeapon.Payback.Description
-				DisplayName: Mods.EquipmentEvolved.Weapon.Summoner.Whip, MeleeWeapon.Payback.DisplayName
-			}
-
-			Sealed: {
-				HiddenDesc: Mods.EquipmentEvolved.Weapon.Summoner.Whip, MeleeWeapon.Sealed.HiddenDesc
-				Instruction: Mods.EquipmentEvolved.Weapon.Summoner.Whip, MeleeWeapon.Sealed.Instruction
-				LockedWarning: Mods.EquipmentEvolved.Weapon.Summoner.Whip, MeleeWeapon.Sealed.LockedWarning
-				DisplayName: Mods.EquipmentEvolved.Weapon.Summoner.Whip, MeleeWeapon.Sealed.DisplayName
-			}
-
-			Sundering: {
-				Description: Mods.EquipmentEvolved.Weapon.Summoner.Whip, MeleeWeapon.Sundering.Description
-				DisplayName: Mods.EquipmentEvolved.Weapon.Summoner.Whip, MeleeWeapon.Sundering.DisplayName
-			}
-
-			UltraLight: {
-				AutoReuse: Mods.EquipmentEvolved.Weapon.Summoner.Whip, MeleeWeapon.UltraLight.AutoReuse
-				DisplayName: Mods.EquipmentEvolved.Weapon.Summoner.Whip, MeleeWeapon.UltraLight.DisplayName
-			}
-
-			Untouchable: {
-				Desc: Mods.EquipmentEvolved.Weapon.Summoner.Whip, MeleeWeapon.Untouchable.Desc
-				IncreasedDamageTaken: Mods.EquipmentEvolved.Weapon.Summoner.Whip, MeleeWeapon.Untouchable.IncreasedDamageTaken
-				DisplayName: Mods.EquipmentEvolved.Weapon.Summoner.Whip, MeleeWeapon.Untouchable.DisplayName
-			}
-
-			Gigantic.DisplayName: Mods.EquipmentEvolved.Weapon.Summoner.Whip, MeleeWeapon.Gigantic.DisplayName
-		}
 	}
 }
 
@@ -671,6 +633,16 @@ Configs: {
 			Label: Enable Vanilla Reforges
 			Tooltip: If enabled, vanilla modifiers (like 'Legendary' or 'Warding') will remain in the Goblin Tinkerer's pool.
 		}
+
+		EnableEnvironmentalCharmDrops: {
+			Label: Enable Environmental Charm Drops
+			Tooltip: If enabled, enemies killed by environmental factors (lava, traps, fall damage, town NPCs) will drop charms and increase pity for the closest player.
+		}
+
+		EnableOtherModPrefixes: {
+			Label: Enable Other Mod Prefixes
+			Tooltip: If enabled, allows items to roll custom prefixes added by other mods like Calamity 'Serrated'
+		}
 	}
 }
 
@@ -680,9 +652,6 @@ Items: {
 	Charm: {
 		DisplayName: Charm
 		Tooltip: ""
-	}
-
-	asdasdads: {
 	}
 
 	DebugStatAccessory: {
@@ -700,6 +669,7 @@ Charms: {
 		UseSpeed: "{0}% Increased using speed [Rare]"
 		ManaUsage: "{0}% Decreased mana usage [Rare]"
 		Regen: "{0}hp/s Increased life regeneration [Rare]"
+		HealthCapMul: "{0}% Reduced maximum health cap"
 	}
 
 	Common: {

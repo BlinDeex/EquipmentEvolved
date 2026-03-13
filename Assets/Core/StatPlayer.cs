@@ -55,7 +55,6 @@ public class StatPlayer : ModPlayer
         HealingMul = 1f;
         MovementSpeedMul = 1f;
         MaxHealthMul = 1f;
-        CritMul = 1f;
         DamageMul = 1f;
         MeleeDamageMul = 1f;
         RangedDamageMul = 1f;
@@ -73,12 +72,25 @@ public class StatPlayer : ModPlayer
         WingHorizontalSpeed = 1f;
         WingVerticalAcc = 1f;
         WingVerticalSpeed = 1f;
-        DefenseMul = 1f;
-        ScaleMul = 1f;
+        DefenseMul = 1f; 
+        HealthCapMul = 1f;
 
         // Note: Additive stats (like FlatDefense, Aggro, AdditionalMinions) are naturally 0 from Array.Clear
 
         invincibilityTicks--;
+    }
+    
+    public override bool CanUseItem(Item item)
+    {
+        if (item.healLife > 0)
+        {
+            int cappedHealth = (int)(Player.statLifeMax2 * HealthCapMul);
+            if (Player.statLife >= cappedHealth)
+            {
+                return false; 
+            }
+        }
+        return base.CanUseItem(item);
     }
 
     public float CalculateStatBonus(float baseBonus, StatSource source = StatSource.Generic)
@@ -94,8 +106,28 @@ public class StatPlayer : ModPlayer
 
     public override void UpdateLifeRegen()
     {
-        int regen = (int)(Regen * 100);
-        Player.lifeRegen += regen;
+        int baseRegen = (int)Regen;
+        float leftover = Math.Abs(Regen - baseRegen);
+
+        if (Main.rand.NextFloat() < leftover)
+        {
+            baseRegen += Math.Sign(Regen); 
+        }
+
+        Player.lifeRegen += baseRegen;
+
+        // NEW: Enforce the Health Cap
+        if (HealthCapMul < 1f)
+        {
+            int maxAllowedHealth = (int)(Player.statLifeMax2 * HealthCapMul);
+            if (Player.statLife >= maxAllowedHealth)
+            {
+                Player.statLife = maxAllowedHealth;
+                Player.lifeRegen = 0; // Stop vanilla regen from ticking
+                Player.lifeRegenTime = 0; // Prevent the natural regen timer from pooling up
+            }
+        }
+
         Player.UpdateManaRegen();
     }
 
@@ -227,7 +259,20 @@ public class StatPlayer : ModPlayer
             Player.immuneTime = 0;
         }
         else
+        {
+            // NEW: Respect the Health Cap during Lifesteal
+            if (HealthCapMul < 1f)
+            {
+                int maxAllowedHealth = (int)(Player.statLifeMax2 * HealthCapMul);
+                int allowedHeal = maxAllowedHealth - Player.statLife;
+
+                if (allowedHeal <= 0) return;
+
+                guaranteedHeals = Math.Min(guaranteedHeals, allowedHeal);
+            }
+
             CombatUtils.Lifesteal(victim, hitPos, guaranteedHeals, Player);
+        }
     }
 
     private static float CalculateMiningSpeed(float baseSpeed, float speedMul)
@@ -248,14 +293,22 @@ public class StatPlayer : ModPlayer
     {
         foreach (CharmRoll roll in rolls)
         {
-            ActiveStats[(int)roll.Stat] += roll.RawStrength;
+            if (roll.Stat == PlayerStat.HealthCapMul)
+            {
+                // Translates a -0.10f roll into a 0.90f multiplier
+                float multiplier = Math.Max(0.01f, 1f + roll.RawStrength);
+                ActiveStats[(int)roll.Stat] *= multiplier; 
+            }
+            else
+            {
+                ActiveStats[(int)roll.Stat] += roll.RawStrength;
+            }
         }
     }
 
     public override void ModifyWeaponCrit(Item item, ref float crit)
     {
         crit += Crit;
-        crit *= CritMul;
     }
 
     public override void ModifyManaCost(Item item, ref float reduce, ref float mult)
@@ -266,6 +319,21 @@ public class StatPlayer : ModPlayer
     public override void GetHealLife(Item item, bool quickHeal, ref int healValue)
     {
         healValue = (int)(healValue * HealingMul);
+
+        // NEW: Prevent potions from healing past the cap
+        if (HealthCapMul < 1f)
+        {
+            int maxAllowedHealth = (int)(Player.statLifeMax2 * HealthCapMul);
+            int allowedHeal = maxAllowedHealth - Player.statLife;
+
+            if (allowedHeal <= 0)
+            {
+                healValue = 0;
+                return;
+            }
+
+            healValue = Math.Min(healValue, allowedHeal);
+        }
     }
 
     public override void ModifyMaxStats(out StatModifier health, out StatModifier mana)
@@ -360,12 +428,6 @@ public class StatPlayer : ModPlayer
         set => ActiveStats[(int)PlayerStat.CoinDropMul] = value;
     }
 
-    public float CritMul
-    {
-        get => ActiveStats[(int)PlayerStat.CritMul];
-        set => ActiveStats[(int)PlayerStat.CritMul] = value;
-    }
-
     public float WingHorizontalAcc
     {
         get => ActiveStats[(int)PlayerStat.WingHorizontalAcc];
@@ -388,12 +450,6 @@ public class StatPlayer : ModPlayer
     {
         get => ActiveStats[(int)PlayerStat.WingVerticalSpeed];
         set => ActiveStats[(int)PlayerStat.WingVerticalSpeed] = value;
-    }
-
-    public float ScaleMul
-    {
-        get => ActiveStats[(int)PlayerStat.ScaleMul];
-        set => ActiveStats[(int)PlayerStat.ScaleMul] = value;
     }
 
     public float DamageLifesteal
@@ -492,10 +548,26 @@ public class StatPlayer : ModPlayer
         set => ActiveStats[(int)PlayerStat.DamageReduction] = value;
     }
     
+    /// <summary>
+    /// Multiplies the player's actual maximum health capacity (the true size of their health bar).
+    /// Stacks additively. Use this for standard health buffs that increase the player's total possible life.
+    /// </summary>
     public float MaxHealthMul
     {
         get => ActiveStats[(int)PlayerStat.MaxHealthMul];
         set => ActiveStats[(int)PlayerStat.MaxHealthMul] = value > 0 ? value : 0.01f;
+    }
+
+    /// <summary>
+    /// Restricts the maximum current health the player can regenerate or heal to, 
+    /// expressed as a percentage of their true maximum health. 
+    /// Perfect for enabling "Low Life" synergies (like Berserker damage buffs).
+    /// NOTE: This stat scales multiplicatively to ensure the cap never completely reaches 0.
+    /// </summary>
+    public float HealthCapMul
+    {
+        get => ActiveStats[(int)PlayerStat.HealthCapMul];
+        set => ActiveStats[(int)PlayerStat.HealthCapMul] = value > 0 ? value : 0.01f;
     }
 
     public float DefenseMul

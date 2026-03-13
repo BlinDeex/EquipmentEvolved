@@ -8,12 +8,14 @@ using EquipmentEvolved.Assets.CharmsModule.Augmentations.WeaponAugmentations;
 using EquipmentEvolved.Assets.CharmsModule.Data;
 using EquipmentEvolved.Assets.CharmsModule.Items;
 using EquipmentEvolved.Assets.Core;
+using EquipmentEvolved.Assets.Misc;
 using EquipmentEvolved.Assets.ModPrefixes.Armor.Universal.Symbiotic;
 using EquipmentEvolved.Assets.Utilities;
 using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
+using Terraria.ModLoader.Core;
 
 namespace EquipmentEvolved.Assets.CharmsModule.Core;
 
@@ -23,7 +25,22 @@ public static class CharmsManager
 
     public static void Load()
     {
-        Augmentations = Assembly.GetAssembly(typeof(AugmentationBase))!.GetTypes().Where(t => t.IsSubclassOf(typeof(AugmentationBase)) && !t.IsAbstract).ToArray();
+        List<Type> loadedAugmentations = [];
+        foreach (Mod mod in ModLoader.Mods)
+        {
+            if (mod.Code == null) continue;
+            try
+            {
+                IEnumerable<Type> modAugmentations = AssemblyManager.GetLoadableTypes(mod.Code) .Where(t => t.IsSubclassOf(typeof(AugmentationBase)) && !t.IsAbstract);
+                loadedAugmentations.AddRange(modAugmentations);
+            }
+            catch (Exception e)
+            {
+                UtilMethods.LogMessage($"Failed to load augmentations from mod: {mod.Name}. Error: {e.Message}", LogType.Error);
+            }
+        }
+
+        Augmentations = loadedAugmentations.ToArray();
     }
 
     public static List<(CharmRarity, CharmType)> RollForCharms(float luck, NPC npc = null, bool? boss = null)
@@ -127,7 +144,36 @@ public static class CharmsManager
             if (finalRarity == CharmRarity.Mythical && canDropExalted) finalRarity = CharmRarity.Exalted;
 
             CreateAndSetupCharm(finalRarity, charmType, pos, playerWhoAmI, npc);
-            UpdatePityAndHandleProcs(charmPlayer, finalRarity, playerWhoAmI, npc, pos);
+            
+            // NEW: Only reset pity here if a high rarity charm naturally dropped or spawned from pity. 
+            // We no longer increase pity here.
+            if (finalRarity is CharmRarity.Legendary or CharmRarity.Mythical or CharmRarity.Exalted)
+            {
+                charmPlayer.ResetPity(finalRarity);
+            }
+        }
+    }
+    
+    public static void ProcessNPCKillPity(Player player, NPC npc)
+    {
+        CharmPlayer charmPlayer = player.GetModPlayer<CharmPlayer>();
+        charmPlayer.IncreasePity();
+
+        List<(CharmRarity rarity, CharmType type)> pityRolls = [];
+        
+        if (charmPlayer.LegendaryPity >= CharmBalance.LegendaryPity)
+        {
+            pityRolls.Add((CharmRarity.Legendary, RollCharmType()));
+        }
+
+        if (charmPlayer.MythicalPity >= CharmBalance.MythicalPity)
+        {
+            pityRolls.Add((CharmRarity.Mythical, RollCharmType()));
+        }
+        
+        if (pityRolls.Count > 0)
+        {
+            SpawnCharmsCore(pityRolls, player.whoAmI, npc, npc.Center);
         }
     }
 
@@ -177,26 +223,6 @@ public static class CharmsManager
             float strength = Main.rand.NextFloat(minStatBound, maxStatBound);
 
             charmItem.Stats.Add(new CharmRoll(rolledStat, strength));
-        }
-    }
-
-    private static void UpdatePityAndHandleProcs(CharmPlayer charmPlayer, CharmRarity droppedRarity, int playerWhoAmI, NPC npc, Vector2 pos)
-    {
-        if (droppedRarity is CharmRarity.Legendary or CharmRarity.Mythical or CharmRarity.Exalted)
-            charmPlayer.ResetPity(droppedRarity);
-        else
-            charmPlayer.IncreasePity();
-
-        if (charmPlayer.LegendaryPity >= CharmBalance.LegendaryPity)
-        {
-            List<(CharmRarity, CharmType)> roll = [(CharmRarity.Legendary, RollCharmType())];
-            SpawnCharmsCore(roll, playerWhoAmI, npc, pos);
-        }
-
-        if (charmPlayer.MythicalPity >= CharmBalance.MythicalPity)
-        {
-            List<(CharmRarity, CharmType)> roll = [(CharmRarity.Mythical, RollCharmType())];
-            SpawnCharmsCore(roll, playerWhoAmI, npc, pos);
         }
     }
 

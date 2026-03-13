@@ -19,6 +19,7 @@ public enum PlayerStat
 
     // Core Defense & Health
     MaxHealthMul,
+    HealthCapMul,
     FlatDefense,
     DefenseMul,
     DamageReduction,
@@ -27,7 +28,6 @@ public enum PlayerStat
     LifeSteal,
     DamageLifesteal,
     Iframes,
-    CritMul,
 
     // Mobility
     MoveSpeed,
@@ -45,5 +45,4 @@ public enum PlayerStat
     CoinDropOnHit,
     CoinDropMul,
     Aggro,
-    ScaleMul
 }

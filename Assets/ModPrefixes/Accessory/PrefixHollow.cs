@@ -31,7 +31,7 @@ public class PrefixHollow : ModPrefix
         StatPlayer statPlayer = player.GetModPlayer<StatPlayer>();
 
         float healthBonus = PrefixBalance.HOLLOW_MAX_HEALTH_MULT - 1f;
-        statPlayer.MaxHealthMul += statPlayer.CalculateStatBonus(healthBonus, StatSource.AccessoryReforge);
+        statPlayer.HealthCapMul *= 1 + statPlayer.CalculateStatBonus(healthBonus, StatSource.AccessoryReforge);
 
         float baseMobility = PrefixBalance.HOLLOW_MOBILITY_MULT - 1f;
         float finalMobility = statPlayer.CalculateStatBonus(baseMobility, StatSource.AccessoryReforge);

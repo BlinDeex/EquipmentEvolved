@@ -17,7 +17,7 @@ public class PrefixValidator
         bool isPickaxe = item.IsPickaxe();
         bool isAxe = item.IsAxe();
         bool isHammer = item.IsHammer();
-        bool isTool = isPickaxe || isAxe || isHammer;
+        bool isTool = item.IsTool();
 
         // Summoner
         bool isMinionWeapon = item.IsMinionWeapon();
@@ -27,7 +27,7 @@ public class PrefixValidator
         bool isHeadwear = item.IsHeadwear();
         bool isChestplate = item.IsChestplate();
         bool isLeggings = item.IsLeggings();
-        bool isArmor = isHeadwear || isChestplate || isLeggings;
+        bool isArmor = item.IsArmor();
 
         // Standard Weapons 
         bool isMeleeWeapon = item.CountsAsClass(DamageClass.Melee);
@@ -53,8 +53,12 @@ public class PrefixValidator
         bool rocketWeapon = AdaptableUtils.ROCKET_WEAPON_IDS.Contains(item.type);
 
         if (adaptablePrefix && rocketWeapon) return false;
-
-        // Handle modded prefixes not from my mod
+        
+        if (modPrefix.Mod.Name != EquipmentEvolved.Instance.Name && !config.EnableOtherModPrefixes)
+        {
+            return false;
+        }
+        
         if (modPrefix is not ISpecializedPrefix specializedPrefix) return !isArmor;
 
         // Config checks

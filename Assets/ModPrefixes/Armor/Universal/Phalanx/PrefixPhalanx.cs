@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using EquipmentEvolved.Assets.Balance;
+using EquipmentEvolved.Assets.Core;
 using EquipmentEvolved.Assets.Misc;
 using EquipmentEvolved.Assets.ModPrefixes.Core;
 using Terraria;
@@ -56,5 +57,6 @@ public class PrefixPhalanx : ModPrefix, ISpecializedPrefix
     public override void ApplyAccessoryEffects(Player player)
     {
         player.GetModPlayer<PhalanxArmorPlayer>().PhalanxPiecesEquipped++;
+        player.GetModPlayer<StatPlayer>().DamageMul += PrefixBalance.PHALANX_DAMAGE_INCREASE - 1;
     }
 }

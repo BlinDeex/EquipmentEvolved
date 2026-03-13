@@ -17,12 +17,19 @@ public class CharmRoll(PlayerStat stat, float strength)
             PlayerStat.Regen => false,
             PlayerStat.LifeSteal => false,
             PlayerStat.WingTime => false,
+            PlayerStat.Crit => false,
             _ => true
         };
     }
 
     public float GetStrength()
     {
-        return MathF.Round(strength * (IsPercentage() ? 100 : 1), 2);
+        float displayStrength = strength;
+        if (stat == PlayerStat.Regen) // regen is applied over 2 secs
+        {
+            displayStrength /= 2f;
+        }
+        
+        return MathF.Round(displayStrength * (IsPercentage() ? 100 : 1), 2);
     }
 }

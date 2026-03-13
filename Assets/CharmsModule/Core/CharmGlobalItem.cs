@@ -372,6 +372,13 @@ public class CharmGlobalItem : GlobalItem
         for (int i = 0; i < appliedStats.Count; i++)
         {
             CharmRoll roll = appliedStats[i];
+            
+            if (!Charm.StatTexts.ContainsKey(roll.Stat))
+            {
+                Main.NewText($"[Equipment Evolved] Missing tooltip text for stat '{roll.Stat}'!", Color.Red);
+                continue;
+            }
+            
             float str = roll.GetStrength();
             float perfection = CharmBalance.GetRollQualityPercentage(AppliedCharmRarity, roll.Stat, roll.RawStrength);
             string text = Charm.StatTexts[roll.Stat].Format(str) + $" [{perfection}%]";

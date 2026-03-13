@@ -29,21 +29,20 @@ public static class ChaoticRollPool
 
     private static readonly List<StatRange> AvailableStats =
     [
-        new() { Stat = PlayerStat.Damage, MinValue = 0.04f, MaxValue = 0.10f },
-        new() { Stat = PlayerStat.Crit, MinValue = 2f, MaxValue = 4f },
-        new() { Stat = PlayerStat.LifeSteal, MinValue = 0.2f, MaxValue = 0.5f },
-        new() { Stat = PlayerStat.CritDamage, MinValue = 0.04f, MaxValue = 0.10f },
-        new() { Stat = PlayerStat.TrueDamageMul, MinValue = 0.01f, MaxValue = 0.03f },
-        new() { Stat = PlayerStat.CoinDropOnHit, MinValue = 2f, MaxValue = 8f },
+        new() { Stat = PlayerStat.Damage, MinValue = 0.02f, MaxValue = 0.05f },
+        new() { Stat = PlayerStat.Crit, MinValue = 1f, MaxValue = 3f },
+        new() { Stat = PlayerStat.DamageLifesteal, MinValue = 0.005f, MaxValue = 0.015f },
+        new() { Stat = PlayerStat.CritDamage, MinValue = 0.02f, MaxValue = 0.06f }, 
+        new() { Stat = PlayerStat.TrueDamageMul, MinValue = 0.005f, MaxValue = 0.015f },
+        new() { Stat = PlayerStat.CoinDropOnHit, MinValue = 1f, MaxValue = 4f }, 
 
-        new() { Stat = PlayerStat.ManaUsage, MinValue = 0.03f, MaxValue = 0.08f },
-        new() { Stat = PlayerStat.UseSpeed, MinValue = 0.02f, MaxValue = 0.05f },
+        new() { Stat = PlayerStat.ManaUsage, MinValue = 0.01f, MaxValue = 0.04f },
+        new() { Stat = PlayerStat.UseSpeed, MinValue = 0.01f, MaxValue = 0.03f },
 
-        new() { Stat = PlayerStat.MoveSpeed, MinValue = 0.03f, MaxValue = 0.07f },
-        new() { Stat = PlayerStat.ScaleMul, MinValue = 0.05f, MaxValue = 0.12f },
-        new() { Stat = PlayerStat.FlatDefense, MinValue = 2f, MaxValue = 4f },
-        new() { Stat = PlayerStat.Regen, MinValue = 0.5f, MaxValue = 1.5f },
-        new() { Stat = PlayerStat.Iframes, MinValue = 1f, MaxValue = 3f }
+        new() { Stat = PlayerStat.MoveSpeed, MinValue = 0.02f, MaxValue = 0.04f }, 
+        new() { Stat = PlayerStat.FlatDefense, MinValue = 1f, MaxValue = 3f },
+        new() { Stat = PlayerStat.Regen, MinValue = 0.25f, MaxValue = 0.75f }, 
+        new() { Stat = PlayerStat.Iframes, MinValue = 0.5f, MaxValue = 1.5f } 
     ];
 
     private static readonly Dictionary<RollRarity, (int MinStats, int MaxStats, float Intensity)> RarityConfig = new()
@@ -53,7 +52,6 @@ public static class ChaoticRollPool
         { RollRarity.Epic, (3, 4, 2.4f) },
         { RollRarity.Legendary, (4, 5, 3.5f) },
         { RollRarity.Negative, (2, 3, -1.2f) },
-        { RollRarity.Debug, (8, 10, 10.0f) }
     };
 
     private static RollStats currentRollStats;
@@ -148,7 +146,6 @@ public static class ChaoticRollPool
                     MathF.Round(MathF.Abs(value * 100f), 2)),
                 PlayerStat.MoveSpeed => (isPositiveOutcome ? GetSharedLocalizedText(XMovementSpeedIncreased) : GetSharedLocalizedText(XMovementSpeedDecreased)).Format(
                     MathF.Round(MathF.Abs(value * 100f), 2)),
-                PlayerStat.ScaleMul => (isPositiveOutcome ? GetSharedLocalizedText(XSizeIncreased) : GetSharedLocalizedText(XSizeDecreased)).Format(MathF.Round(MathF.Abs(value * 100f), 2)),
                 PlayerStat.FlatDefense => (isPositiveOutcome ? GetSharedLocalizedText(XDefenseIncreased) : GetSharedLocalizedText(XDefenseDecreased)).Format(MathF.Round(MathF.Abs(value), 0)),
                 PlayerStat.Regen => (isPositiveOutcome ? GetSharedLocalizedText(XRegenIncreased) : GetSharedLocalizedText(XRegenDecreased)).Format(MathF.Round(MathF.Abs(value), 1)),
                 PlayerStat.Iframes => (isPositiveOutcome ? GetSharedLocalizedText(XIframesIncreased) : GetSharedLocalizedText(XIframesDecreased)).Format(MathF.Round(MathF.Abs(value), 0)),
@@ -180,7 +177,6 @@ public static class ChaoticRollPool
                 case PlayerStat.TrueDamageMul: statPlayer.TrueDamageMul += value; break;
                 case PlayerStat.CoinDropOnHit: statPlayer.CoinDropOnHit += value; break;
                 case PlayerStat.MoveSpeed: statPlayer.MovementSpeedMul += value; break;
-                case PlayerStat.ScaleMul: statPlayer.ScaleMul += value; break;
                 case PlayerStat.FlatDefense: statPlayer.FlatDefense += value; break;
                 case PlayerStat.Regen: statPlayer.Regen += value; break;
                 case PlayerStat.Iframes: statPlayer.Iframes += value; break;
@@ -197,7 +193,6 @@ public static class ChaoticRollPool
             RollRarity.Epic => PrefixBalance.CHAOTIC_EPIC_ROLL_COLOR,
             RollRarity.Legendary => PrefixBalance.CHAOTIC_LEGENDARY_ROLL_COLOR,
             RollRarity.Negative => PrefixBalance.CHAOTIC_NEGATIVE_ROLL_COLOR,
-            RollRarity.Debug => PrefixBalance.CHAOTIC_DEBUG_ROLL_COLOR,
             _ => throw new ArgumentOutOfRangeException(nameof(rollRarity), rollRarity, null)
         };
     }
@@ -211,7 +206,6 @@ public static class ChaoticRollPool
             RollRarity.Epic => PrefixBalance.CHAOTIC_EPIC_ROLL_CHANCE,
             RollRarity.Legendary => PrefixBalance.CHAOTIC_LEGENDARY_ROLL_CHANCE,
             RollRarity.Negative => PrefixBalance.CHAOTIC_NEGATIVE_ROLL_CHANCE,
-            RollRarity.Debug => PrefixBalance.CHAOTIC_DEBUG_GUARANTEED_ROLL_CHANCE,
             _ => throw new ArgumentOutOfRangeException(nameof(rollRarity), rollRarity, null)
         };
     }
@@ -223,7 +217,6 @@ public static class ChaoticRollPool
         Epic,
         Legendary,
         Negative,
-        Debug
     }
 
     private class RollStats(RollRarity rarity)

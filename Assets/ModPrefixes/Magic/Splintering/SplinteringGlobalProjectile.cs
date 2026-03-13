@@ -16,8 +16,8 @@ public class SplinteringGlobalProjectile : GlobalProjectile
 
     private static void PrefixSplintering(Projectile projectile, NPC target, ref NPC.HitModifiers modifiers)
     {
-        if (Main.player[projectile.owner]!.HeldItem.HasPrefix(ModContent.PrefixType<PrefixSplintering>())) return;
-
+        if (!Main.player[projectile.owner]!.HeldItem.HasPrefix(ModContent.PrefixType<PrefixSplintering>())) return;
+        
         if (projectile.type == ModContent.ProjectileType<SplinteringProjectile>()) return;
 
         if (Main.rand.NextFloat() > PrefixBalance.SPLINTERING_CHANCE && !PrefixBalance.DEV_MODE) return;
