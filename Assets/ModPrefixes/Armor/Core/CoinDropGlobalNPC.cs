@@ -1,4 +1,5 @@
 ﻿using EquipmentEvolved.Assets.Core;
+using EquipmentEvolved.Assets.Stats.MobilityUtility;
 using Terraria;
 using Terraria.ModLoader;
 
@@ -16,7 +17,7 @@ public class CoinDropGlobalNPC : GlobalNPC
 
         StatPlayer statPlayer = killer.GetModPlayer<StatPlayer>();
 
-        npc.value *= statPlayer.CoinDropMul;
+        npc.value *= statPlayer.GetTotalStat(ModContent.GetInstance<CoinDropMulStat>());
 
         return true;
     }

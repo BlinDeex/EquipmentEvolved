@@ -6,6 +6,10 @@ using System.Text;
 using EquipmentEvolved.Assets.CharmsModule.Data;
 using EquipmentEvolved.Assets.Core;
 using EquipmentEvolved.Assets.ModPrefixes.Ranged.Challenger;
+using EquipmentEvolved.Assets.Stats.Combat;
+using EquipmentEvolved.Assets.Stats.Custom;
+using EquipmentEvolved.Assets.Stats.Defense;
+using EquipmentEvolved.Assets.Stats.MobilityUtility;
 using EquipmentEvolved.Assets.Utilities;
 using Microsoft.Xna.Framework;
 using Terraria;
@@ -81,40 +85,51 @@ public static class CharmBalance
 
     #region 3. Stat Bounds & Multipliers
 
-    private static readonly Dictionary<PlayerStat, (CharmRarity minRarity, float min, float max)> StatDefinitions = new()
+    // Lazy-loaded to prevent ModContent.GetInstance from throwing errors during server startup
+    private static Dictionary<EquipmentStat, (CharmRarity minRarity, float min, float max)> _statDefinitions;
+
+    public static Dictionary<EquipmentStat, (CharmRarity minRarity, float min, float max)> StatDefinitions
     {
-        { PlayerStat.NotInitialized, (CharmRarity.NotInitialized, 0, 0) },
+        get
+        {
+            if (_statDefinitions == null)
+            {
+                _statDefinitions = new()
+                {
+                    // --- Offensive Stats ---
+                    { ModContent.GetInstance<DamageStat>(), (CharmRarity.Common, 0.01f, 0.02f) },
+                    { ModContent.GetInstance<MeleeDamageStat>(), (CharmRarity.Common, 0.015f, 0.03f) },
+                    { ModContent.GetInstance<RangedDamageStat>(), (CharmRarity.Common, 0.015f, 0.03f) },
+                    { ModContent.GetInstance<MagicDamageStat>(), (CharmRarity.Common, 0.015f, 0.03f) },
+                    { ModContent.GetInstance<SummonDamageStat>(), (CharmRarity.Common, 0.015f, 0.03f) },
+                    { ModContent.GetInstance<CritStat>(), (CharmRarity.Common, 1f, 2f) },
+                    { ModContent.GetInstance<CritDamageStat>(), (CharmRarity.Epic, 0.02f, 0.05f) },
+                    { ModContent.GetInstance<TrueDamageMulStat>(), (CharmRarity.Legendary, 0.02f, 0.04f) },
 
-        // --- Offensive Stats ---
-        { PlayerStat.Damage, (CharmRarity.Common, 0.01f, 0.02f) },
-        { PlayerStat.MeleeDamage, (CharmRarity.Common, 0.015f, 0.03f) },
-        { PlayerStat.RangedDamage, (CharmRarity.Common, 0.015f, 0.03f) },
-        { PlayerStat.MagicDamage, (CharmRarity.Common, 0.015f, 0.03f) },
-        { PlayerStat.SummonDamage, (CharmRarity.Common, 0.015f, 0.03f) },
-        { PlayerStat.Crit, (CharmRarity.Common, 1f, 2f) },
-        { PlayerStat.CritDamage, (CharmRarity.Epic, 0.02f, 0.05f) },
-        { PlayerStat.TrueDamageMul, (CharmRarity.Legendary, 0.02f, 0.04f) },
+                    // --- Utility Stats ---
+                    { ModContent.GetInstance<UseSpeedStat>(), (CharmRarity.Rare, 0.01f, 0.02f) },
+                    { ModContent.GetInstance<HealthCapMulStat>(), (CharmRarity.Rare, -0.02f, -0.03f) },
+                    { ModContent.GetInstance<PickSpeedStat>(), (CharmRarity.Common, 0.02f, 0.05f) },
+                    { ModContent.GetInstance<MoveSpeedStat>(), (CharmRarity.Common, 0.01f, 0.02f) },
+                    { ModContent.GetInstance<WingTimeStat>(), (CharmRarity.Rare, 5f, 15f) },
+                    { ModContent.GetInstance<ManaUsageStat>(), (CharmRarity.Rare, -0.01f, -0.03f) },
+                    { ModContent.GetInstance<CharmLuckStat>(), (CharmRarity.Common, 0.01f, 0.05f) },
 
-        // --- Utility Stats ---
-        { PlayerStat.UseSpeed, (CharmRarity.Rare, 0.01f, 0.02f) },
-        { PlayerStat.HealthCapMul, (CharmRarity.Rare, -0.02f, -0.03f) },
-        { PlayerStat.PickSpeed, (CharmRarity.Common, 0.02f, 0.05f) },
-        { PlayerStat.MoveSpeed, (CharmRarity.Common, 0.01f, 0.02f) },
-        { PlayerStat.WingTime, (CharmRarity.Rare, 5f, 15f) },
-        { PlayerStat.ManaUsage, (CharmRarity.Rare, -0.01f, -0.03f) },
-        { PlayerStat.CharmLuck, (CharmRarity.Common, 0.01f, 0.05f) },
+                    // --- Survivability (Highly Regulated) ---
+                    { ModContent.GetInstance<MaxHealthMulStat>(), (CharmRarity.Epic, 0.01f, 0.02f) },
+                    { ModContent.GetInstance<RegenStat>(), (CharmRarity.Rare, 0.25f, 0.75f) },
+                    { ModContent.GetInstance<HealingMulStat>(), (CharmRarity.Epic, 0.01f, 0.03f) },
+                    { ModContent.GetInstance<LifeStealStat>(), (CharmRarity.Legendary, 0.008f, 0.016f) },
+                    { ModContent.GetInstance<DamageLifestealStat>(), (CharmRarity.Epic, 0.01f, 0.03f) },
+                    { ModContent.GetInstance<DamageReductionStat>(), (CharmRarity.Mythical, 0.01f, 0.02f) },
+                    { ModContent.GetInstance<IframesStat>(), (CharmRarity.Legendary, 1.0f, 3.0f) } 
+                };
+            }
+            return _statDefinitions;
+        }
+    }
 
-        // --- Survivability (Highly Regulated) ---
-        { PlayerStat.MaxHealthMul, (CharmRarity.Epic, 0.01f, 0.02f) },
-        { PlayerStat.Regen, (CharmRarity.Rare, 0.25f, 0.75f) },
-        { PlayerStat.HealingMul, (CharmRarity.Epic, 0.01f, 0.03f) },
-        { PlayerStat.LifeSteal, (CharmRarity.Legendary, 0.008f, 0.016f) },
-        { PlayerStat.DamageLifesteal, (CharmRarity.Epic, 0.01f, 0.03f) },
-        { PlayerStat.DamageReduction, (CharmRarity.Mythical, 0.01f, 0.02f) },
-        { PlayerStat.Iframes, (CharmRarity.Legendary, 1.0f, 3.0f) } 
-    };
-
-    public static readonly PlayerStat[] ValidCharmStats = StatDefinitions.Keys.Where(k => k != PlayerStat.NotInitialized).ToArray();
+    public static EquipmentStat[] ValidCharmStats => StatDefinitions.Keys.ToArray();
 
     private static readonly Dictionary<CharmRarity, float> statRarityMultipliers = new()
     {
@@ -156,8 +171,10 @@ public static class CharmBalance
         return Color.Black;
     }
 
-    public static Color GetStatColor(PlayerStat stat)
+    public static Color GetStatColor(EquipmentStat stat)
     {
+        if (stat == null) return Color.Gray; // Color for Unloaded stats!
+        
         CharmRarity rarity = GetStatRarity(stat);
         return GetCharmColor(rarity);
     }
@@ -166,7 +183,7 @@ public static class CharmBalance
 
     #region 5. Mathematics & Roll Logic
 
-    public static PlayerStat GetRandomStat()
+    public static EquipmentStat GetRandomStat()
     {
         return ValidCharmStats[Main.rand.Next(ValidCharmStats.Length)];
     }
@@ -174,7 +191,7 @@ public static class CharmBalance
     /// <summary>
     ///     Calculates how perfect a charm stat roll is, returning a value from 0.00 to 100.00
     /// </summary>
-    public static float GetRollQualityPercentage(CharmRarity rarity, PlayerStat stat, float rollStrength)
+    public static float GetRollQualityPercentage(CharmRarity rarity, EquipmentStat stat, float rollStrength)
     {
         (float min, float max) bounds = GetStatBounds(stat, rarity);
         float min = bounds.min;
@@ -186,7 +203,7 @@ public static class CharmBalance
         return (float)Math.Round(Math.Clamp(quality, 0f, 100f), 0);
     }
 
-    public static float GetRollQuality(PlayerStat stat, CharmRarity rarity, float currentStrength)
+    public static float GetRollQuality(EquipmentStat stat, CharmRarity rarity, float currentStrength)
     {
         (float min, float max) = GetStatBounds(stat, rarity);
         if (Math.Abs(max - min) < float.Epsilon) return 1f; // Prevent division by zero
@@ -194,7 +211,7 @@ public static class CharmBalance
         return MathHelper.Clamp((currentStrength - min) / (max - min), 0f, 1f);
     }
 
-    public static float CalculateStrengthFromQuality(PlayerStat stat, CharmRarity rarity, float quality)
+    public static float CalculateStrengthFromQuality(EquipmentStat stat, CharmRarity rarity, float quality)
     {
         (float min, float max) = GetStatBounds(stat, rarity);
         return min + quality * (max - min);
@@ -203,26 +220,25 @@ public static class CharmBalance
     /// <summary>
     ///     Rarity accounted for
     /// </summary>
-    public static (float min, float max) GetStatBounds(PlayerStat stat, CharmRarity rarity)
+    public static (float min, float max) GetStatBounds(EquipmentStat stat, CharmRarity rarity)
     {
-        // FAILSAFE: Prevents crashes if you load a world with a broken charm from testing!
-        if (!StatDefinitions.TryGetValue(stat, out (CharmRarity minRarity, float min, float max) def)) return (0f, 0f);
+        if (stat == null || !StatDefinitions.TryGetValue(stat, out var def)) return (0f, 0f);
 
         float mul = statRarityMultipliers.GetValueOrDefault(rarity, 1f);
 
         return (def.min * mul, def.max * mul);
     }
 
-    public static bool IsCharmRareEnoughForStat(PlayerStat stat, CharmRarity rarity)
+    public static bool IsCharmRareEnoughForStat(EquipmentStat stat, CharmRarity rarity)
     {
-        if (!StatDefinitions.TryGetValue(stat, out (CharmRarity minRarity, float min, float max) def)) return false;
+        if (stat == null || !StatDefinitions.TryGetValue(stat, out var def)) return false;
 
         return rarity >= def.minRarity;
     }
 
-    public static CharmRarity GetStatRarity(PlayerStat stat)
+    public static CharmRarity GetStatRarity(EquipmentStat stat)
     {
-        if (!StatDefinitions.TryGetValue(stat, out (CharmRarity minRarity, float min, float max) def)) return CharmRarity.Common;
+        if (stat == null || !StatDefinitions.TryGetValue(stat, out var def)) return CharmRarity.Common;
 
         return def.minRarity;
     }

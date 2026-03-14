@@ -7,6 +7,7 @@ using EquipmentEvolved.Assets.ModPrefixes.Armor.Chestplate.Void;
 using EquipmentEvolved.Assets.ModPrefixes.Armor.Leggings.Desperate;
 using EquipmentEvolved.Assets.ModPrefixes.Armor.Leggings.Silent;
 using EquipmentEvolved.Assets.ModPrefixes.Armor.Leggings.Terra;
+using EquipmentEvolved.Assets.Stats.Defense;
 using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.Audio;
@@ -55,8 +56,6 @@ public class MiscArmorPlayer : ModPlayer
                 HandleTerra(armor);
             else if (prefix == ModContent.PrefixType<PrefixDesperate>())
                 HandleDesperate();
-            else if (prefix == ModContent.PrefixType<PrefixVoid>())
-                HandleVoid();
             else if (prefix == ModContent.PrefixType<PrefixUnyielding>())
                 HandleUnyielding();
             else if (prefix == ModContent.PrefixType<PrefixRebounding>()) hasRebounding = true;
@@ -100,17 +99,12 @@ public class MiscArmorPlayer : ModPlayer
         Player.maxRunSpeed += Player.maxRunSpeed * speedBonus;
     }
 
-    private void HandleVoid()
-    {
-        Player.GetModPlayer<StatPlayer>().TrueDamageMul += PrefixBalance.VOID_TRUE_DAMAGE_BONUS;
-    }
-
     private void HandleUnyielding()
     {
         float missingHealthPct = 1f - (float)Player.statLife / Player.statLifeMax2;
         float dr = missingHealthPct * PrefixBalance.UNYIELDING_MAX_DR;
-
-        Player.GetModPlayer<StatPlayer>().DamageReductionMul -= dr;
+        
+        Player.GetModPlayer<StatPlayer>().AddStat(ModContent.GetInstance<DamageReductionStat>(), dr, StatSource.Chestplate);
     }
 
     private void HandleReboundingEquip(bool hasRebounding)

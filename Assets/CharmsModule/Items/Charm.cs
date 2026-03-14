@@ -25,8 +25,6 @@ public class Charm : ModItem
     private const string statTypesTag = "statTypes";
     private const string strengthsTag = "strengths";
 
-    public static readonly Dictionary<PlayerStat, LocalizedText> StatTexts = new();
-
     private int charmNameID;
 
     private int owner;
@@ -68,13 +66,6 @@ public class Charm : ModItem
     {
         ItemID.Sets.ItemIconPulse[Item.type] = false;
         ItemID.Sets.ItemNoGravity[Item.type] = true;
-
-        StatTexts.Add(PlayerStat.NotInitialized, LocalizationManager.GetCharmText(PlayerStat.NotInitialized));
-
-        foreach (PlayerStat stat in CharmBalance.ValidCharmStats)
-        {
-            if (!StatTexts.ContainsKey(stat)) StatTexts.Add(stat, LocalizationManager.GetCharmText(stat));
-        }
     }
     
     public override ModItem Clone(Item newEntity)
@@ -207,9 +198,12 @@ public class Charm : ModItem
 
         foreach (CharmRoll roll in Stats)
         {
-            float str = roll.GetStrength();
-            float perfection = CharmBalance.GetRollQualityPercentage(CharmRarity, roll.Stat, roll.RawStrength);
-            string text = StatTexts[roll.Stat].Format(str) + $" [{perfection}%]";
+            // NEW: Use roll.Strength instead of RawStrength!
+            float perfection = CharmBalance.GetRollQualityPercentage(CharmRarity, roll.Stat, roll.Strength);
+    
+            // NEW: roll.GetTooltip() automatically handles the missing stat check AND the formatting math!
+            string text = roll.GetTooltip() + $" [{perfection}%]";
+    
             tooltips.Add(new TooltipLine(Mod, "statLine", text) { OverrideColor = CharmBalance.GetStatColor(roll.Stat) });
         }
 
@@ -232,12 +226,11 @@ public class Charm : ModItem
 
         if (CharmNameID != 0) tag.Add(nameof(CharmNameID), CharmNameID);
 
+        // NEW: We just tell each CharmRoll to save itself as a TagCompound!
         if (Stats.Count > 0)
         {
-            List<int> statTypes = Stats.Select(x => (int)x.Stat).ToList();
-            List<float> strengths = Stats.Select(x => x.RawStrength).ToList();
-            tag.Add(statTypesTag, statTypes);
-            tag.Add(strengthsTag, strengths);
+            List<TagCompound> statTags = Stats.Select(x => x.SaveData()).ToList();
+            tag.Add("StatsList", statTags);
         }
 
         if (Augmentations == null || Augmentations.Count <= 0) return;
@@ -254,16 +247,17 @@ public class Charm : ModItem
             CharmRarity = tag.ContainsKey(nameof(CharmRarity)) ? (CharmRarity)tag.GetInt(nameof(CharmRarity)) : CharmRarity.NotInitialized;
             CharmNameID = tag.ContainsKey(nameof(CharmNameID)) ? tag.GetInt(nameof(CharmNameID)) : 0;
             UniqueID = tag.ContainsKey(nameof(UniqueID)) ? Guid.Parse(tag.GetString(nameof(UniqueID))) : Guid.NewGuid();
-            
+        
             Stats.Clear();
-            if (tag.ContainsKey(statTypesTag) && tag.ContainsKey(strengthsTag))
+        
+            // NEW: Load the list of TagCompounds back into CharmRolls!
+            if (tag.ContainsKey("StatsList"))
             {
-                List<PlayerStat> statTypes = tag.GetList<int>(statTypesTag).Select(x => (PlayerStat)x).ToList();
-                List<float> strengths = tag.GetList<float>(strengthsTag).ToList();
-
-                for (int i = 0; i < statTypes.Count; i++)
+                IList<TagCompound> statTags = tag.GetList<TagCompound>("StatsList");
+                foreach (TagCompound statTag in statTags)
                 {
-                    Stats.Add(new CharmRoll(statTypes[i], strengths[i]));
+                    CharmRoll roll = CharmRoll.LoadData(statTag);
+                    if (roll != null) Stats.Add(roll);
                 }
             }
 
@@ -307,11 +301,11 @@ public class Charm : ModItem
             writer.Write(aug.GetType().FullName!);
         }
 
+        // NEW: Just trigger the built-in NetSend method you wrote in CharmRoll!
         writer.Write((byte)Stats.Count);
         foreach (CharmRoll roll in Stats)
         {
-            writer.Write((byte)roll.Stat);
-            writer.Write(roll.RawStrength);
+            roll.NetSend(writer);
         }
     }
 
@@ -331,11 +325,13 @@ public class Charm : ModItem
             if (augmentationType != null) Augmentations.Add((AugmentationBase)Activator.CreateInstance(augmentationType));
         }
 
+        // NEW: Read the stats directly using your CharmRoll helper method!
         int statsCount = reader.ReadByte();
         Stats.Clear();
         for (int i = 0; i < statsCount; i++)
         {
-            Stats.Add(new CharmRoll((PlayerStat)reader.ReadByte(), reader.ReadSingle()));
+            CharmRoll roll = CharmRoll.NetReceive(reader);
+            if (roll != null) Stats.Add(roll);
         }
     }
 }

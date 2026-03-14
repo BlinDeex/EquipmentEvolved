@@ -8,11 +8,14 @@ using EquipmentEvolved.Assets.ModPrefixes.Magic.Inverted;
 using EquipmentEvolved.Assets.ModPrefixes.Magic.ManaCharged;
 using EquipmentEvolved.Assets.ModPrefixes.Magic.Splintering;
 using EquipmentEvolved.Assets.ModPrefixes.Magic.TripleShot;
+using EquipmentEvolved.Assets.Stats.Combat;
+using EquipmentEvolved.Assets.Stats.Custom;
+using EquipmentEvolved.Assets.Stats.Defense;
+using EquipmentEvolved.Assets.Stats.MobilityUtility;
 using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.ModLoader;
 using Terraria.Utilities;
-using static EquipmentEvolved.Assets.Misc.LocalizationManager;
 
 namespace EquipmentEvolved.Assets.Balance;
 
@@ -27,23 +30,35 @@ public static class ChaoticRollPool
         ModContent.PrefixType<PrefixEndless>()
     ];
 
-    private static readonly List<StatRange> AvailableStats =
-    [
-        new() { Stat = PlayerStat.Damage, MinValue = 0.02f, MaxValue = 0.05f },
-        new() { Stat = PlayerStat.Crit, MinValue = 1f, MaxValue = 3f },
-        new() { Stat = PlayerStat.DamageLifesteal, MinValue = 0.005f, MaxValue = 0.015f },
-        new() { Stat = PlayerStat.CritDamage, MinValue = 0.02f, MaxValue = 0.06f }, 
-        new() { Stat = PlayerStat.TrueDamageMul, MinValue = 0.005f, MaxValue = 0.015f },
-        new() { Stat = PlayerStat.CoinDropOnHit, MinValue = 1f, MaxValue = 4f }, 
+    // NEW: Lazy-loaded list to prevent ModContent.GetInstance errors during startup
+    private static List<StatRange> _availableStats;
+    private static List<StatRange> AvailableStats
+    {
+        get
+        {
+            if (_availableStats == null)
+            {
+                _availableStats =
+                [
+                    new() { Stat = ModContent.GetInstance<DamageStat>(), MinValue = 0.02f, MaxValue = 0.05f },
+                    new() { Stat = ModContent.GetInstance<CritStat>(), MinValue = 1f, MaxValue = 3f },
+                    new() { Stat = ModContent.GetInstance<DamageLifestealStat>(), MinValue = 0.005f, MaxValue = 0.015f },
+                    new() { Stat = ModContent.GetInstance<CritDamageStat>(), MinValue = 0.02f, MaxValue = 0.06f }, 
+                    new() { Stat = ModContent.GetInstance<TrueDamageMulStat>(), MinValue = 0.005f, MaxValue = 0.015f },
+                    new() { Stat = ModContent.GetInstance<CoinDropOnHitStat>(), MinValue = 1f, MaxValue = 4f }, 
 
-        new() { Stat = PlayerStat.ManaUsage, MinValue = 0.01f, MaxValue = 0.04f },
-        new() { Stat = PlayerStat.UseSpeed, MinValue = 0.01f, MaxValue = 0.03f },
+                    new() { Stat = ModContent.GetInstance<ManaUsageStat>(), MinValue = 0.01f, MaxValue = 0.04f },
+                    new() { Stat = ModContent.GetInstance<UseSpeedStat>(), MinValue = 0.01f, MaxValue = 0.03f },
 
-        new() { Stat = PlayerStat.MoveSpeed, MinValue = 0.02f, MaxValue = 0.04f }, 
-        new() { Stat = PlayerStat.FlatDefense, MinValue = 1f, MaxValue = 3f },
-        new() { Stat = PlayerStat.Regen, MinValue = 0.25f, MaxValue = 0.75f }, 
-        new() { Stat = PlayerStat.Iframes, MinValue = 0.5f, MaxValue = 1.5f } 
-    ];
+                    new() { Stat = ModContent.GetInstance<MoveSpeedStat>(), MinValue = 0.02f, MaxValue = 0.04f }, 
+                    new() { Stat = ModContent.GetInstance<FlatDefenseStat>(), MinValue = 1f, MaxValue = 3f },
+                    new() { Stat = ModContent.GetInstance<RegenStat>(), MinValue = 0.25f, MaxValue = 0.75f }, 
+                    new() { Stat = ModContent.GetInstance<IframesStat>(), MinValue = 0.5f, MaxValue = 1.5f } 
+                ];
+            }
+            return _availableStats;
+        }
+    }
 
     private static readonly Dictionary<RollRarity, (int MinStats, int MaxStats, float Intensity)> RarityConfig = new()
     {
@@ -125,34 +140,20 @@ public static class ChaoticRollPool
 
         Color tooltipColor = GetToolTipColor(currentRollStats.RollRarity);
 
-        // ReSharper disable once ForeachCanBeConvertedToQueryUsingAnotherGetEnumerator
         foreach (ChaoticStatMod mod in currentRollStats.Modifications)
         {
-            float value = mod.Value;
-            bool isPositiveOutcome = value > 0;
-
-            string tooltipText = mod.Stat switch
+            float displayValue = mod.Value;
+            
+            // Replicate your old inverted math so the tooltip correctly reads it as a positive or negative buff
+            if (mod.Stat is ManaUsageStat || mod.Stat is UseSpeedStat)
             {
-                PlayerStat.Damage => (isPositiveOutcome ? GetSharedLocalizedText(XDamageAdded) : GetSharedLocalizedText(XDamageDecreased)).Format(MathF.Round(MathF.Abs(value * 100f), 2)),
-                PlayerStat.ManaUsage => (isPositiveOutcome ? GetSharedLocalizedText(XDecreasedManaUsage) : GetSharedLocalizedText(XIncreasedManaUsage)).Format(MathF.Round(MathF.Abs(value * 100f), 2)),
-                PlayerStat.UseSpeed => (isPositiveOutcome ? GetSharedLocalizedText(XUseTimeReduced) : GetSharedLocalizedText(XUseTimeIncreased)).Format(MathF.Round(MathF.Abs(value * 100f), 2)),
-                PlayerStat.Crit => (isPositiveOutcome ? GetSharedLocalizedText(XCritAdded) : GetSharedLocalizedText(XCritDecreased)).Format(MathF.Round(MathF.Abs(value), 0)),
-                PlayerStat.LifeSteal => (isPositiveOutcome ? GetSharedLocalizedText(XIncreasedLifesteal) : GetSharedLocalizedText(XDecreasedLifesteal)).Format(MathF.Round(MathF.Abs(value), 0)),
-                PlayerStat.CritDamage => (isPositiveOutcome ? GetSharedLocalizedText(XCritDamageIncreased) : GetSharedLocalizedText(XCritDamageDecreased)).Format(MathF.Round(MathF.Abs(value * 100f),
-                    2)),
-                PlayerStat.TrueDamageMul => (isPositiveOutcome ? GetSharedLocalizedText(XPositiveMaxHealthDamage) : GetSharedLocalizedText(XNegativeMaxHealthDamage)).Format(
-                    MathF.Round(MathF.Abs(value), 3)),
-                PlayerStat.CoinDropOnHit => (isPositiveOutcome ? GetSharedLocalizedText(XIncreasedCoinDropValue) : GetSharedLocalizedText(XDecreasedCoinDropValue)).Format(
-                    MathF.Round(MathF.Abs(value * 100f), 2)),
-                PlayerStat.MoveSpeed => (isPositiveOutcome ? GetSharedLocalizedText(XMovementSpeedIncreased) : GetSharedLocalizedText(XMovementSpeedDecreased)).Format(
-                    MathF.Round(MathF.Abs(value * 100f), 2)),
-                PlayerStat.FlatDefense => (isPositiveOutcome ? GetSharedLocalizedText(XDefenseIncreased) : GetSharedLocalizedText(XDefenseDecreased)).Format(MathF.Round(MathF.Abs(value), 0)),
-                PlayerStat.Regen => (isPositiveOutcome ? GetSharedLocalizedText(XRegenIncreased) : GetSharedLocalizedText(XRegenDecreased)).Format(MathF.Round(MathF.Abs(value), 1)),
-                PlayerStat.Iframes => (isPositiveOutcome ? GetSharedLocalizedText(XIframesIncreased) : GetSharedLocalizedText(XIframesDecreased)).Format(MathF.Round(MathF.Abs(value), 0)),
-                _ => ""
-            };
+                displayValue = -displayValue;
+            }
 
-            tooltipData.Add(($"Chaotic_{mod.Stat}", tooltipText, tooltipColor));
+            // NEW: The massive string of switches is gone! FormatTooltip does all the heavy lifting natively.
+            string tooltipText = mod.Stat.FormatTooltip(displayValue);
+
+            tooltipData.Add(($"Chaotic_{mod.Stat.Name}", tooltipText, tooltipColor));
         }
 
         ChaoticGlobalItem.CurrentTooltipData = tooltipData;
@@ -165,22 +166,15 @@ public static class ChaoticRollPool
         foreach (ChaoticStatMod mod in currentRollStats.Modifications)
         {
             float value = mod.Value;
-            // ReSharper disable once SwitchStatementMissingSomeEnumCasesNoDefault
-            switch (mod.Stat)
+
+            // Retaining your old logic where UseSpeed and ManaUsage were subtracted
+            if (mod.Stat is ManaUsageStat || mod.Stat is UseSpeedStat)
             {
-                case PlayerStat.Damage: statPlayer.DamageMul += value; break;
-                case PlayerStat.ManaUsage: statPlayer.ManaUsageMul -= value; break;
-                case PlayerStat.UseSpeed: statPlayer.UseTimeMul -= value; break;
-                case PlayerStat.Crit: statPlayer.Crit += value; break;
-                case PlayerStat.LifeSteal: statPlayer.OnHitLifesteal += value; break;
-                case PlayerStat.CritDamage: statPlayer.CritDamageMul += value; break;
-                case PlayerStat.TrueDamageMul: statPlayer.TrueDamageMul += value; break;
-                case PlayerStat.CoinDropOnHit: statPlayer.CoinDropOnHit += value; break;
-                case PlayerStat.MoveSpeed: statPlayer.MovementSpeedMul += value; break;
-                case PlayerStat.FlatDefense: statPlayer.FlatDefense += value; break;
-                case PlayerStat.Regen: statPlayer.Regen += value; break;
-                case PlayerStat.Iframes: statPlayer.Iframes += value; break;
+                value = -value;
             }
+
+            // NEW: Directly adding to the ledger! No switch required.
+            statPlayer.AddStat(mod.Stat, value, StatSource.Charm); 
         }
     }
 
@@ -227,14 +221,16 @@ public static class ChaoticRollPool
 
     private class ChaoticStatMod
     {
-        public PlayerStat Stat;
+        // NEW: Changed from PlayerStat to EquipmentStat
+        public EquipmentStat Stat;
         public float Value;
     }
 
     private class StatRange
     {
+        // NEW: Changed from PlayerStat to EquipmentStat
+        public EquipmentStat Stat;
         public float MaxValue;
         public float MinValue;
-        public PlayerStat Stat;
     }
 }

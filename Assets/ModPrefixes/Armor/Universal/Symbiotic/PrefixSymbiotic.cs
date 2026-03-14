@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using EquipmentEvolved.Assets.Balance;
+using EquipmentEvolved.Assets.Core;
 using EquipmentEvolved.Assets.Misc;
 using EquipmentEvolved.Assets.ModPrefixes.Core;
 using Terraria;
@@ -9,34 +10,25 @@ using Terraria.ModLoader;
 
 namespace EquipmentEvolved.Assets.ModPrefixes.Armor.Universal.Symbiotic;
 
-public class PrefixSymbiotic : ModPrefix, ISpecializedPrefix
+public class PrefixSymbiotic : BaseEvolvedPrefix, ISpecializedPrefix
 {
     public override PrefixCategory Category => PrefixCategory.Accessory;
-
-    public static LocalizedText Desc { get; private set; }
-    public static LocalizedText CurseDesc { get; private set; }
-    public static LocalizedText SetBonus { get; private set; }
-
-    public override LocalizedText DisplayName =>
-        LocalizationManager.GetPrefixLocalization(this, "Symbiotic", "DisplayName");
-
+    public override float ReforgeMultiplier => PrefixBalance.ARMOR_REFORGING_MULTIPLIER;
     public SpecializedPrefixType SpecializedPrefixType => SpecializedPrefixType.AnyArmor;
 
-    public override void ModifyValue(ref float valueMult)
-    {
-        valueMult = PrefixBalance.ARMOR_REFORGING_MULTIPLIER;
-    }
+    public LocalizedText CurseDesc { get; private set; }
+    public LocalizedText SetBonus { get; private set; }
 
     public override void SetStaticDefaults()
     {
-        Desc = LocalizationManager.GetPrefixLocalization(this, "Symbiotic", nameof(Desc));
-        CurseDesc = LocalizationManager.GetPrefixLocalization(this, "Symbiotic", nameof(CurseDesc));
-        SetBonus = LocalizationManager.GetPrefixLocalization(this, "Symbiotic", nameof(SetBonus));
+        base.SetStaticDefaults(); // Grabs the standard Description
+        CurseDesc = GetLoc(nameof(CurseDesc));
+        SetBonus = GetLoc(nameof(SetBonus));
     }
 
     public override IEnumerable<TooltipLine> GetTooltipLines(Item item)
     {
-        TooltipLine descLine = new(Mod, "SymbioticDesc", Desc.Format(MathF.Round(CharmBalance.SYMBIOTIC_BASE_QUALITY_BOOST * 100, 1)))
+        TooltipLine descLine = new(Mod, "SymbioticDesc", Description.Format(MathF.Round(CharmBalance.SYMBIOTIC_BASE_QUALITY_BOOST * 100, 1)))
         {
             IsModifier = true
         };

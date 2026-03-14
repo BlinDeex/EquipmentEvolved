@@ -59,14 +59,11 @@ public class SealedGlobalItem : GlobalItem
         tag["IsSealed"] = IsSealed;
         tag["IsRevealed"] = IsRevealed;
 
+        // NEW: Tell CharmRoll to handle its own TagCompound saving
         List<TagCompound> rollsData = [];
         foreach (CharmRoll roll in Rolls)
         {
-            rollsData.Add(new TagCompound
-            {
-                ["Stat"] = (int)roll.Stat,
-                ["Strength"] = roll.RawStrength
-            });
+            rollsData.Add(roll.SaveData());
         }
 
         tag["Rolls"] = rollsData;
@@ -80,10 +77,12 @@ public class SealedGlobalItem : GlobalItem
         Rolls.Clear();
         if (!tag.ContainsKey("Rolls")) return;
 
+        // NEW: Let CharmRoll load itself from the tags
         IList<TagCompound> rollsData = tag.GetList<TagCompound>("Rolls");
         foreach (TagCompound rollTag in rollsData)
         {
-            Rolls.Add(new CharmRoll((PlayerStat)rollTag.GetInt("Stat"), rollTag.GetFloat("Strength")));
+            CharmRoll roll = CharmRoll.LoadData(rollTag);
+            if (roll != null) Rolls.Add(roll);
         }
     }
 
@@ -93,11 +92,12 @@ public class SealedGlobalItem : GlobalItem
         if (!IsSealed) return;
 
         writer.Write(IsRevealed);
+        
+        // NEW: Let CharmRoll handle its own network syncing
         writer.Write((byte)Rolls.Count);
         foreach (CharmRoll roll in Rolls)
         {
-            writer.Write((int)roll.Stat);
-            writer.Write(roll.RawStrength);
+            roll.NetSend(writer);
         }
     }
 
@@ -107,11 +107,14 @@ public class SealedGlobalItem : GlobalItem
         if (!IsSealed) return;
 
         IsRevealed = reader.ReadBoolean();
+        
+        // NEW: Let CharmRoll handle its own network reading
         byte count = reader.ReadByte();
         Rolls.Clear();
         for (int i = 0; i < count; i++)
         {
-            Rolls.Add(new CharmRoll((PlayerStat)reader.ReadInt32(), reader.ReadSingle()));
+            CharmRoll roll = CharmRoll.NetReceive(reader);
+            if (roll != null) Rolls.Add(roll);
         }
     }
 

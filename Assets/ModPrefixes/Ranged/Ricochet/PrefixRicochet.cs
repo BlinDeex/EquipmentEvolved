@@ -1,33 +1,18 @@
 ﻿using System.Collections.Generic;
 using EquipmentEvolved.Assets.Balance;
+using EquipmentEvolved.Assets.Core;
 using EquipmentEvolved.Assets.Misc;
 using EquipmentEvolved.Assets.ModPrefixes.Core;
-using Microsoft.Xna.Framework;
 using Terraria;
-using Terraria.Localization;
 using Terraria.ModLoader;
 
 namespace EquipmentEvolved.Assets.ModPrefixes.Ranged.Ricochet;
 
-public class PrefixRicochet : ModPrefix, ISpecializedPrefix
+public class PrefixRicochet : BaseEvolvedPrefix, ISpecializedPrefix
 {
     public override PrefixCategory Category => PrefixCategory.Ranged;
-
-    public override LocalizedText DisplayName =>
-        LocalizationManager.GetPrefixLocalization(this, "Ricochet", "DisplayName");
-
-    public static LocalizedText Description { get; private set; }
+    public override float ReforgeMultiplier => PrefixBalance.WEAPON_REFORGING_MULTIPLIER;
     public SpecializedPrefixType SpecializedPrefixType => SpecializedPrefixType.RangedWeapon;
-
-    public override void SetStaticDefaults()
-    {
-        Description = LocalizationManager.GetPrefixLocalization(this, "Ricochet", nameof(Description));
-    }
-
-    public override void ModifyValue(ref float valueMult)
-    {
-        valueMult = PrefixBalance.WEAPON_REFORGING_MULTIPLIER;
-    }
 
     public override IEnumerable<TooltipLine> GetTooltipLines(Item item)
     {
@@ -37,9 +22,9 @@ public class PrefixRicochet : ModPrefix, ISpecializedPrefix
 
         string formattedDescription = Description.Format(maxSplits, projCount, damagePct);
 
-        yield return new TooltipLine(Mod, "RicochetDescription", formattedDescription)
+        yield return new TooltipLine(Mod, "newLine", formattedDescription)
         {
-            OverrideColor = Color.Orange
+            IsModifier = true
         };
     }
 }

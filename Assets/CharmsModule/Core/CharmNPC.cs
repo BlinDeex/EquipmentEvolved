@@ -3,6 +3,7 @@ using EquipmentEvolved.Assets.Balance;
 using EquipmentEvolved.Assets.CharmsModule.Data;
 using EquipmentEvolved.Assets.Core;
 using EquipmentEvolved.Assets.Misc;
+using EquipmentEvolved.Assets.Stats.MobilityUtility;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -65,7 +66,10 @@ public class CharmNPC : GlobalNPC
 
         if (Main.netMode == NetmodeID.SinglePlayer)
         {
-            List<(CharmRarity, CharmType)> rolledCharms = CharmsManager.RollForCharms(player.GetModPlayer<StatPlayer>().CharmLuckMul, npc);
+            // NEW: Pull the Charm Luck from the Ledger!
+            float charmLuck = 1f + player.GetModPlayer<StatPlayer>().GetTotalStat(ModContent.GetInstance<CharmLuckStat>());
+            
+            List<(CharmRarity, CharmType)> rolledCharms = CharmsManager.RollForCharms(charmLuck, npc);
             CharmsManager.SpawnCharms(rolledCharms, Main.LocalPlayer.whoAmI, npc);
             return;
         }

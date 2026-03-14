@@ -8,6 +8,7 @@ using EquipmentEvolved.Assets.ModPrefixes.Armor.Universal.Chrono;
 using EquipmentEvolved.Assets.ModPrefixes.Axe.Fortune;
 using EquipmentEvolved.Assets.ModPrefixes.Magic.Inverted;
 using EquipmentEvolved.Assets.ModPrefixes.Ranged.Challenger;
+using EquipmentEvolved.Assets.Stats.MobilityUtility;
 using EquipmentEvolved.Assets.Utilities;
 using Microsoft.Xna.Framework;
 using Terraria;
@@ -100,7 +101,7 @@ public class Networking : ModSystem
         pos.Y = reader.ReadSingle();
         bool boss = reader.ReadBoolean();
 
-        float luck = Main.player[whoAmI].GetModPlayer<StatPlayer>().CharmLuckMul;
+        float luck = Main.player[whoAmI].GetModPlayer<StatPlayer>().GetTotalStat(ModContent.GetInstance<CharmLuckStat>());
         List<(CharmRarity, CharmType)> rolls = CharmsManager.RollForCharms(luck, boss: boss);
         CharmsManager.SpawnCharms(rolls, whoAmI, pos);
     }

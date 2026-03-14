@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using EquipmentEvolved.Assets.Balance;
+using EquipmentEvolved.Assets.Core;
 using EquipmentEvolved.Assets.Misc;
 using EquipmentEvolved.Assets.ModPrefixes.Core;
 using Terraria;
@@ -9,32 +10,23 @@ using Terraria.ModLoader;
 
 namespace EquipmentEvolved.Assets.ModPrefixes.Armor.Universal.RaidBoss;
 
-public class PrefixRaidBoss : ModPrefix, ISpecializedPrefix
+public class PrefixRaidBoss : BaseEvolvedPrefix, ISpecializedPrefix
 {
     public override PrefixCategory Category => PrefixCategory.Accessory;
-
-    public static LocalizedText SetBonus { get; private set; }
-    public static LocalizedText Desc { get; private set; }
-
-    public override LocalizedText DisplayName =>
-        LocalizationManager.GetPrefixLocalization(this, "RaidBoss", "DisplayName");
-
+    public override float ReforgeMultiplier => PrefixBalance.ARMOR_REFORGING_MULTIPLIER;
     public SpecializedPrefixType SpecializedPrefixType => SpecializedPrefixType.AnyArmor;
 
-    public override void ModifyValue(ref float valueMult)
-    {
-        valueMult = PrefixBalance.ARMOR_REFORGING_MULTIPLIER;
-    }
+    public LocalizedText SetBonus { get; private set; }
 
     public override void SetStaticDefaults()
     {
-        SetBonus = LocalizationManager.GetPrefixLocalization(this, "RaidBoss", nameof(SetBonus));
-        Desc = LocalizationManager.GetPrefixLocalization(this, "RaidBoss", nameof(Desc));
+        base.SetStaticDefaults();
+        SetBonus = GetLoc(nameof(SetBonus));
     }
 
     public override IEnumerable<TooltipLine> GetTooltipLines(Item item)
     {
-        TooltipLine newLine = new(Mod, "newLine", Desc.Format(MathF.Round((PrefixBalance.RAID_BOSS_PIECE_DEFENSE_MULT - 1f) * 100, 1)))
+        TooltipLine newLine = new(Mod, "newLine", Description.Format(MathF.Round((PrefixBalance.RAID_BOSS_PIECE_DEFENSE_MULT - 1f) * 100, 1)))
         {
             IsModifier = true
         };

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using EquipmentEvolved.Assets.Balance;
+using EquipmentEvolved.Assets.Core;
 using EquipmentEvolved.Assets.Misc;
 using EquipmentEvolved.Assets.ModPrefixes.Core;
 using Terraria;
@@ -8,21 +9,20 @@ using Terraria.ModLoader;
 
 namespace EquipmentEvolved.Assets.ModPrefixes.Ranged.Controlled;
 
-public class PrefixControlled : ModPrefix, ISpecializedPrefix
+public class PrefixControlled : BaseEvolvedPrefix, ISpecializedPrefix
 {
     public override PrefixCategory Category => PrefixCategory.AnyWeapon;
-
-    public override LocalizedText DisplayName =>
-        LocalizationManager.GetPrefixLocalization(this, "Controlled", "DisplayName");
-
-
-    public static LocalizedText BurstFire { get; private set; }
-    public static LocalizedText IncreasedVelocity { get; private set; }
+    public override float ReforgeMultiplier => PrefixBalance.WEAPON_REFORGING_MULTIPLIER;
     public SpecializedPrefixType SpecializedPrefixType => SpecializedPrefixType.RangedWeapon;
 
-    public override void ModifyValue(ref float valueMult)
+    public LocalizedText BurstFire { get; private set; }
+    public LocalizedText IncreasedVelocity { get; private set; }
+
+    public override void SetStaticDefaults()
     {
-        valueMult = PrefixBalance.WEAPON_REFORGING_MULTIPLIER;
+        base.SetStaticDefaults(); // Gets the standard Description
+        BurstFire = GetLoc(nameof(BurstFire));
+        IncreasedVelocity = GetLoc(nameof(IncreasedVelocity));
     }
 
     public override void SetStats(ref float damageMult, ref float knockbackMult, ref float useTimeMult, ref float scaleMult, ref float shootSpeedMult, ref float manaMult, ref int critBonus)
@@ -30,33 +30,23 @@ public class PrefixControlled : ModPrefix, ISpecializedPrefix
         useTimeMult *= PrefixBalance.CONTROLLED_FIRERATE;
     }
 
-    public override void SetStaticDefaults()
-    {
-        BurstFire = LocalizationManager.GetPrefixLocalization(this, "Controlled", nameof(BurstFire));
-        IncreasedVelocity = LocalizationManager.GetPrefixLocalization(this, "Controlled", nameof(IncreasedVelocity));
-    }
-
     public override IEnumerable<TooltipLine> GetTooltipLines(Item item)
     {
-        TooltipLine newLine = new(Mod, "newLine", BurstFire.Value)
+        yield return new TooltipLine(Mod, "newLine2", IncreasedVelocity.Format((PrefixBalance.CONTROLLED_BULLET_VELOCITY - 1f) * 100))
         {
             IsModifier = true,
             IsModifierBad = false
         };
 
-        TooltipLine newLine2 = new(Mod, "newLine2", IncreasedVelocity.Format((PrefixBalance.CONTROLLED_BULLET_VELOCITY - 1f) * 100))
+        yield return new TooltipLine(Mod, "newLine", BurstFire.Value)
         {
             IsModifier = true,
             IsModifierBad = false
         };
-
-
-        yield return newLine2;
-        yield return newLine;
     }
 
     public override bool CanRoll(Item item)
     {
         return item.autoReuse;
     }
-}
+}   

@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using EquipmentEvolved.Assets.Balance;
 using EquipmentEvolved.Assets.CharmsModule.Data;
+using EquipmentEvolved.Assets.Core;
 using EquipmentEvolved.Assets.Misc;
 using EquipmentEvolved.Assets.ModPrefixes.Core;
 using Microsoft.Xna.Framework;
@@ -10,30 +11,22 @@ using Terraria.ModLoader;
 
 namespace EquipmentEvolved.Assets.ModPrefixes.Melee.Sealed;
 
-public class PrefixSealed : ModPrefix, ISpecializedPrefix
+public class PrefixSealed : BaseEvolvedPrefix, ISpecializedPrefix
 {
     public override PrefixCategory Category => PrefixCategory.AnyWeapon;
+    public override float ReforgeMultiplier => PrefixBalance.WEAPON_REFORGING_MULTIPLIER;
+    public SpecializedPrefixType SpecializedPrefixType => SpecializedPrefixType.MeleeWeapon | SpecializedPrefixType.Whip;
 
-    public static LocalizedText HiddenDesc { get; private set; }
-    public static LocalizedText Instruction { get; private set; }
-    public static LocalizedText LockedWarning { get; private set; }
-
-    public override LocalizedText DisplayName =>
-        LocalizationManager.GetPrefixLocalization(this, "Sealed", "DisplayName");
-
-    public SpecializedPrefixType SpecializedPrefixType =>
-        SpecializedPrefixType.MeleeWeapon | SpecializedPrefixType.Whip;
+    public LocalizedText HiddenDesc { get; private set; }
+    public LocalizedText Instruction { get; private set; }
+    public LocalizedText LockedWarning { get; private set; }
 
     public override void SetStaticDefaults()
     {
-        HiddenDesc = LocalizationManager.GetPrefixLocalization(this, "Sealed", nameof(HiddenDesc));
-        Instruction = LocalizationManager.GetPrefixLocalization(this, "Sealed", nameof(Instruction));
-        LockedWarning = LocalizationManager.GetPrefixLocalization(this, "Sealed", nameof(LockedWarning));
-    }
-
-    public override void ModifyValue(ref float valueMult)
-    {
-        valueMult = PrefixBalance.WEAPON_REFORGING_MULTIPLIER;
+        base.SetStaticDefaults(); 
+        HiddenDesc = GetLoc(nameof(HiddenDesc));
+        Instruction = GetLoc(nameof(Instruction));
+        LockedWarning = GetLoc(nameof(LockedWarning));
     }
 
     public override void Apply(Item item)
@@ -59,11 +52,11 @@ public class PrefixSealed : ModPrefix, ISpecializedPrefix
         {
             foreach (CharmRoll roll in instanced.Rolls)
             {
-                float displayStrength = roll.GetStrength();
+                string statText = roll.GetTooltip() + " [Sealed]";
 
-                string statText = LocalizationManager.GetCharmText(roll.Stat).Format(displayStrength);
+                string statName = roll.Stat?.Name ?? "Unknown";
 
-                yield return new TooltipLine(Mod, $"SealedStat_{roll.Stat}", statText)
+                yield return new TooltipLine(Mod, $"SealedStat_{statName}", statText)
                 {
                     OverrideColor = Color.Gold,
                     IsModifier = true

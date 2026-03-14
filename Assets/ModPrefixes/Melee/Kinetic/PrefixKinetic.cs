@@ -1,33 +1,19 @@
 ﻿using System.Collections.Generic;
 using EquipmentEvolved.Assets.Balance;
+using EquipmentEvolved.Assets.Core;
 using EquipmentEvolved.Assets.Misc;
 using EquipmentEvolved.Assets.ModPrefixes.Core;
 using Microsoft.Xna.Framework;
 using Terraria;
-using Terraria.Localization;
 using Terraria.ModLoader;
 
 namespace EquipmentEvolved.Assets.ModPrefixes.Melee.Kinetic;
 
-public class PrefixKinetic : ModPrefix, ISpecializedPrefix
+public class PrefixKinetic : BaseEvolvedPrefix, ISpecializedPrefix
 {
     public override PrefixCategory Category => PrefixCategory.AnyWeapon;
-
-    public override LocalizedText DisplayName =>
-        LocalizationManager.GetPrefixLocalization(this, "Kinetic", "DisplayName");
-
-    public static LocalizedText Description { get; private set; }
+    public override float ReforgeMultiplier => PrefixBalance.WEAPON_REFORGING_MULTIPLIER;
     public SpecializedPrefixType SpecializedPrefixType => SpecializedPrefixType.MeleeWeapon;
-
-    public override void SetStaticDefaults()
-    {
-        Description = LocalizationManager.GetPrefixLocalization(this, "Kinetic", nameof(Description));
-    }
-
-    public override void ModifyValue(ref float valueMult)
-    {
-        valueMult = PrefixBalance.WEAPON_REFORGING_MULTIPLIER;
-    }
 
     public override void SetStats(ref float damageMult, ref float knockbackMult, ref float useTimeMult, ref float scaleMult, ref float shootSpeedMult, ref float manaMult, ref int critBonus)
     {

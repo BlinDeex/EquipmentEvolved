@@ -2,14 +2,20 @@
 using System.Linq;
 using EquipmentEvolved.Assets.CharmsModule.Data;
 using EquipmentEvolved.Assets.Core;
+using EquipmentEvolved.Assets.Stats.Combat;
+using EquipmentEvolved.Assets.Stats.Custom;
+using EquipmentEvolved.Assets.Stats.Defense;
+using EquipmentEvolved.Assets.Stats.MobilityUtility;
 using Terraria;
+using Terraria.ModLoader;
 using Terraria.Utilities;
 
 namespace EquipmentEvolved.Assets.ModPrefixes.Melee.Sealed;
 
 public class SealedRollDefinition
 {
-    public PlayerStat Stat { get; init; }
+    // NEW: Use EquipmentStat instead of PlayerStat
+    public EquipmentStat Stat { get; init; } 
     public float MinValue { get; init; }
     public float MaxValue { get; init; }
     public double Weight { get; init; }
@@ -41,17 +47,29 @@ public static class SealedRollManager
         { 1.00f, 10f }     //  0.2% chance
     };
 
-    private static readonly List<SealedRollDefinition> rollPool =
-    [
-        new() { Stat = PlayerStat.CharmLuck, MinValue = 0.05f, MaxValue = 0.15f, Weight = 1.0f },
-        new() { Stat = PlayerStat.CritDamage, MinValue = 0.01f, MaxValue = 0.05f, Weight = 0.7f },
-        new() { Stat = PlayerStat.Damage, MinValue = 0.01f, MaxValue = 0.05f, Weight = 0.5f },
-        
-        new() { Stat = PlayerStat.Regen, MinValue = 0.1f, MaxValue = 0.5f, Weight = 0.8f },
-        
-        new() { Stat = PlayerStat.LifeSteal, MinValue = 0.005f, MaxValue = 0.015f, Weight = 0.2f },
-        new() { Stat = PlayerStat.Iframes, MinValue = 1f, MaxValue = 3f, Weight = 0.2f }
-    ];
+    // NEW: Lazy-loaded property to prevent ModContent.GetInstance errors on load
+    private static List<SealedRollDefinition> _rollPool;
+    private static List<SealedRollDefinition> RollPool
+    {
+        get
+        {
+            if (_rollPool == null)
+            {
+                _rollPool =
+                [
+                    new() { Stat = ModContent.GetInstance<CharmLuckStat>(), MinValue = 0.05f, MaxValue = 0.15f, Weight = 1.0f },
+                    new() { Stat = ModContent.GetInstance<CritDamageStat>(), MinValue = 0.01f, MaxValue = 0.05f, Weight = 0.7f },
+                    new() { Stat = ModContent.GetInstance<DamageStat>(), MinValue = 0.01f, MaxValue = 0.05f, Weight = 0.5f },
+                    
+                    new() { Stat = ModContent.GetInstance<RegenStat>(), MinValue = 0.1f, MaxValue = 0.5f, Weight = 0.8f },
+                    
+                    new() { Stat = ModContent.GetInstance<LifeStealStat>(), MinValue = 0.005f, MaxValue = 0.015f, Weight = 0.2f },
+                    new() { Stat = ModContent.GetInstance<IframesStat>(), MinValue = 1f, MaxValue = 3f, Weight = 0.2f }
+                ];
+            }
+            return _rollPool;
+        }
+    }
 
     private static int GetRollsCount()
     {
@@ -91,7 +109,9 @@ public static class SealedRollManager
         int numRolls = GetRollsCount();
 
         WeightedRandom<SealedRollDefinition> pool = new(Main.rand);
-        foreach (SealedRollDefinition def in rollPool)
+        
+        // NEW: Changed 'rollPool' to 'RollPool' to trigger the lazy load
+        foreach (SealedRollDefinition def in RollPool)
         {
             pool.Add(def, def.Weight);
         }

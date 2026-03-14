@@ -57,7 +57,11 @@ public class SymbioticPlayer : ModPlayer
         {
             CharmRoll roll = upgradedData.Stats[i];
 
-            float oldQuality = CharmBalance.GetRollQuality(roll.Stat, itemData.BaseSnapshot.Rarity, roll.RawStrength);
+            // NEW: Ignore unloaded stats so the upgrade logic doesn't break
+            if (roll.Stat == null || roll.IsUnloaded) continue;
+
+            // FIXED: Using roll.Strength instead of roll.RawStrength
+            float oldQuality = CharmBalance.GetRollQuality(roll.Stat, itemData.BaseSnapshot.Rarity, roll.Strength);
             float newQuality = Math.Min(oldQuality + qualityBoost, 1f);
 
             float newStrength = CharmBalance.CalculateStrengthFromQuality(roll.Stat, newRarity, newQuality);
@@ -65,7 +69,8 @@ public class SymbioticPlayer : ModPlayer
             upgradedData.Stats[i] = new CharmRoll(roll.Stat, newStrength);
         }
 
-        PlayerStat newStat;
+        // FIXED: Using EquipmentStat instead of PlayerStat enum
+        EquipmentStat newStat;
         int failsafe = 0;
 
         while (true)

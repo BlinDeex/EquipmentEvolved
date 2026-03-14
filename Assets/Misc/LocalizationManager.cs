@@ -42,7 +42,6 @@ public static class LocalizationManager
     public const string XIframesIncreased = "XIframesIncreased";
     public const string XIframesDecreased = "XIframesDecreased";
 
-
     private const string weapon = "Weapon.";
     private const string armor = "Armor.";
     private const string summoner = "Summoner.";
@@ -52,13 +51,6 @@ public static class LocalizationManager
     private const string tool = "Tool.";
     private const string whip = "Whip.";
     private const string minionWeapon = "MinionWeapon.";
-    private const string charm = "Charms.";
-    private const string common = "Common.";
-    private const string rare = "Rare.";
-    private const string epic = "Epic.";
-    private const string legendary = "Legendary.";
-    private const string mythical = "Mythical.";
-    private const string notInitialized = "notInitialized";
     private const string deathReasons = "DeathReasons.";
 
     private static LocalizedText GetLocalizedText(string path)
@@ -190,25 +182,6 @@ public static class LocalizationManager
         }
 
         throw new Exception("GetNotSpecializedText reached end");
-    }
-    
-    public static LocalizedText GetCharmText(PlayerStat stat)
-    {
-        StringBuilder sb = new();
-        sb.Append(charm);
-        CharmRarity statRarity = CharmBalance.GetStatRarity(stat);
-        sb.Append(statRarity switch
-        {
-            CharmRarity.Common => common,
-            CharmRarity.Rare => rare,
-            CharmRarity.Epic => epic,
-            CharmRarity.Legendary => legendary,
-            CharmRarity.Mythical => mythical,
-            _ => notInitialized
-        });
-        sb.Append(stat.ToString());
-
-        return GetLocalizedText(sb.ToString());
     }
 
     public static LocalizedText GetDeathReasonText(string reasonName)

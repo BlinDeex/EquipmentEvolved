@@ -1,5 +1,6 @@
 ﻿using EquipmentEvolved.Assets.Balance;
 using EquipmentEvolved.Assets.Core;
+using EquipmentEvolved.Assets.Stats.Combat;
 using EquipmentEvolved.Assets.Utilities;
 using Terraria;
 using Terraria.ModLoader;
@@ -19,7 +20,6 @@ public class BerserkerGlobalItem : GlobalItem
         if (missingHealthPercent > 1f) missingHealthPercent = 1f;
 
         float damageBonus = missingHealthPercent * PrefixBalance.BERSERKER_MAX_DAMAGE_BONUS;
-
-        player.GetModPlayer<StatPlayer>().DamageMul += damageBonus;
+        player.GetModPlayer<StatPlayer>().AddStat(ModContent.GetInstance<DamageStat>(), damageBonus, StatSource.Headwear);
     }
 }

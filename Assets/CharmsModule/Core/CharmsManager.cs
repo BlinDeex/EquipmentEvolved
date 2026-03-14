@@ -212,7 +212,7 @@ public static class CharmsManager
 
         for (int i = 0; i < dice; i++)
         {
-            PlayerStat rolledStat;
+            EquipmentStat rolledStat; // Changed from PlayerStat
             do
             {
                 rolledStat = CharmBalance.GetRandomStat();

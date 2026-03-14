@@ -1,38 +1,23 @@
 ﻿using System.Collections.Generic;
 using EquipmentEvolved.Assets.Balance;
+using EquipmentEvolved.Assets.Core;
 using EquipmentEvolved.Assets.Misc;
 using EquipmentEvolved.Assets.ModPrefixes.Core;
 using Microsoft.Xna.Framework;
 using Terraria;
-using Terraria.Localization;
 using Terraria.ModLoader;
 
 namespace EquipmentEvolved.Assets.ModPrefixes.Summoner.MinionWeapons.Monarch;
 
-public class PrefixMonarch : ModPrefix, ISpecializedPrefix
+public class PrefixMonarch : BaseEvolvedPrefix, ISpecializedPrefix
 {
     public override PrefixCategory Category => PrefixCategory.AnyWeapon;
-
-    public static LocalizedText Desc { get; private set; }
-
-    public override LocalizedText DisplayName =>
-        LocalizationManager.GetPrefixLocalization(this, "Monarch", "DisplayName");
-
+    public override float ReforgeMultiplier => PrefixBalance.WEAPON_REFORGING_MULTIPLIER * 1.25f;
     public SpecializedPrefixType SpecializedPrefixType => SpecializedPrefixType.MinionWeapon;
-
-    public override void ModifyValue(ref float valueMult)
-    {
-        valueMult = PrefixBalance.WEAPON_REFORGING_MULTIPLIER * 1.25f;
-    }
-
-    public override void SetStaticDefaults()
-    {
-        Desc = LocalizationManager.GetPrefixLocalization(this, "Monarch", nameof(Desc));
-    }
 
     public override IEnumerable<TooltipLine> GetTooltipLines(Item item)
     {
-        yield return new TooltipLine(Mod, "Desc", Desc.Format((PrefixBalance.MONARCH_EFFICIENCY_BONUS_PER_STACK * 100).ToString("0"), (PrefixBalance.MONARCH_SIZE_PER_STACK * 100).ToString("0")))
+        yield return new TooltipLine(Mod, "Desc", Description.Format((PrefixBalance.MONARCH_EFFICIENCY_BONUS_PER_STACK * 100).ToString("0"), (PrefixBalance.MONARCH_SIZE_PER_STACK * 100).ToString("0")))
         {
             OverrideColor = Color.Gold
         };
@@ -41,6 +26,7 @@ public class PrefixMonarch : ModPrefix, ISpecializedPrefix
         {
             OverrideColor = Color.Lerp(Color.Gold, Color.White, 0.5f)
         };
+        
         Projectile activeMonarch = null;
         int projType = item.shoot;
 

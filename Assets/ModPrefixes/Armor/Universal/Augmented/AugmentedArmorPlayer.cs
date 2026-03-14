@@ -3,6 +3,7 @@ using EquipmentEvolved.Assets.Balance;
 using EquipmentEvolved.Assets.Core;
 using EquipmentEvolved.Assets.Misc;
 using EquipmentEvolved.Assets.ModPrefixes.Armor.Core;
+using EquipmentEvolved.Assets.Stats.Combat;
 using Terraria;
 using Terraria.ModLoader;
 
@@ -49,7 +50,7 @@ public class AugmentedArmorPlayer : ModPlayer
     private int SetBonusLogic()
     {
         float damageIncrease = GetTotalBuffCount(Main.LocalPlayer) * PrefixBalance.AUGMENTED_SET_BONUS_DAMAGE_PER_BUFF;
-        Player.GetModPlayer<StatPlayer>().DamageMul += damageIncrease;
+        Player.GetModPlayer<StatPlayer>().AddStat(ModContent.GetInstance<DamageStat>(), damageIncrease, StatSource.Armor);
         return 0;
     }
 

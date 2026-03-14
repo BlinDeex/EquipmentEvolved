@@ -4,31 +4,25 @@ using EquipmentEvolved.Assets.Balance;
 using EquipmentEvolved.Assets.Core;
 using EquipmentEvolved.Assets.Misc;
 using EquipmentEvolved.Assets.ModPrefixes.Core;
+using EquipmentEvolved.Assets.Stats.Custom;
 using Terraria;
 using Terraria.Localization;
 using Terraria.ModLoader;
 
 namespace EquipmentEvolved.Assets.ModPrefixes.Armor.Universal.Cursed;
 
-public class PrefixCursed : ModPrefix, ISpecializedPrefix
+public class PrefixCursed : BaseEvolvedPrefix, ISpecializedPrefix
 {
     public override PrefixCategory Category => PrefixCategory.Accessory;
-    public static LocalizedText SetBonus { get; private set; }
-
-    public override LocalizedText DisplayName =>
-        LocalizationManager.GetPrefixLocalization(this, "Cursed", "DisplayName");
-
+    public override float ReforgeMultiplier => PrefixBalance.ARMOR_REFORGING_MULTIPLIER;
     public SpecializedPrefixType SpecializedPrefixType => SpecializedPrefixType.AnyArmor;
 
-    public override void ModifyValue(ref float valueMult)
-    {
-        valueMult = PrefixBalance.ARMOR_REFORGING_MULTIPLIER;
-    }
-
+    public LocalizedText SetBonus { get; private set; }
 
     public override void SetStaticDefaults()
     {
-        SetBonus = LocalizationManager.GetPrefixLocalization(this, "Cursed", nameof(SetBonus));
+        base.SetStaticDefaults();
+        SetBonus = GetLoc(nameof(SetBonus));
     }
 
     public override IEnumerable<TooltipLine> GetTooltipLines(Item item)
@@ -54,6 +48,6 @@ public class PrefixCursed : ModPrefix, ISpecializedPrefix
     public override void ApplyAccessoryEffects(Player player)
     {
         player.GetModPlayer<CursedArmorPlayer>().CursedPiecesEquipped++;
-        player.GetModPlayer<StatPlayer>().OnHitLifesteal += PrefixBalance.CURSED_FLAT_LIFESTEAL;
+        player.GetModPlayer<StatPlayer>().AddStat(ModContent.GetInstance<LifeStealStat>(), PrefixBalance.CURSED_FLAT_LIFESTEAL);
     }
 }

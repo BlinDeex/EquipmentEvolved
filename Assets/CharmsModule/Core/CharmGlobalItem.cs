@@ -73,7 +73,7 @@ public class CharmGlobalItem : GlobalItem
             {
                 CharmRoll roll = appliedStats[i];
 
-                float currentQuality = CharmBalance.GetRollQuality(roll.Stat, AppliedCharmRarity, roll.RawStrength);
+                float currentQuality = CharmBalance.GetRollQuality(roll.Stat, AppliedCharmRarity, roll.Strength);
                 float newQuality = Math.Min(currentQuality + CharmBalance.SYMBIOTIC_BASE_QUALITY_BOOST, 1f);
 
                 float newStrength = CharmBalance.CalculateStrengthFromQuality(roll.Stat, AppliedCharmRarity, newQuality);
@@ -111,17 +111,19 @@ public class CharmGlobalItem : GlobalItem
         };
     }
 
-    public override void UpdateEquip(Item item, Player player)
+    public void ApplyHeldStats(Player player)
     {
-        if (appliedStats.Count == 0) return;
-
-        player.GetModPlayer<StatPlayer>().ApplyCharmStats(appliedStats);
-
-        if (augmentations == null || augmentations.Count <= 0) return;
-
-        foreach (AugmentationBase augmentationBase in augmentations)
+        if (appliedStats.Count > 0)
         {
-            augmentationBase.EnableAugmentation(player);
+            player.GetModPlayer<StatPlayer>().ApplyCharmStats(appliedStats);
+        }
+
+        if (augmentations != null && augmentations.Count > 0)
+        {
+            foreach (AugmentationBase augmentationBase in augmentations)
+            {
+                augmentationBase.EnableAugmentation(player);
+            }
         }
     }
 
@@ -147,10 +149,10 @@ public class CharmGlobalItem : GlobalItem
         if (dataToSave.Augmentations != null && dataToSave.Augmentations.Count > 0)
         {
             List<string> augTypeNames = dataToSave.Augmentations.Select(x => x.GetType().FullName).ToList();
-            tag.Add(nameof(augmentations), augTypeNames);
+            tag.Add("augmentations", augTypeNames);
         }
 
-        if (dataToSave.CharmName != string.Empty) tag.Add(nameof(charmName), dataToSave.CharmName);
+        if (dataToSave.CharmName != string.Empty) tag.Add("charmName", dataToSave.CharmName);
 
         SaveStats(tag, dataToSave);
     }
@@ -161,59 +163,53 @@ public class CharmGlobalItem : GlobalItem
 
         tag.Add(nameof(AppliedCharmRarity), (int)data.Rarity);
 
-        List<int> statTypes = data.Stats.Select(x => (int)x.Stat).ToList();
-        List<float> strengths = data.Stats.Select(x => x.RawStrength).ToList();
-
-        tag.Add(statTypesTag, statTypes);
-        tag.Add(strengthsTag, strengths);
+        // NEW: Tell each CharmRoll to save itself!
+        List<TagCompound> statTags = data.Stats.Select(x => x.SaveData()).ToList();
+        tag.Add("StatsList", statTags);
     }
 
-    public override void NetSend(Item item, BinaryWriter writer)
+    private void SaveStats(TagCompound tag)
     {
-        CharmDataSnapshot dataToSend = IsSymbioticUpgraded && BaseSnapshot != null ? BaseSnapshot : GetCurrentData();
+        if (appliedStats.Count == 0) return;
 
-        bool hasAugmentation = dataToSend.Augmentations != null && dataToSend.Augmentations.Count > 0;
-        bool hasStats = dataToSend.Stats.Count > 0;
+        tag.Add(nameof(AppliedCharmRarity), (int)AppliedCharmRarity);
 
-        bool hasData = hasStats || hasAugmentation;
-        writer.Write(hasData);
-
-        if (!hasData) return;
-
-        writer.Write(dataToSend.CharmName);
-
-        byte augCount = (byte)(dataToSend.Augmentations?.Count ?? 0);
-        writer.Write(augCount);
-
-        if (dataToSend.Augmentations != null)
-        {
-            foreach (AugmentationBase aug in dataToSend.Augmentations)
-            {
-                writer.Write(aug.GetType().FullName!);
-            }
-        }
-
-        writer.Write((byte)dataToSend.Rarity);
-
-        writer.Write(dataToSend.Stats.Count);
-        foreach (CharmRoll roll in dataToSend.Stats)
-        {
-            writer.Write((byte)roll.Stat);
-            writer.Write(roll.RawStrength);
-        }
+        // NEW: Tell each CharmRoll to save itself!
+        List<TagCompound> statTags = appliedStats.Select(x => x.SaveData()).ToList();
+        tag.Add("StatsList", statTags);
     }
 
     public override void LoadData(Item item, TagCompound tag)
     {
         try
         {
-            charmName = tag.ContainsKey(nameof(charmName)) ? tag.GetString(nameof(charmName)) : string.Empty;
+            charmName = tag.ContainsKey("charmName") ? tag.GetString("charmName") : string.Empty;
             LoadAugmentations(tag);
             LoadStats(tag);
         }
         catch (Exception e)
         {
             Mod.Logger.Error(e.Message);
+        }
+    }
+
+    private void LoadStats(TagCompound tag)
+    {
+        // Make sure we clear before loading
+        appliedStats.Clear(); 
+
+        charmName = tag.ContainsKey("charmName") ? tag.GetString("charmName") : string.Empty;
+        AppliedCharmRarity = tag.ContainsKey(nameof(AppliedCharmRarity)) ? (CharmRarity)tag.GetInt(nameof(AppliedCharmRarity)) : CharmRarity.NotInitialized;
+
+        // NEW: Load the list of TagCompounds back into CharmRolls!
+        if (tag.ContainsKey("StatsList"))
+        {
+            IList<TagCompound> statTags = tag.GetList<TagCompound>("StatsList");
+            foreach (TagCompound statTag in statTags)
+            {
+                CharmRoll roll = CharmRoll.LoadData(statTag);
+                if (roll != null) appliedStats.Add(roll);
+            }
         }
     }
 
@@ -255,6 +251,41 @@ public class CharmGlobalItem : GlobalItem
             }
         }
     }
+    
+    public override void NetSend(Item item, BinaryWriter writer)
+    {
+        CharmDataSnapshot dataToSend = IsSymbioticUpgraded && BaseSnapshot != null ? BaseSnapshot : GetCurrentData();
+
+        bool hasAugmentation = dataToSend.Augmentations != null && dataToSend.Augmentations.Count > 0;
+        bool hasStats = dataToSend.Stats.Count > 0;
+
+        bool hasData = hasStats || hasAugmentation;
+        writer.Write(hasData);
+
+        if (!hasData) return;
+
+        writer.Write(dataToSend.CharmName);
+
+        byte augCount = (byte)(dataToSend.Augmentations?.Count ?? 0);
+        writer.Write(augCount);
+
+        if (dataToSend.Augmentations != null)
+        {
+            foreach (AugmentationBase aug in dataToSend.Augmentations)
+            {
+                writer.Write(aug.GetType().FullName!);
+            }
+        }
+
+        writer.Write((byte)dataToSend.Rarity);
+
+        // NEW: Trigger the built-in NetSend method
+        writer.Write((byte)dataToSend.Stats.Count);
+        foreach (CharmRoll roll in dataToSend.Stats)
+        {
+            roll.NetSend(writer);
+        }
+    }
 
     public override void NetReceive(Item item, BinaryReader reader)
     {
@@ -282,26 +313,14 @@ public class CharmGlobalItem : GlobalItem
         int count = reader.ReadInt32();
         appliedStats = new List<CharmRoll>(count);
 
+        // NEW: Read the stats directly using your CharmRoll helper method!
         for (int i = 0; i < count; i++)
         {
-            PlayerStat stat = (PlayerStat)reader.ReadByte();
-            float strength = reader.ReadSingle();
-            appliedStats.Add(new CharmRoll(stat, strength));
+            CharmRoll roll = CharmRoll.NetReceive(reader);
+            if (roll != null) appliedStats.Add(roll);
         }
     }
-
-    private void SaveStats(TagCompound tag)
-    {
-        if (appliedStats.Count == 0) return;
-
-        tag.Add(nameof(AppliedCharmRarity), (int)AppliedCharmRarity);
-
-        List<int> statTypes = appliedStats.Select(x => (int)x.Stat).ToList();
-        List<float> strengths = appliedStats.Select(x => x.RawStrength).ToList();
-
-        tag.Add(statTypesTag, statTypes);
-        tag.Add(strengthsTag, strengths);
-    }
+    
 
     public override void PostDrawInInventory(Item item, SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale)
     {
@@ -324,26 +343,7 @@ public class CharmGlobalItem : GlobalItem
 
         Charm.DrawCharmShaderStatic(spriteBatch, drawPos, 0f, miniScale, Main.UIScaleMatrix, drawnType, AppliedCharmRarity);
     }
-
-    private void LoadStats(TagCompound tag)
-    {
-        if (!tag.ContainsKey(statTypesTag) || !tag.ContainsKey(strengthsTag)) return;
-
-        charmName = tag.ContainsKey(nameof(charmName)) ? tag.GetString(nameof(charmName)) : string.Empty;
-        AppliedCharmRarity = tag.ContainsKey(nameof(AppliedCharmRarity)) ? (CharmRarity)tag.GetInt(nameof(AppliedCharmRarity)) : CharmRarity.NotInitialized;
-
-        List<PlayerStat> statTypes = tag.GetList<int>(statTypesTag).Select(x => (PlayerStat)x).ToList();
-
-        List<float> strengths = tag.GetList<float>(strengthsTag).ToList();
-
-        if (statTypes.Count != strengths.Count) throw new InvalidOperationException($"{nameof(LoadStats)}: Stat types and strengths count mismatch.");
-
-        for (int i = 0; i < statTypes.Count; i++)
-        {
-            CharmRoll roll = new(statTypes[i], strengths[i]);
-            appliedStats.Add(roll);
-        }
-    }
+    
 
     public override void ModifyTooltips(Item item, List<TooltipLine> tooltips)
     {
@@ -372,20 +372,15 @@ public class CharmGlobalItem : GlobalItem
         for (int i = 0; i < appliedStats.Count; i++)
         {
             CharmRoll roll = appliedStats[i];
-            
-            if (!Charm.StatTexts.ContainsKey(roll.Stat))
-            {
-                Main.NewText($"[Equipment Evolved] Missing tooltip text for stat '{roll.Stat}'!", Color.Red);
-                continue;
-            }
-            
-            float str = roll.GetStrength();
-            float perfection = CharmBalance.GetRollQualityPercentage(AppliedCharmRarity, roll.Stat, roll.RawStrength);
-            string text = Charm.StatTexts[roll.Stat].Format(str) + $" [{perfection}%]";
+        
+            // NEW: Use roll.Strength instead of RawStrength!
+            float perfection = CharmBalance.GetRollQualityPercentage(AppliedCharmRarity, roll.Stat, roll.Strength);
+        
+            // NEW: roll.GetTooltip() replaces the old StatTexts dictionary entirely!
+            string text = roll.GetTooltip() + $" [{perfection}%]";
 
             AddCharmLine(tooltips, $"CharmStat_{i}", text, CharmBalance.GetStatColor(roll.Stat));
         }
-
 
         if (augmentations != null && augmentations.Count > 0)
         {

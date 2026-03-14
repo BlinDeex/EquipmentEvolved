@@ -1,0 +1,23 @@
+﻿using System;
+using EquipmentEvolved.Assets.Core;
+using Terraria;
+
+namespace EquipmentEvolved.Assets.Stats.MobilityUtility;
+
+public class PickSpeedStat : EquipmentStat
+{
+    public override string FormatTooltip(float totalValue)
+    {
+        int percent = (int)Math.Round(totalValue * 100);
+        return percent < 0 ? $"{percent}% Mining Speed" : $"+{percent}% Mining Speed";
+    }
+
+    public override void PostUpdateEquips(Player player, float totalValue)
+    {
+        // Base speed is 1f. A totalValue of 0.15f makes it 1.15f.
+        float speedMul = 1f + totalValue;
+        if (speedMul <= 0f) speedMul = 0.01f;
+
+        player.pickSpeed /= speedMul;
+    }
+}

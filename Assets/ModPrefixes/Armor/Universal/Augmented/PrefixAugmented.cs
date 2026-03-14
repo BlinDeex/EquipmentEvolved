@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using EquipmentEvolved.Assets.Balance;
+using EquipmentEvolved.Assets.Core;
 using EquipmentEvolved.Assets.Misc;
 using EquipmentEvolved.Assets.ModPrefixes.Armor.Core;
 using EquipmentEvolved.Assets.ModPrefixes.Core;
@@ -11,65 +12,50 @@ using Terraria.ModLoader;
 
 namespace EquipmentEvolved.Assets.ModPrefixes.Armor.Universal.Augmented;
 
-public class PrefixAugmented : ModPrefix, ISpecializedPrefix
+public class PrefixAugmented : BaseEvolvedPrefix, ISpecializedPrefix
 {
     public override PrefixCategory Category => PrefixCategory.Accessory;
-
-    public static LocalizedText SetBonus { get; private set; }
-    public static LocalizedText Desc { get; private set; }
-
-    public static LocalizedText HeadwearLvl1 { get; private set; }
-    public static LocalizedText HeadwearLvl2 { get; private set; }
-    public static LocalizedText HeadwearLvl3 { get; private set; }
-
-    public static LocalizedText ChestplateLvl1 { get; private set; }
-    public static LocalizedText ChestplateLvl2 { get; private set; }
-    public static LocalizedText ChestplateLvl3 { get; private set; }
-
-    public static LocalizedText LeggingsLvl1 { get; private set; }
-    public static LocalizedText LeggingsLvl2 { get; private set; }
-    public static LocalizedText LeggingsLvl3 { get; private set; }
-
-    public static Dictionary<ArmorType, LocalizedText[]> ArmorLevels { get; private set; }
-
-    public override LocalizedText DisplayName =>
-        LocalizationManager.GetPrefixLocalization(this, "Augmented", "DisplayName");
-
+    public override float ReforgeMultiplier => PrefixBalance.ARMOR_REFORGING_MULTIPLIER;
     public SpecializedPrefixType SpecializedPrefixType => SpecializedPrefixType.Headwear | SpecializedPrefixType.Chestplate | SpecializedPrefixType.Leggings;
 
-    public override void ModifyValue(ref float valueMult)
-    {
-        valueMult = PrefixBalance.ARMOR_REFORGING_MULTIPLIER;
-    }
+    public LocalizedText SetBonus { get; private set; }
+
+    public LocalizedText HeadwearLvl1 { get; private set; }
+    public LocalizedText HeadwearLvl2 { get; private set; }
+    public LocalizedText HeadwearLvl3 { get; private set; }
+
+    public LocalizedText ChestplateLvl1 { get; private set; }
+    public LocalizedText ChestplateLvl2 { get; private set; }
+    public LocalizedText ChestplateLvl3 { get; private set; }
+
+    public LocalizedText LeggingsLvl1 { get; private set; }
+    public LocalizedText LeggingsLvl2 { get; private set; }
+    public LocalizedText LeggingsLvl3 { get; private set; }
+
+    public Dictionary<ArmorType, LocalizedText[]> ArmorLevels { get; private set; }
 
     public override void SetStaticDefaults()
     {
-        SetBonus = LocalizationManager.GetPrefixLocalization(this, "Augmented", nameof(SetBonus));
-        Desc = LocalizationManager.GetPrefixLocalization(this, "Augmented", nameof(Desc));
+        base.SetStaticDefaults(); // Grabs base Description
+        SetBonus = GetLoc(nameof(SetBonus));
+
+        HeadwearLvl1 = GetLoc(nameof(HeadwearLvl1));
+        HeadwearLvl2 = GetLoc(nameof(HeadwearLvl2));
+        HeadwearLvl3 = GetLoc(nameof(HeadwearLvl3));
+
+        ChestplateLvl1 = GetLoc(nameof(ChestplateLvl1));
+        ChestplateLvl2 = GetLoc(nameof(ChestplateLvl2));
+        ChestplateLvl3 = GetLoc(nameof(ChestplateLvl3));
+
+        LeggingsLvl1 = GetLoc(nameof(LeggingsLvl1));
+        LeggingsLvl2 = GetLoc(nameof(LeggingsLvl2));
+        LeggingsLvl3 = GetLoc(nameof(LeggingsLvl3));
 
         ArmorLevels = new Dictionary<ArmorType, LocalizedText[]>
         {
-            {
-                ArmorType.Headwear, [
-                    LocalizationManager.GetPrefixLocalization(this, "Augmented", nameof(HeadwearLvl1)),
-                    LocalizationManager.GetPrefixLocalization(this, "Augmented", nameof(HeadwearLvl2)),
-                    LocalizationManager.GetPrefixLocalization(this, "Augmented", nameof(HeadwearLvl3))
-                ]
-            },
-            {
-                ArmorType.Chestplate, [
-                    LocalizationManager.GetPrefixLocalization(this, "Augmented", nameof(ChestplateLvl1)),
-                    LocalizationManager.GetPrefixLocalization(this, "Augmented", nameof(ChestplateLvl2)),
-                    LocalizationManager.GetPrefixLocalization(this, "Augmented", nameof(ChestplateLvl3))
-                ]
-            },
-            {
-                ArmorType.Leggings, [
-                    LocalizationManager.GetPrefixLocalization(this, "Augmented", nameof(LeggingsLvl1)),
-                    LocalizationManager.GetPrefixLocalization(this, "Augmented", nameof(LeggingsLvl2)),
-                    LocalizationManager.GetPrefixLocalization(this, "Augmented", nameof(LeggingsLvl3))
-                ]
-            }
+            { ArmorType.Headwear, new[] { HeadwearLvl1, HeadwearLvl2, HeadwearLvl3 } },
+            { ArmorType.Chestplate, new[] { ChestplateLvl1, ChestplateLvl2, ChestplateLvl3 } },
+            { ArmorType.Leggings, new[] { LeggingsLvl1, LeggingsLvl2, LeggingsLvl3 } }
         };
     }
 
@@ -77,7 +63,7 @@ public class PrefixAugmented : ModPrefix, ISpecializedPrefix
     {
         AugmentedArmorPlayer augmentedArmorPlayer = Main.LocalPlayer.GetModPlayer<AugmentedArmorPlayer>();
 
-        TooltipLine desc = new(Mod, "desc", Desc.Value)
+        TooltipLine desc = new(Mod, "desc", Description.Value)
         {
             IsModifier = true,
             IsModifierBad = !augmentedArmorPlayer.SetBonusActive

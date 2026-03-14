@@ -2,56 +2,47 @@
 using System.Collections.Generic;
 using EquipmentEvolved.Assets.Balance;
 using EquipmentEvolved.Assets.Core;
-using EquipmentEvolved.Assets.Misc;
+using EquipmentEvolved.Assets.Stats.Combat;
+using EquipmentEvolved.Assets.Stats.Defense;
 using Terraria;
 using Terraria.Localization;
 using Terraria.ModLoader;
 
 namespace EquipmentEvolved.Assets.ModPrefixes.Accessory;
 
-public class PrefixStoic : ModPrefix
+public class PrefixStoic : BaseEvolvedPrefix
 {
     public override PrefixCategory Category => PrefixCategory.Accessory;
+    public override float ReforgeMultiplier => PrefixBalance.ACCESSORY_REFORGING_MULTIPLIER;
 
-    public override LocalizedText DisplayName =>
-        LocalizationManager.GetPrefixLocalization(this, "Stoic", "DisplayName");
-
-    public static LocalizedText DescDefense { get; private set; }
-    public static LocalizedText DescDamage { get; private set; }
-
-    public override void ModifyValue(ref float valueMult)
-    {
-        valueMult = PrefixBalance.ACCESSORY_REFORGING_MULTIPLIER;
-    }
+    public LocalizedText DescDefense { get; private set; }
+    public LocalizedText DescDamage { get; private set; }
 
     public override void SetStaticDefaults()
     {
-        DescDefense = LocalizationManager.GetPrefixLocalization(this, "Stoic", nameof(DescDefense));
-        DescDamage = LocalizationManager.GetPrefixLocalization(this, "Stoic", nameof(DescDamage));
+        base.SetStaticDefaults(); 
+        DescDefense = GetLoc(nameof(DescDefense));
+        DescDamage = GetLoc(nameof(DescDamage));
     }
 
     public override IEnumerable<TooltipLine> GetTooltipLines(Item item)
     {
-        TooltipLine newLine = new(Mod, "newLine", DescDefense.Format(Math.Round(PrefixBalance.STOIC_DEFENSE_INCREASE * 100, 2)))
+        yield return new TooltipLine(Mod, "newLine", DescDefense.Format(Math.Round(PrefixBalance.STOIC_DEFENSE_INCREASE * 100, 2)))
         {
             IsModifier = true
         };
 
-        TooltipLine newLine2 = new(Mod, "newLine", DescDamage.Format(Math.Round(PrefixBalance.STOIC_DAMAGE_DECREASE * 100, 2)))
+        yield return new TooltipLine(Mod, "newLine2", DescDamage.Format(Math.Round(PrefixBalance.STOIC_DAMAGE_DECREASE * 100, 2)))
         {
             IsModifier = true,
             IsModifierBad = true
         };
-
-        yield return newLine;
-        yield return newLine2;
     }
 
     public override void ApplyAccessoryEffects(Player player)
     {
-        if (!player.TryGetModPlayer(out StatPlayer statPlayer)) return;
-
-        statPlayer.DamageMul -= statPlayer.CalculateStatBonus(PrefixBalance.STOIC_DAMAGE_DECREASE, StatSource.AccessoryReforge);
-        statPlayer.DefenseMul += statPlayer.CalculateStatBonus(PrefixBalance.STOIC_DEFENSE_INCREASE, StatSource.AccessoryReforge);
+        StatPlayer statPlayer = player.GetModPlayer<StatPlayer>();
+        statPlayer.AddStat(ModContent.GetInstance<DamageStat>(), PrefixBalance.STOIC_DAMAGE_DECREASE);
+        statPlayer.AddStat(ModContent.GetInstance<DefenseMulStat>(), PrefixBalance.STOIC_DEFENSE_INCREASE, StatSource.Accessory);
     }
 }

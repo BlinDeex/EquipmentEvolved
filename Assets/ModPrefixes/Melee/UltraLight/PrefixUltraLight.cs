@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using EquipmentEvolved.Assets.Balance;
+using EquipmentEvolved.Assets.Core;
 using EquipmentEvolved.Assets.Misc;
 using EquipmentEvolved.Assets.ModPrefixes.Core;
 using Terraria;
@@ -8,27 +9,18 @@ using Terraria.ModLoader;
 
 namespace EquipmentEvolved.Assets.ModPrefixes.Melee.UltraLight;
 
-public class PrefixUltraLight : ModPrefix, ISpecializedPrefix
+public class PrefixUltraLight : BaseEvolvedPrefix, ISpecializedPrefix
 {
     public override PrefixCategory Category => PrefixCategory.AnyWeapon;
+    public override float ReforgeMultiplier => PrefixBalance.WEAPON_REFORGING_MULTIPLIER;
+    public SpecializedPrefixType SpecializedPrefixType => SpecializedPrefixType.MeleeWeapon | SpecializedPrefixType.Whip;
 
-    public static LocalizedText AutoReuse { get; private set; }
-
-    public override LocalizedText DisplayName =>
-        LocalizationManager.GetPrefixLocalization(this, "UltraLight", "DisplayName");
-
-    public SpecializedPrefixType SpecializedPrefixType =>
-        SpecializedPrefixType.MeleeWeapon | SpecializedPrefixType.Whip;
-
-    public override void ModifyValue(ref float valueMult)
-    {
-        valueMult = PrefixBalance.WEAPON_REFORGING_MULTIPLIER;
-    }
-
+    public LocalizedText AutoReuse { get; private set; }
 
     public override void SetStaticDefaults()
     {
-        AutoReuse = LocalizationManager.GetPrefixLocalization(this, "UltraLight", nameof(AutoReuse));
+        base.SetStaticDefaults(); // Safely sets up standard Description if you ever add one!
+        AutoReuse = GetLoc(nameof(AutoReuse));
     }
 
     public override void SetStats(ref float damageMult, ref float knockbackMult, ref float useTimeMult, ref float scaleMult, ref float shootSpeedMult, ref float manaMult, ref int critBonus)
@@ -40,12 +32,10 @@ public class PrefixUltraLight : ModPrefix, ISpecializedPrefix
 
     public override IEnumerable<TooltipLine> GetTooltipLines(Item item)
     {
-        TooltipLine newLine = new(Mod, "newLine", AutoReuse.Value)
+        yield return new TooltipLine(Mod, "newLine", AutoReuse.Value)
         {
             IsModifier = true,
             IsModifierBad = false
         };
-
-        yield return newLine;
     }
 }

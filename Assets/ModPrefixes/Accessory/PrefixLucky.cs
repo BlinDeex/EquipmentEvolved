@@ -1,37 +1,17 @@
 ﻿using System.Collections.Generic;
 using EquipmentEvolved.Assets.Balance;
 using EquipmentEvolved.Assets.Core;
-using EquipmentEvolved.Assets.Misc;
+using EquipmentEvolved.Assets.Stats.MobilityUtility;
 using Microsoft.Xna.Framework;
 using Terraria;
-using Terraria.Localization;
 using Terraria.ModLoader;
 
 namespace EquipmentEvolved.Assets.ModPrefixes.Accessory;
 
-public class PrefixLucky : ModPrefix
+public class PrefixLucky : BaseEvolvedPrefix
 {
     public override PrefixCategory Category => PrefixCategory.Accessory;
-
-    public override LocalizedText DisplayName => LocalizationManager.GetPrefixLocalization(this, null, "DisplayName");
-    public static LocalizedText Description { get; private set; }
-
-    public override void SetStaticDefaults()
-    {
-        Description = LocalizationManager.GetPrefixLocalization(this, null, nameof(Description));
-    }
-
-    public override void ModifyValue(ref float valueMult)
-    {
-        valueMult = PrefixBalance.ACCESSORY_REFORGING_MULTIPLIER;
-    }
-
-    public override void ApplyAccessoryEffects(Player player)
-    {
-        StatPlayer statPlayer = player.GetModPlayer<StatPlayer>();
-        float baseBonus = PrefixBalance.LUCKY_CHARM_LUCK_MULT - 1f;
-        statPlayer.CharmLuckMul += statPlayer.CalculateStatBonus(baseBonus, StatSource.AccessoryReforge);
-    }
+    public override float ReforgeMultiplier => PrefixBalance.ACCESSORY_REFORGING_MULTIPLIER;
 
     public override IEnumerable<TooltipLine> GetTooltipLines(Item item)
     {
@@ -41,5 +21,12 @@ public class PrefixLucky : ModPrefix
         {
             OverrideColor = Color.Gold
         };
+    }
+
+    public override void ApplyAccessoryEffects(Player player)
+    {
+        StatPlayer statPlayer = player.GetModPlayer<StatPlayer>();
+        float baseBonus = PrefixBalance.LUCKY_CHARM_LUCK_MULT - 1f;
+        statPlayer.AddStat(ModContent.GetInstance<CharmLuckStat>(), baseBonus, StatSource.Accessory);
     }
 }

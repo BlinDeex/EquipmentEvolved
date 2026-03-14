@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using EquipmentEvolved.Assets.CharmsModule.Augmentations;
+using EquipmentEvolved.Assets.Core;
 
 namespace EquipmentEvolved.Assets.CharmsModule.Data;
 

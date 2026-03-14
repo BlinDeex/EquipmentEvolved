@@ -1,45 +1,29 @@
 ﻿using System.Collections.Generic;
 using EquipmentEvolved.Assets.Balance;
 using EquipmentEvolved.Assets.Core;
-using EquipmentEvolved.Assets.Misc;
+using EquipmentEvolved.Assets.ModPrefixes.Core;
+using EquipmentEvolved.Assets.Stats.Combat;
 using Terraria;
-using Terraria.Localization;
 using Terraria.ModLoader;
 
 namespace EquipmentEvolved.Assets.ModPrefixes.Accessory;
 
-public class PrefixEfficient : ModPrefix
+public class PrefixEfficient : BaseEvolvedPrefix
 {
     public override PrefixCategory Category => PrefixCategory.Accessory;
-
-    public override LocalizedText DisplayName =>
-        LocalizationManager.GetPrefixLocalization(this, "Efficient", "DisplayName");
-
-    public static LocalizedText Desc { get; private set; }
-
-    public override void ModifyValue(ref float valueMult)
-    {
-        valueMult = PrefixBalance.ACCESSORY_REFORGING_MULTIPLIER;
-    }
-
-    public override void SetStaticDefaults()
-    {
-        Desc = LocalizationManager.GetPrefixLocalization(this, "Efficient", nameof(Desc));
-    }
+    public override float ReforgeMultiplier => PrefixBalance.ACCESSORY_REFORGING_MULTIPLIER;
 
     public override IEnumerable<TooltipLine> GetTooltipLines(Item item)
     {
-        TooltipLine newLine = new(Mod, "newLine", Desc.Format(PrefixBalance.EFFICIENT_MANA_SAVED * 100))
+        yield return new TooltipLine(Mod, "newLine", Description.Format(PrefixBalance.EFFICIENT_MANA_SAVED * 100))
         {
             IsModifier = true
         };
-
-        yield return newLine;
     }
 
     public override void ApplyAccessoryEffects(Player player)
     {
         StatPlayer statPlayer = player.GetModPlayer<StatPlayer>();
-        statPlayer.ManaUsageMul -= statPlayer.CalculateStatBonus(PrefixBalance.EFFICIENT_MANA_SAVED, StatSource.AccessoryReforge);
+        statPlayer.AddStat(ModContent.GetInstance<ManaUsageStat>(), -PrefixBalance.EFFICIENT_MANA_SAVED);
     }
 }

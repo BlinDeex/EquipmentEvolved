@@ -1,47 +1,29 @@
 ﻿using System.Collections.Generic;
 using EquipmentEvolved.Assets.Balance;
 using EquipmentEvolved.Assets.Core;
-using EquipmentEvolved.Assets.Misc;
+using EquipmentEvolved.Assets.ModPrefixes.Core;
+using EquipmentEvolved.Assets.Stats.MobilityUtility;
 using Terraria;
-using Terraria.Localization;
 using Terraria.ModLoader;
 
 namespace EquipmentEvolved.Assets.ModPrefixes.Accessory;
 
-public class PrefixEarthShaper : ModPrefix
+public class PrefixEarthShaper : BaseEvolvedPrefix
 {
     public override PrefixCategory Category => PrefixCategory.Accessory;
-
-    public override LocalizedText DisplayName =>
-        LocalizationManager.GetPrefixLocalization(this, "EarthShaper", "DisplayName");
-
-    public static LocalizedText Desc { get; private set; }
-
-    public override void ModifyValue(ref float valueMult)
-    {
-        valueMult = PrefixBalance.ACCESSORY_REFORGING_MULTIPLIER;
-    }
-
-    public override void SetStaticDefaults()
-    {
-        Desc = LocalizationManager.GetPrefixLocalization(this, "EarthShaper", nameof(Desc));
-    }
+    public override float ReforgeMultiplier => PrefixBalance.ACCESSORY_REFORGING_MULTIPLIER;
 
     public override IEnumerable<TooltipLine> GetTooltipLines(Item item)
     {
-        TooltipLine newLine = new(Mod, "newLine", Desc.Format(PrefixBalance.EARTH_SHAPER_PICK_SPEED_REDUCE * 100))
+        yield return new TooltipLine(Mod, "newLine", Description.Format(PrefixBalance.EARTH_SHAPER_PICK_SPEED_REDUCE * 100))
         {
             IsModifier = true
         };
-
-        yield return newLine;
     }
 
     public override void ApplyAccessoryEffects(Player player)
     {
-        if (!player.TryGetModPlayer(out StatPlayer statPlayer)) return;
-
-        float reduction = statPlayer.CalculateStatBonus(PrefixBalance.EARTH_SHAPER_PICK_SPEED_REDUCE, StatSource.AccessoryReforge);
-        statPlayer.PickSpeedMul *= 1f - reduction;
+        StatPlayer statPlayer = player.GetModPlayer<StatPlayer>();
+        statPlayer.AddStat(ModContent.GetInstance<PickSpeedStat>(), -PrefixBalance.EARTH_SHAPER_PICK_SPEED_REDUCE, StatSource.Accessory);
     }
 }

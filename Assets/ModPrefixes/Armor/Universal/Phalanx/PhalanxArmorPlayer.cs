@@ -37,8 +37,9 @@ public class PhalanxArmorPlayer : ModPlayer
 
         Player.AddBuff(ModContent.BuffType<ArmorAbilityCooldownBuff>(), PrefixBalance.PHALANX_REACT_COOLDOWN_TICKS);
 
-        StatPlayer gsPlayer = Player.GetModPlayer<StatPlayer>();
-        gsPlayer.SetInvincibilityTicks(30);
+        // PORTED: We just use vanilla Terraria's built-in immunity variables!
+        Player.immune = true;
+        Player.immuneTime = 30;
 
         Vector2 playerToProjDir = (proj.Center - Player.Center).SafeNormalize(Vector2.UnitY);
 
@@ -89,6 +90,7 @@ public class PhalanxArmorPlayer : ModPlayer
 
         SoundEngine.PlaySound(explosionSoundEffect);
 
+        // Cancel the actual hit
         return false;
     }
 

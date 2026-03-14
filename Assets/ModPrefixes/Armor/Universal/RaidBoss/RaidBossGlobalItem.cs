@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using EquipmentEvolved.Assets.Balance;
 using EquipmentEvolved.Assets.Core;
+using EquipmentEvolved.Assets.Stats.Defense;
 using EquipmentEvolved.Assets.Utilities;
 using Terraria;
 using Terraria.ModLoader;
@@ -18,7 +19,7 @@ public class RaidBossGlobalItem : GlobalItem
             player.GetModPlayer<RaidBossModPlayer>().RaidBossPieces++;
 
             int bonusDefense = (int)Math.Round(item.defense * (PrefixBalance.RAID_BOSS_PIECE_DEFENSE_MULT - 1f), MidpointRounding.AwayFromZero);
-            player.GetModPlayer<StatPlayer>().FlatDefense += bonusDefense;
+            player.GetModPlayer<StatPlayer>().AddStat(ModContent.GetInstance<FlatDefenseStat>(), bonusDefense, StatSource.Armor);
         }
     }
 
