@@ -14,7 +14,7 @@ public class PrefixTripleShot : BaseEvolvedPrefix, ISpecializedPrefix
     public override float ReforgeMultiplier => PrefixBalance.WEAPON_REFORGING_MULTIPLIER;
     public SpecializedPrefixType SpecializedPrefixType => SpecializedPrefixType.MagicWeapon;
 
-    public override IEnumerable<TooltipLine> GetTooltipLines(Item item)
+    protected override IEnumerable<TooltipLine> OnGetTooltipLines(Item item)
     {
         yield return new TooltipLine(Mod, "newLine", Description.Value)
         {

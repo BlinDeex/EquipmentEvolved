@@ -15,12 +15,7 @@ public class PrefixRevealing : BaseEvolvedPrefix, ISpecializedPrefix
     public override float ReforgeMultiplier => PrefixBalance.TOOL_REFORGING_MULTIPLIER;
     public SpecializedPrefixType SpecializedPrefixType => SpecializedPrefixType.Pickaxe;
 
-    public override void SetStats(ref float damageMult, ref float knockbackMult, ref float useTimeMult, ref float scaleMult, ref float shootSpeedMult, ref float manaMult, ref int critBonus)
-    {
-        useTimeMult *= PrefixBalance.VEIN_MINER_MINING_SPEED; 
-    }
-
-    public override IEnumerable<TooltipLine> GetTooltipLines(Item item)
+    protected override IEnumerable<TooltipLine> OnGetTooltipLines(Item item)
     {
         yield return new TooltipLine(Mod, "newLine", Description.Format(MathF.Round(PrefixBalance.REVEALING_CHANCE * 100, 2)))
         {

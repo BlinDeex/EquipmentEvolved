@@ -7,14 +7,12 @@ using EquipmentEvolved.Assets.CharmsModule.Augmentations;
 using EquipmentEvolved.Assets.CharmsModule.Data;
 using EquipmentEvolved.Assets.CharmsModule.Dusts;
 using EquipmentEvolved.Assets.Core;
-using EquipmentEvolved.Assets.Misc;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using Terraria;
 using Terraria.GameContent;
 using Terraria.ID;
-using Terraria.Localization;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
 
@@ -22,9 +20,6 @@ namespace EquipmentEvolved.Assets.CharmsModule.Items;
 
 public class Charm : ModItem
 {
-    private const string statTypesTag = "statTypes";
-    private const string strengthsTag = "strengths";
-
     private int charmNameID;
 
     private int owner;
@@ -32,7 +27,6 @@ public class Charm : ModItem
     public CharmType CharmType { get; set; } = CharmType.NotInitialized;
     public CharmRarity CharmRarity { get; set; } = CharmRarity.NotInitialized;
     
-    // magic storage fix TODO didnt work
     public Guid UniqueID { get; set; } = Guid.NewGuid();
 
     public int CharmNameID
@@ -45,7 +39,14 @@ public class Charm : ModItem
         }
     }
 
-    public string CharmName => CharmBalance.SplitCamelCase((CharmName)CharmNameID);
+    public string CharmName 
+    {
+        get
+        {
+            if (CharmNameID == 0) return "Dormant"; 
+            return CharmBalance.SplitCamelCase((CharmName)CharmNameID);
+        }
+    }
     public Color CharmColor => CharmBalance.GetCharmColor(CharmRarity);
 
     public List<CharmRoll> Stats { get; set; } = [];
@@ -75,8 +76,6 @@ public class Charm : ModItem
         if (Stats != null) clone.Stats = [..Stats];
         if (Augmentations != null) clone.Augmentations = [..Augmentations];
         clone.UniqueID = UniqueID;
-        
-        // Without this, Magic Storage search bar only sees default name
         if (CharmNameID != 0)
         {
             newEntity.SetNameOverride(CharmName + " Charm");
@@ -124,7 +123,7 @@ public class Charm : ModItem
 
         float randomOffset = (position.X + position.Y) * 0.05f;
 
-        shader.Parameters["uColor"].SetValue(charmColor.ToVector3());
+        shader.Parameters["uColor"].SetValue(rarity == CharmRarity.Exalted ? Main.DiscoColor.ToVector3() * 2 : charmColor.ToVector3());
         shader.Parameters["uOpacity"].SetValue(1f);
         shader.Parameters["uShapeId"].SetValue(shapeId);
         shader.Parameters["uTime"].SetValue(Main.GlobalTimeWrappedHourly);
@@ -176,32 +175,31 @@ public class Charm : ModItem
 
     public override void ModifyTooltips(List<TooltipLine> tooltips)
     {
+        TooltipLine nameLine = tooltips.FirstOrDefault(t => t.Name == "ItemName" && t.Mod == "Terraria");
+
+        if (nameLine != null)
+        {
+            // 2. DORMANT FIX: If they somehow get the base item, hide the blank stats
+            if (CharmNameID == 0)
+            {
+                nameLine.Text = "Dormant Charm";
+                nameLine.OverrideColor = Color.Gray;
+                
+                tooltips.Add(new TooltipLine(Mod, "DormantDesc", "A dormant, unformed charm.\nUsed for crafting."));
+                return; // STOP HERE! Don't load blank stats.
+            }
+
+            // 3. NORMAL CHARMS: Apply the correct rolled name and color!
+            nameLine.Text = CharmName + " Charm";
+            nameLine.OverrideColor = CharmColor;
+        }
+        
         tooltips[0].Text = CharmName;
         tooltips[0].OverrideColor = CharmColor;
-
-        TooltipLine rarity = new(Mod, "charmRarity", CharmRarity.ToString())
-        {
-            OverrideColor = CharmColor
-        };
-        tooltips.Add(rarity);
-
-        string typeTranslation = CharmType switch
-        {
-            CharmType.NotInitialized => " Not Initialized",
-            CharmType.Circle => " [Weapon]",
-            CharmType.Square => " [Armor]",
-            CharmType.Triangle => " [Accessory]",
-            _ => throw new ArgumentOutOfRangeException()
-        };
-
-        tooltips.Add(new TooltipLine(Mod, "charmType", "Charm Type: " + CharmType + typeTranslation));
-
+        
         foreach (CharmRoll roll in Stats)
         {
-            // NEW: Use roll.Strength instead of RawStrength!
             float perfection = CharmBalance.GetRollQualityPercentage(CharmRarity, roll.Stat, roll.Strength);
-    
-            // NEW: roll.GetTooltip() automatically handles the missing stat check AND the formatting math!
             string text = roll.GetTooltip() + $" [{perfection}%]";
     
             tooltips.Add(new TooltipLine(Mod, "statLine", text) { OverrideColor = CharmBalance.GetStatColor(roll.Stat) });
@@ -218,6 +216,30 @@ public class Charm : ModItem
         }
     }
     
+    public override bool PreDrawTooltipLine(DrawableTooltipLine line, ref int yOffset)
+    {
+        if (line.Name == "ItemName" && line.Mod == "Terraria")
+        {
+            Effect charmShader = ModContent.Request<Effect>("EquipmentEvolved/Assets/Effects/Charms/CharmTextShader", AssetRequestMode.ImmediateLoad).Value;
+            if (charmShader == null) return true;
+            Main.spriteBatch.End();
+            Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Main.UIScaleMatrix);
+            charmShader.Parameters["uTime"]?.SetValue(Main.GlobalTimeWrappedHourly);
+            charmShader.CurrentTechnique.Passes[0].Apply();
+        }
+
+        return true; 
+    }
+    
+    public override void PostDrawTooltipLine(DrawableTooltipLine line)
+    {
+        if (line.Name == "ItemName" && line.Mod == "Terraria")
+        {
+            Main.spriteBatch.End();
+            Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Main.UIScaleMatrix);
+        }
+    }
+    
     public override void SaveData(TagCompound tag)
     {
         tag.Add(nameof(UniqueID), UniqueID.ToString());
@@ -225,8 +247,6 @@ public class Charm : ModItem
         tag.Add(nameof(CharmRarity), (int)CharmRarity);
 
         if (CharmNameID != 0) tag.Add(nameof(CharmNameID), CharmNameID);
-
-        // NEW: We just tell each CharmRoll to save itself as a TagCompound!
         if (Stats.Count > 0)
         {
             List<TagCompound> statTags = Stats.Select(x => x.SaveData()).ToList();
@@ -249,8 +269,6 @@ public class Charm : ModItem
             UniqueID = tag.ContainsKey(nameof(UniqueID)) ? Guid.Parse(tag.GetString(nameof(UniqueID))) : Guid.NewGuid();
         
             Stats.Clear();
-        
-            // NEW: Load the list of TagCompounds back into CharmRolls!
             if (tag.ContainsKey("StatsList"))
             {
                 IList<TagCompound> statTags = tag.GetList<TagCompound>("StatsList");
@@ -300,8 +318,6 @@ public class Charm : ModItem
         {
             writer.Write(aug.GetType().FullName!);
         }
-
-        // NEW: Just trigger the built-in NetSend method you wrote in CharmRoll!
         writer.Write((byte)Stats.Count);
         foreach (CharmRoll roll in Stats)
         {
@@ -324,8 +340,7 @@ public class Charm : ModItem
             Type augmentationType = System.Type.GetType(reader.ReadString());
             if (augmentationType != null) Augmentations.Add((AugmentationBase)Activator.CreateInstance(augmentationType));
         }
-
-        // NEW: Read the stats directly using your CharmRoll helper method!
+        
         int statsCount = reader.ReadByte();
         Stats.Clear();
         for (int i = 0; i < statsCount; i++)

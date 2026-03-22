@@ -2,7 +2,6 @@
 using EquipmentEvolved.Assets.Balance;
 using EquipmentEvolved.Assets.Core;
 using EquipmentEvolved.Assets.Stats.Combat;
-using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.ModLoader;
 
@@ -13,13 +12,13 @@ public class PrefixZealous : BaseEvolvedPrefix
     public override PrefixCategory Category => PrefixCategory.Accessory;
     public override float ReforgeMultiplier => PrefixBalance.ACCESSORY_REFORGING_MULTIPLIER;
 
-    public override IEnumerable<TooltipLine> GetTooltipLines(Item item)
+    protected override IEnumerable<TooltipLine> OnGetTooltipLines(Item item)
     {
         int speedInc = (int)((PrefixBalance.ZEALOUS_ATTACK_SPEED_MULT - 1f) * 100);
 
         yield return new TooltipLine(Mod, "ZealousDescription", Description.Format(speedInc))
         {
-            OverrideColor = Color.Crimson
+            IsModifier = true
         };
     }
 

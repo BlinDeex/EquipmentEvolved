@@ -18,14 +18,14 @@ public class PrefixStoic : BaseEvolvedPrefix
     public LocalizedText DescDefense { get; private set; }
     public LocalizedText DescDamage { get; private set; }
 
-    public override void SetStaticDefaults()
+    protected override void OnSetStaticDefaults()
     {
-        base.SetStaticDefaults(); 
+         
         DescDefense = GetLoc(nameof(DescDefense));
         DescDamage = GetLoc(nameof(DescDamage));
     }
 
-    public override IEnumerable<TooltipLine> GetTooltipLines(Item item)
+    protected override IEnumerable<TooltipLine> OnGetTooltipLines(Item item)
     {
         yield return new TooltipLine(Mod, "newLine", DescDefense.Format(Math.Round(PrefixBalance.STOIC_DEFENSE_INCREASE * 100, 2)))
         {

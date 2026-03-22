@@ -7,7 +7,9 @@ public class AggroStat : EquipmentStat
 {
     public override string FormatTooltip(float totalValue)
     {
-        return totalValue >= 0 ? $"+{(int)totalValue} Enemy Aggro" : $"{(int)totalValue} Enemy Aggro";
+        int aggro = (int)totalValue;
+        string key = aggro >= 0 ? "TooltipPositive" : "TooltipNegative";
+        return GetLocalization(key).Format(aggro);
     }
 
     public override void PostUpdateEquips(Player player, float totalValue)

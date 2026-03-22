@@ -19,14 +19,14 @@ public class PrefixSymbiotic : BaseEvolvedPrefix, ISpecializedPrefix
     public LocalizedText CurseDesc { get; private set; }
     public LocalizedText SetBonus { get; private set; }
 
-    public override void SetStaticDefaults()
+    protected override void OnSetStaticDefaults()
     {
-        base.SetStaticDefaults(); // Grabs the standard Description
+         // Grabs the standard Description
         CurseDesc = GetLoc(nameof(CurseDesc));
         SetBonus = GetLoc(nameof(SetBonus));
     }
 
-    public override IEnumerable<TooltipLine> GetTooltipLines(Item item)
+    protected override IEnumerable<TooltipLine> OnGetTooltipLines(Item item)
     {
         TooltipLine descLine = new(Mod, "SymbioticDesc", Description.Format(MathF.Round(CharmBalance.SYMBIOTIC_BASE_QUALITY_BOOST * 100, 1)))
         {

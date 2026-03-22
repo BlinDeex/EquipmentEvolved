@@ -12,7 +12,7 @@ public class PrefixRevitalizing : BaseEvolvedPrefix
     public override PrefixCategory Category => PrefixCategory.Accessory;
     public override float ReforgeMultiplier => PrefixBalance.ACCESSORY_REFORGING_MULTIPLIER;
 
-    public override IEnumerable<TooltipLine> GetTooltipLines(Item item)
+    protected override IEnumerable<TooltipLine> OnGetTooltipLines(Item item)
     {
         yield return new TooltipLine(Mod, "newLine", Description.Format(PrefixBalance.REVITALIZING_REGENERATION / 2))
         {

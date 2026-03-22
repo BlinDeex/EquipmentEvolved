@@ -1,5 +1,6 @@
 using EquipmentEvolved.Assets.Balance;
-using EquipmentEvolved.Assets.CharmsModule.Augmentations;
+using EquipmentEvolved.Assets.CharmsModule.Augmentations.ArmorAugmentations;
+using EquipmentEvolved.Assets.Core;
 using EquipmentEvolved.Assets.ModPrefixes.Armor.Core;
 using EquipmentEvolved.Assets.Utilities;
 using Terraria;
@@ -39,7 +40,7 @@ public class CursedArmorPlayer : ModPlayer
 
     private void ModifyDamageForCursed(ref Player.HurtInfo info)
     {
-        bool cursedAugmentation = Player.GetModPlayer<AugmentationsPlayer>().CursedAugmentation;
+        bool cursedAugmentation = Player.GetModPlayer<StatPlayer>().HasFlag<CursedAugmentation>();
 
         float ignoredDamageThreshold = cursedAugmentation ? PrefixBalance.AUGMENTATION_CURSED_IGNORED_DAMAGE_PERCENT_THRESHOLD : PrefixBalance.CURSED_IGNORED_DAMAGE_PERCENT_THRESHOLD;
 

@@ -19,22 +19,21 @@ public class PrefixPhantom : BaseEvolvedPrefix, ISpecializedPrefix, IExperimenta
 
     public LocalizedText SetBonus { get; private set; }
 
-    public override void SetStaticDefaults()
+    protected override void OnSetStaticDefaults()
     {
-        base.SetStaticDefaults();
+        
         SetBonus = GetLoc(nameof(SetBonus));
     }
 
-    public override IEnumerable<TooltipLine> GetTooltipLines(Item item)
+    protected override IEnumerable<TooltipLine> OnGetTooltipLines(Item item)
     {
-        TooltipLine newLine = new(Mod, "newLine", Description.Format(MathF.Round((PrefixBalance.CHRONO_MOVEMENT_SPEED - 1) * 100, 1)))
+        TooltipLine newLine = new(Mod, "newLine", Description.Format(MathF.Round(PrefixBalance.PHANTOM_TRUE_DAMAGE_AMP * 100, 2)))
         {
             IsModifier = true
         };
         
-        bool setBonusActive = Main.LocalPlayer.GetModPlayer<ChronoArmorPlayer>().ChronoSetBonus;
-
-        TooltipLine newLine2 = new(Mod, "newLine2", SetBonus.Format(Math.Round(PrefixBalance.CHRONO_ABILITY_LENGTH / 60f, 1)))
+        bool setBonusActive = Main.LocalPlayer.GetModPlayer<PhantomArmorPlayer>().PhantomSetBonus;
+        TooltipLine newLine2 = new(Mod, "newLine2", SetBonus.Format(Math.Round(PrefixBalance.CHRONO_ABILITY_LENGTH / 60f, 2)))
         {
             IsModifier = true,
             IsModifierBad = !setBonusActive

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using EquipmentEvolved.Assets.Balance;
 using EquipmentEvolved.Assets.Core;
 using EquipmentEvolved.Assets.ModPrefixes.Armor.Core;
+using EquipmentEvolved.Assets.Stats.Abilities;
 using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.Audio;
@@ -33,11 +34,25 @@ public class PhalanxArmorPlayer : ModPlayer
 
         if (proj.damage < PrefixBalance.PHALANX_MIN_DAMAGE_TO_REACT && Player.statLife > proj.damage) return true;
 
-        if (Player.HasBuff(ModContent.BuffType<ArmorAbilityCooldownBuff>())) return true;
-
-        Player.AddBuff(ModContent.BuffType<ArmorAbilityCooldownBuff>(), PrefixBalance.PHALANX_REACT_COOLDOWN_TICKS);
-
-        // PORTED: We just use vanilla Terraria's built-in immunity variables!
+        StatPlayer statPlayer = Player.GetModPlayer<StatPlayer>();
+        
+        bool isOverclocked = statPlayer.GetTotalStat(ModContent.GetInstance<PhalanxOverclock>()) > 0;
+        
+        if (!isOverclocked && Player.HasBuff(ModContent.BuffType<ArmorAbilityCooldownBuff>())) return true;
+        
+        if (!isOverclocked)
+        {
+            Player.AddBuff(ModContent.BuffType<ArmorAbilityCooldownBuff>(), PrefixBalance.PHALANX_REACT_COOLDOWN_TICKS);
+            
+            if (statPlayer.HasFlag<PhalanxOverclock>()) 
+            {
+                statPlayer.AddTemporaryStat(
+                    stat: ModContent.GetInstance<PhalanxOverclock>(), 
+                    value: 1f, 
+                    durationTicks: PrefixBalance.PHALANX_AUGMENTATION_OVERCLOCK_TICKS, 
+                    mode: StatReapplicationMode.RefreshDuration);
+            }
+        }
         Player.immune = true;
         Player.immuneTime = 30;
 
@@ -88,9 +103,8 @@ public class PhalanxArmorPlayer : ModPlayer
             Projectile.NewProjectile(null, proj.Center, shockwaveSpawn * shockwaveSpeed, projID, 100, 3f);
         }
 
-        SoundEngine.PlaySound(explosionSoundEffect);
+        Terraria.Audio.SoundEngine.PlaySound(explosionSoundEffect);
 
-        // Cancel the actual hit
         return false;
     }
 

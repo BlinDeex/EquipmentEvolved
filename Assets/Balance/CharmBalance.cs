@@ -120,7 +120,7 @@ public static class CharmBalance
                     { ModContent.GetInstance<RegenStat>(), (CharmRarity.Rare, 0.25f, 0.75f) },
                     { ModContent.GetInstance<HealingMulStat>(), (CharmRarity.Epic, 0.01f, 0.03f) },
                     { ModContent.GetInstance<LifeStealStat>(), (CharmRarity.Legendary, 0.008f, 0.016f) },
-                    { ModContent.GetInstance<DamageLifestealStat>(), (CharmRarity.Epic, 0.01f, 0.03f) },
+                    { ModContent.GetInstance<DamageLifestealStat>(), (CharmRarity.Epic, 0.08f, 0.12f) },
                     { ModContent.GetInstance<DamageReductionStat>(), (CharmRarity.Mythical, 0.01f, 0.02f) },
                     { ModContent.GetInstance<IframesStat>(), (CharmRarity.Legendary, 1.0f, 3.0f) } 
                 };
@@ -154,13 +154,7 @@ public static class CharmBalance
         { CharmRarity.Epic, () => new Color(255, 0, 255) },
         { CharmRarity.Legendary, () => new Color(255, 255, 0) },
         { CharmRarity.Mythical, () => new Color(255, 100, 100) },
-        {
-            CharmRarity.Exalted, () =>
-            {
-                float pulse = (MathF.Sin(Main.GlobalTimeWrappedHourly * 3f) + 1f) / 2f;
-                return Color.Lerp(Main.DiscoColor, Color.White, 0.2f + 0.6f * pulse);
-            }
-        }
+        { CharmRarity.Exalted, () => new Color(0, 255, 0) } // The Secret Shader Key!
     };
 
     public static Color GetCharmColor(CharmRarity rarity)

@@ -9,11 +9,12 @@ public class DefenseMulStat : EquipmentStat
     public override string FormatTooltip(float totalValue)
     {
         int percent = (int)Math.Round(totalValue * 100);
-        return percent < 0 ? $"{percent}% Defense" : $"+{percent}% Defense";
+        string key = percent >= 0 ? "TooltipPositive" : "TooltipNegative";
+        return GetLocalization(key).Format(percent);
     }
 
-    public override void PostUpdateEquips(Player player, float totalValue)
+    public override void UpdateEquips(Player player, float totalValue)
     {
-        player.statDefense.FinalMultiplier *= (1f + totalValue);
+        player.statDefense.FinalMultiplier *= 1f + totalValue;
     }
 }

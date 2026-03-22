@@ -1,9 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using EquipmentEvolved.Assets.Balance;
 using EquipmentEvolved.Assets.Core;
 using EquipmentEvolved.Assets.Misc;
 using EquipmentEvolved.Assets.ModPrefixes.Core;
-using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.ModLoader;
 
@@ -20,11 +20,11 @@ public class PrefixSundering : BaseEvolvedPrefix, ISpecializedPrefix
         damageMult *= PrefixBalance.SUNDERING_DAMAGE_MUL;
     }
 
-    public override IEnumerable<TooltipLine> GetTooltipLines(Item item)
+    protected override IEnumerable<TooltipLine> OnGetTooltipLines(Item item)
     {
-        yield return new TooltipLine(Mod, "SunderingDescription", Description.Value)
+        yield return new TooltipLine(Mod, "SunderingDescription", Description.Format(MathF.Round(PrefixBalance.SUNDERING_DEFENSE_REDUCTION, 2)))
         {
-            OverrideColor = Color.OrangeRed
+            IsModifier = true
         };
     }
 }

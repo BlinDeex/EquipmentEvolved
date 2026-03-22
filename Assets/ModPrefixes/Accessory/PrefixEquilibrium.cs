@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using EquipmentEvolved.Assets.Balance;
 using EquipmentEvolved.Assets.Core;
-using EquipmentEvolved.Assets.ModPrefixes.Core;
 using EquipmentEvolved.Assets.Stats.Combat;
 using EquipmentEvolved.Assets.Stats.Defense;
 using EquipmentEvolved.Assets.Stats.MobilityUtility;
@@ -20,16 +19,16 @@ public class PrefixEquilibrium : BaseEvolvedPrefix
     public LocalizedText AerodynamicDesc { get; private set; }
     public LocalizedText RevitalizingDesc { get; private set; }
 
-    public override void SetStaticDefaults()
+    protected override void OnSetStaticDefaults()
     {
-        base.SetStaticDefaults();
+        
         FortifiedDesc = GetLoc(nameof(FortifiedDesc));
         WarlordDesc = GetLoc(nameof(WarlordDesc));
         AerodynamicDesc = GetLoc(nameof(AerodynamicDesc));
         RevitalizingDesc = GetLoc(nameof(RevitalizingDesc));
     }
 
-    public override IEnumerable<TooltipLine> GetTooltipLines(Item item)
+    protected override IEnumerable<TooltipLine> OnGetTooltipLines(Item item)
     {
         yield return new TooltipLine(Mod, "newLine", FortifiedDesc.Format(PrefixBalance.EQUILIBRIUM_DEFENSE * 100)) { IsModifier = true };
         yield return new TooltipLine(Mod, "newLine2", WarlordDesc.Format(PrefixBalance.EQUILIBRIUM_MINIONS)) { IsModifier = true };

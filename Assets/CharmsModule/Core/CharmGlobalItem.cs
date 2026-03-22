@@ -60,6 +60,11 @@ public class CharmGlobalItem : GlobalItem
         charmName = data.CharmName;
     }
 
+    public override void UpdateEquip(Item item, Player player)
+    {
+        ApplyHeldStats(player);
+    }
+    
     public void ApplyCharm(Charm charm, Item targetItem)
     {
         AppliedCharmRarity = charm.CharmRarity;
@@ -162,8 +167,6 @@ public class CharmGlobalItem : GlobalItem
         if (data.Stats == null || data.Stats.Count == 0) return;
 
         tag.Add(nameof(AppliedCharmRarity), (int)data.Rarity);
-
-        // NEW: Tell each CharmRoll to save itself!
         List<TagCompound> statTags = data.Stats.Select(x => x.SaveData()).ToList();
         tag.Add("StatsList", statTags);
     }
@@ -173,8 +176,6 @@ public class CharmGlobalItem : GlobalItem
         if (appliedStats.Count == 0) return;
 
         tag.Add(nameof(AppliedCharmRarity), (int)AppliedCharmRarity);
-
-        // NEW: Tell each CharmRoll to save itself!
         List<TagCompound> statTags = appliedStats.Select(x => x.SaveData()).ToList();
         tag.Add("StatsList", statTags);
     }
@@ -195,13 +196,10 @@ public class CharmGlobalItem : GlobalItem
 
     private void LoadStats(TagCompound tag)
     {
-        // Make sure we clear before loading
         appliedStats.Clear(); 
 
         charmName = tag.ContainsKey("charmName") ? tag.GetString("charmName") : string.Empty;
         AppliedCharmRarity = tag.ContainsKey(nameof(AppliedCharmRarity)) ? (CharmRarity)tag.GetInt(nameof(AppliedCharmRarity)) : CharmRarity.NotInitialized;
-
-        // NEW: Load the list of TagCompounds back into CharmRolls!
         if (tag.ContainsKey("StatsList"))
         {
             IList<TagCompound> statTags = tag.GetList<TagCompound>("StatsList");
@@ -278,8 +276,6 @@ public class CharmGlobalItem : GlobalItem
         }
 
         writer.Write((byte)dataToSend.Rarity);
-
-        // NEW: Trigger the built-in NetSend method
         writer.Write((byte)dataToSend.Stats.Count);
         foreach (CharmRoll roll in dataToSend.Stats)
         {
@@ -310,10 +306,10 @@ public class CharmGlobalItem : GlobalItem
 
         AppliedCharmRarity = (CharmRarity)reader.ReadByte();
 
-        int count = reader.ReadInt32();
+        // FIXED: Now correctly reads a single byte just like NetSend wrote!
+        int count = reader.ReadByte(); 
+        
         appliedStats = new List<CharmRoll>(count);
-
-        // NEW: Read the stats directly using your CharmRoll helper method!
         for (int i = 0; i < count; i++)
         {
             CharmRoll roll = CharmRoll.NetReceive(reader);
@@ -372,11 +368,8 @@ public class CharmGlobalItem : GlobalItem
         for (int i = 0; i < appliedStats.Count; i++)
         {
             CharmRoll roll = appliedStats[i];
-        
-            // NEW: Use roll.Strength instead of RawStrength!
+            
             float perfection = CharmBalance.GetRollQualityPercentage(AppliedCharmRarity, roll.Stat, roll.Strength);
-        
-            // NEW: roll.GetTooltip() replaces the old StatTexts dictionary entirely!
             string text = roll.GetTooltip() + $" [{perfection}%]";
 
             AddCharmLine(tooltips, $"CharmStat_{i}", text, CharmBalance.GetStatColor(roll.Stat));

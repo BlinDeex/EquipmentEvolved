@@ -17,7 +17,7 @@ public class PrefixVoid : BaseEvolvedPrefix, ISpecializedPrefix
     public override float ReforgeMultiplier => PrefixBalance.ARMOR_REFORGING_MULTIPLIER;
     public SpecializedPrefixType SpecializedPrefixType => SpecializedPrefixType.Chestplate;
 
-    public override IEnumerable<TooltipLine> GetTooltipLines(Item item)
+    protected override IEnumerable<TooltipLine> OnGetTooltipLines(Item item)
     {
         int damagePercent = (int)Math.Round(PrefixBalance.VOID_TRUE_DAMAGE_BONUS * 100);
         yield return new TooltipLine(Mod, "VoidDesc", Description.Format(damagePercent)) { IsModifier = true };

@@ -8,7 +8,6 @@ using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace EquipmentEvolved.Assets.Core;
-
 public class PrefixValidator
 {
     public static bool CanApplyPrefix(Item item, int prefix)

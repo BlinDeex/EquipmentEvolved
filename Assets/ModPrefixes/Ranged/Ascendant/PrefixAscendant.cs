@@ -7,7 +7,6 @@ using EquipmentEvolved.Assets.ModPrefixes.Core;
 using EquipmentEvolved.Assets.Utilities;
 using Microsoft.Xna.Framework;
 using Terraria;
-using Terraria.Localization;
 using Terraria.ModLoader;
 
 namespace EquipmentEvolved.Assets.ModPrefixes.Ranged.Ascendant;
@@ -18,13 +17,13 @@ public class PrefixAscendant : BaseEvolvedPrefix, ISpecializedPrefix
     public override float ReforgeMultiplier => PrefixBalance.WEAPON_REFORGING_MULTIPLIER;
     public SpecializedPrefixType SpecializedPrefixType => SpecializedPrefixType.RangedWeapon;
 
-    public override IEnumerable<TooltipLine> GetTooltipLines(Item item)
+    protected override IEnumerable<TooltipLine> OnGetTooltipLines(Item item)
     {
         if (!item.TryGetGlobalItem(out AscendantGlobalItem ascendantGI))
         {
             yield return new TooltipLine(Mod, "newLine2", $"Could not get {nameof(AscendantGlobalItem)}!")
             {
-                OverrideColor = Color.Red
+                IsModifier = true, IsModifierBad = true
             };
             yield break;
         }

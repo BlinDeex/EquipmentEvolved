@@ -3,7 +3,6 @@ using EquipmentEvolved.Assets.Balance;
 using EquipmentEvolved.Assets.Core;
 using EquipmentEvolved.Assets.Misc;
 using EquipmentEvolved.Assets.ModPrefixes.Core;
-using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.ModLoader;
 
@@ -15,13 +14,13 @@ public class PrefixOverloaded : BaseEvolvedPrefix, ISpecializedPrefix, IExperime
     public override float ReforgeMultiplier => PrefixBalance.WEAPON_REFORGING_MULTIPLIER;
     public SpecializedPrefixType SpecializedPrefixType => SpecializedPrefixType.MagicWeapon;
 
-    public override IEnumerable<TooltipLine> GetTooltipLines(Item item)
+    protected override IEnumerable<TooltipLine> OnGetTooltipLines(Item item)
     {
         int damageEfficiency = (int)(PrefixBalance.OVERLOADED_DAMAGE_EFFICIENCY * 100);
 
         yield return new TooltipLine(Mod, "OverloadedDescription", Description.Format(damageEfficiency))
         {
-            OverrideColor = Color.Magenta
+            IsModifier = true
         };
     }
 }

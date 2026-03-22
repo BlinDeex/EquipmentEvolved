@@ -33,7 +33,7 @@ public class ControlledGlobalItem : GlobalItem
 
     public override void ModifyShootStats(Item item, Player player, ref Vector2 position, ref Vector2 velocity, ref int type, ref int damage, ref float knockback)
     {
-        if (item.HasPrefix(ModContent.PrefixType<PrefixControlled>())) velocity *= PrefixBalance.CONTROLLED_BULLET_VELOCITY;
+        if (item.HasPrefix(ModContent.PrefixType<PrefixControlled>())) velocity *= PrefixBalance.CONTROLLED_BULLET_VELOCITY; //TODO replace as a new equipment stat
     }
 
     private void PrefixControlled(Item item, out bool canUse)

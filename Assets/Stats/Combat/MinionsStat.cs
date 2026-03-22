@@ -1,12 +1,12 @@
-﻿using EquipmentEvolved.Assets.Core;
+﻿using System;
+using EquipmentEvolved.Assets.Core;
 using Terraria;
 
 namespace EquipmentEvolved.Assets.Stats.Combat;
 
 public class MinionsStat : EquipmentStat
 {
-    public override string FormatTooltip(float totalValue) => 
-        $"+{(int)totalValue} Max Minions";
+    public override string FormatTooltip(float totalValue) => GetLocalization("Tooltip").Format(Math.Round(totalValue, 2));
 
     public override void PostUpdateEquips(Player player, float totalValue)
     {

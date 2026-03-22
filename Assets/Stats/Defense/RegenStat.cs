@@ -6,8 +6,7 @@ namespace EquipmentEvolved.Assets.Stats.Defense;
 
 public class RegenStat : EquipmentStat
 {
-    public override string FormatTooltip(float totalValue) => 
-        $"+{Math.Round(totalValue, 1)} Life Regeneration";
+    public override string FormatTooltip(float totalValue) => GetLocalization("Tooltip").Format(Math.Round(totalValue, 1));
 
     public override void UpdateLifeRegen(Player player, float totalValue)
     {

@@ -6,6 +6,7 @@ using EquipmentEvolved.Assets.Misc;
 using EquipmentEvolved.Assets.ModPrefixes.Armor.Core;
 using EquipmentEvolved.Assets.ModPrefixes.Core;
 using EquipmentEvolved.Assets.Stats.Defense;
+using EquipmentEvolved.Assets.Utilities;
 using Terraria;
 using Terraria.Localization;
 using Terraria.ModLoader;
@@ -18,27 +19,31 @@ public class PrefixReinforced : BaseEvolvedPrefix, ISpecializedPrefix
     public override float ReforgeMultiplier => PrefixBalance.ARMOR_REFORGING_MULTIPLIER;
     public SpecializedPrefixType SpecializedPrefixType => SpecializedPrefixType.Headwear;
 
-    public LocalizedText NoSetBonus { get; private set; }
+    
 
-    public override void SetStaticDefaults()
+    protected override void OnSetStaticDefaults()
     {
-        base.SetStaticDefaults(); // Gets the base Description safely
-        NoSetBonus = LocalizationManager.GetSharedLocalizedText(LocalizationManager.NoArmorSetBonus);
+        
+        
+        
+        DefenseTooltipGlobalItem.DefenseModifiers.Add((item, _) =>
+        {
+            if (item.HasPrefix(ModContent.PrefixType<PrefixReinforced>()))
+            {
+                return (int)(item.defense * PrefixBalance.REINFORCED_DEFENSE_AMP);
+            }
+                
+            return 0;
+        });
     }
 
-    public override IEnumerable<TooltipLine> GetTooltipLines(Item item)
+    protected override IEnumerable<TooltipLine> OnGetTooltipLines(Item item)
     {
         int defenseAdded = (int)(item.defense * PrefixBalance.REINFORCED_DEFENSE_AMP);
         
-        yield return new TooltipLine(Mod, "newLine", Description.Format(defenseAdded, MathF.Round(PrefixBalance.REINFORCED_DEFENSE_AMP * 100, 2)))
+        yield return new TooltipLine(Mod, "newLine", Description.Format(MathF.Round(PrefixBalance.REINFORCED_DEFENSE_AMP * 100, 2)))
         {
             IsModifier = true
-        };
-
-        yield return new TooltipLine(Mod, "newLine2", NoSetBonus.Value)
-        {
-            IsModifier = true,
-            IsModifierBad = true
         };
     }
 

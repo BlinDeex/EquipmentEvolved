@@ -8,8 +8,7 @@ namespace EquipmentEvolved.Assets.Stats.Custom;
 
 public class TrueDamagePercentageStat : EquipmentStat
 {
-    public override string FormatTooltip(float totalValue) => 
-        $"+{Math.Round(totalValue * 100)}% Target Max Health as True Damage";
+    public override string FormatTooltip(float totalValue) => GetLocalization("Tooltip").Format(Math.Round(totalValue * 100));
 
     public override void OnHitNPC(Player player, NPC target, NPC.HitInfo hit, int damageDone, float totalValue)
     {

@@ -18,13 +18,13 @@ public class PrefixRaidBoss : BaseEvolvedPrefix, ISpecializedPrefix
 
     public LocalizedText SetBonus { get; private set; }
 
-    public override void SetStaticDefaults()
+    protected override void OnSetStaticDefaults()
     {
-        base.SetStaticDefaults();
+        
         SetBonus = GetLoc(nameof(SetBonus));
     }
 
-    public override IEnumerable<TooltipLine> GetTooltipLines(Item item)
+    protected override IEnumerable<TooltipLine> OnGetTooltipLines(Item item)
     {
         TooltipLine newLine = new(Mod, "newLine", Description.Format(MathF.Round((PrefixBalance.RAID_BOSS_PIECE_DEFENSE_MULT - 1f) * 100, 1)))
         {

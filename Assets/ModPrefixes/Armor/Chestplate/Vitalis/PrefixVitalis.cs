@@ -18,25 +18,11 @@ public class PrefixVitalis : BaseEvolvedPrefix, ISpecializedPrefix
     public override float ReforgeMultiplier => PrefixBalance.ARMOR_REFORGING_MULTIPLIER;
     public SpecializedPrefixType SpecializedPrefixType => SpecializedPrefixType.Chestplate;
 
-    public LocalizedText NoSetBonus { get; private set; }
-
-    public override void SetStaticDefaults()
-    {
-        base.SetStaticDefaults(); // Gets the base Description safely
-        NoSetBonus = LocalizationManager.GetSharedLocalizedText(LocalizationManager.NoArmorSetBonus);
-    }
-
-    public override IEnumerable<TooltipLine> GetTooltipLines(Item item)
+    protected override IEnumerable<TooltipLine> OnGetTooltipLines(Item item)
     {
         yield return new TooltipLine(Mod, "newLine", Description.Format(Math.Round((PrefixBalance.VITALIS_LIFESTEAL_AMP - 1) * 100), 0))
         {
             IsModifier = true
-        };
-
-        yield return new TooltipLine(Mod, "newLine2", NoSetBonus.Value)
-        {
-            IsModifier = true,
-            IsModifierBad = true
         };
     }
 

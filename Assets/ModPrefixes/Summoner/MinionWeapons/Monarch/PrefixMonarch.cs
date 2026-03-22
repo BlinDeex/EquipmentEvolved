@@ -15,16 +15,16 @@ public class PrefixMonarch : BaseEvolvedPrefix, ISpecializedPrefix
     public override float ReforgeMultiplier => PrefixBalance.WEAPON_REFORGING_MULTIPLIER * 1.25f;
     public SpecializedPrefixType SpecializedPrefixType => SpecializedPrefixType.MinionWeapon;
 
-    public override IEnumerable<TooltipLine> GetTooltipLines(Item item)
+    protected override IEnumerable<TooltipLine> OnGetTooltipLines(Item item)
     {
         yield return new TooltipLine(Mod, "Desc", Description.Format((PrefixBalance.MONARCH_EFFICIENCY_BONUS_PER_STACK * 100).ToString("0"), (PrefixBalance.MONARCH_SIZE_PER_STACK * 100).ToString("0")))
         {
-            OverrideColor = Color.Gold
+            IsModifier = true
         };
 
         yield return new TooltipLine(Mod, "Mechanic", "Summoning again feeds the Monarch, increasing Size, Damage, and Slot usage.")
         {
-            OverrideColor = Color.Lerp(Color.Gold, Color.White, 0.5f)
+            IsModifier = true
         };
         
         Projectile activeMonarch = null;
@@ -48,7 +48,7 @@ public class PrefixMonarch : BaseEvolvedPrefix, ISpecializedPrefix
 
             yield return new TooltipLine(Mod, "Status", status)
             {
-                OverrideColor = Color.LimeGreen
+                IsModifier = true
             };
         }
         else

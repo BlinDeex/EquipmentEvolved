@@ -18,14 +18,21 @@ public class PrefixUntouchable : BaseEvolvedPrefix, ISpecializedPrefix
 
     public LocalizedText IncreasedDamageTaken { get; private set; }
 
-    public override void SetStaticDefaults()
+    protected override void OnSetStaticDefaults()
     {
-        base.SetStaticDefaults(); // BaseEvolvedPrefix handles "Description" for you!
+         // BaseEvolvedPrefix handles "Description" for you!
         IncreasedDamageTaken = GetLoc(nameof(IncreasedDamageTaken));
     }
 
-    public override IEnumerable<TooltipLine> GetTooltipLines(Item item)
+    protected override IEnumerable<TooltipLine> OnGetTooltipLines(Item item)
     {
+        if (!Main.LocalPlayer.TryGetModPlayer(out UntouchableModPlayer prefixPlayer)) yield break;
+
+        yield return new TooltipLine(Mod, "newLine3", LocalizationManager.GetSharedLocalizedText(LocalizationManager.XDamageAdded).Format(Math.Round(prefixPlayer.UntouchableDamageIncrease * 100, 2)))
+        {
+            IsModifier = true
+        };
+        
         yield return new TooltipLine(Mod, "newLine", Description.Value)
         {
             IsModifier = true
@@ -35,13 +42,6 @@ public class PrefixUntouchable : BaseEvolvedPrefix, ISpecializedPrefix
         {
             IsModifier = true,
             IsModifierBad = true
-        };
-
-        if (!Main.LocalPlayer.TryGetModPlayer(out UntouchableModPlayer prefixPlayer)) yield break;
-
-        yield return new TooltipLine(Mod, "newLine3", LocalizationManager.GetSharedLocalizedText(LocalizationManager.XDamageAdded).Format(Math.Round(prefixPlayer.UntouchableDamageIncrease * 100, 2)))
-        {
-            IsModifier = true
         };
     }
 }

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using EquipmentEvolved.Assets.Balance;
 using EquipmentEvolved.Assets.Core;
-using EquipmentEvolved.Assets.ModPrefixes.Core;
 using EquipmentEvolved.Assets.Stats.Defense;
 using Terraria;
 using Terraria.Localization;
@@ -19,14 +18,14 @@ public class PrefixBloodForged : BaseEvolvedPrefix
     public LocalizedText MaxHealth { get; private set; }
     public LocalizedText Defense { get; private set; }
 
-    public override void SetStaticDefaults()
+    protected override void OnSetStaticDefaults()
     {
-        base.SetStaticDefaults(); // Gets the normal description setup safely
+         // Gets the normal description setup safely
         MaxHealth = GetLoc(nameof(MaxHealth));
         Defense = GetLoc(nameof(Defense));
     }
 
-    public override IEnumerable<TooltipLine> GetTooltipLines(Item item)
+    protected override IEnumerable<TooltipLine> OnGetTooltipLines(Item item)
     {
         yield return new TooltipLine(Mod, "newLine", Defense.Format(MathF.Round(PrefixBalance.BLOOD_FORGED_DEFENSE * 100f, 2)))
         { 

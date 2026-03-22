@@ -1,4 +1,5 @@
-﻿using EquipmentEvolved.Assets.Misc;
+﻿using EquipmentEvolved.Assets.Balance;
+using EquipmentEvolved.Assets.Misc;
 using EquipmentEvolved.Assets.Utilities;
 using Terraria;
 using Terraria.DataStructures;
@@ -40,7 +41,7 @@ public class PerceptiveGlobalProjectile : GlobalProjectile
             float damageMult = 1f;
             int critToCheck = currentCrit - 100;
             int tierReached = 0;
-            const int MAX_TIER = 6;
+            int MAX_TIER = PrefixBalance.PERCEPTIVE_MAX_TIER;
 
             while (critToCheck > 0 && tierReached < MAX_TIER)
             {

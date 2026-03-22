@@ -14,7 +14,7 @@ public class PrefixThaumic : BaseEvolvedPrefix, ISpecializedPrefix
     public override float ReforgeMultiplier => PrefixBalance.WEAPON_REFORGING_MULTIPLIER;
     public SpecializedPrefixType SpecializedPrefixType => SpecializedPrefixType.RangedWeapon;
 
-    public override IEnumerable<TooltipLine> GetTooltipLines(Item item)
+    protected override IEnumerable<TooltipLine> OnGetTooltipLines(Item item)
     {
         float baseDurationSeconds = PrefixBalance.THAUMIC_BASE_DURATION_TICKS / 60f;
         float extensionSeconds = PrefixBalance.THAUMIC_EXTENSION_TICKS / 60f;

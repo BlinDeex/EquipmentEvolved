@@ -1,6 +1,4 @@
 ﻿using System.Linq;
-using EquipmentEvolved.Assets.ModPrefixes.Armor.Misc;
-using Terraria;
 using Terraria.ModLoader;
 
 namespace EquipmentEvolved.Assets.Core;

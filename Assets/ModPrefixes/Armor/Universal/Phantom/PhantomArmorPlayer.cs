@@ -1,7 +1,8 @@
 using System;
 using System.Collections.Generic;
 using EquipmentEvolved.Assets.Balance;
-using EquipmentEvolved.Assets.CharmsModule.Augmentations;
+using EquipmentEvolved.Assets.CharmsModule.Augmentations.ArmorAugmentations;
+using EquipmentEvolved.Assets.Core;
 using EquipmentEvolved.Assets.ModPrefixes.Armor.Core;
 using Microsoft.Xna.Framework;
 using ReLogic.Utilities;
@@ -46,12 +47,9 @@ public class PhantomArmorPlayer : ModPlayer
 
     public override bool CanUseItem(Item item)
     {
-        if (Player.HasBuff<VoidSealBuff>())
-        {
-            if (item.healLife > 0) return false;
-
-            if (item.healMana > 0) return false;
-        }
+        if (!Player.HasBuff<VoidSealBuff>() || Player.GetModPlayer<StatPlayer>().HasFlag<PhantomAugmentation>()) return true;
+        if (item.healLife > 0) return false;
+        if (item.healMana > 0) return false;
 
         return true;
     }
@@ -112,7 +110,7 @@ public class PhantomArmorPlayer : ModPlayer
 
     public override void PreUpdateBuffs()
     {
-        if (Player.HasBuff<VoidSealBuff>())
+        if (Player.HasBuff<VoidSealBuff>() && !Player.GetModPlayer<StatPlayer>().HasFlag<PhantomAugmentation>())
         {
             if (Player.statLife > oldHp) Player.statLife = oldHp;
 
@@ -138,7 +136,7 @@ public class PhantomArmorPlayer : ModPlayer
         }
 
 
-        bool phantomAugmented = Player.GetModPlayer<AugmentationsPlayer>().PhantomAugmentation;
+        bool phantomAugmented = Player.GetModPlayer<StatPlayer>().HasFlag<PhantomAugmentation>();
         int projectileCount = phantomAugmented ? PrefixBalance.PHANTOM_CLONES_COUNT_AUGMENTED : PrefixBalance.PHANTOM_CLONES_COUNT;
 
         float angleIncrementor = 360f / projectileCount;

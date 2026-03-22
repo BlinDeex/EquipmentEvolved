@@ -9,7 +9,8 @@ public class PickSpeedStat : EquipmentStat
     public override string FormatTooltip(float totalValue)
     {
         int percent = (int)Math.Round(totalValue * 100);
-        return percent < 0 ? $"{percent}% Mining Speed" : $"+{percent}% Mining Speed";
+        string key = percent >= 0 ? "TooltipPositive" : "TooltipNegative";
+        return GetLocalization(key).Format(percent);
     }
 
     public override void PostUpdateEquips(Player player, float totalValue)

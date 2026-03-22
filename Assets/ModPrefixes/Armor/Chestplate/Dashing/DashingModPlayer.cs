@@ -33,11 +33,15 @@ public class DashingModPlayer : ModPlayer
 
         Charges--;
         DashDuration = PrefixBalance.DASHING_DURATION_TICKS;
-
-        DashVelocity = (Main.MouseWorld - Player.Center).SafeNormalize(Vector2.Zero) * PrefixBalance.DASHING_VELOCITY;
+        
+        float trueMomentum = Player.velocity.Length();
+        float exitSpeed = System.Math.Max(trueMomentum, PrefixBalance.DASHING_VELOCITY);
+        DashVelocity = (Main.MouseWorld - Player.Center).SafeNormalize(Vector2.Zero) * exitSpeed;
 
         FadeAlpha = 1f;
         FadeDelay = 120;
+        
+        Player.dashDelay = -1;
 
         SoundEngine.PlaySound(SoundID.Item28, Player.Center);
     }
@@ -60,7 +64,7 @@ public class DashingModPlayer : ModPlayer
                 if (Charges == PrefixBalance.DASHING_MAX_CHARGES) FadeDelay = 120;
             }
         }
-
+        
         if (DashDuration > 0)
         {
             Player.velocity = DashVelocity;

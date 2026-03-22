@@ -1,6 +1,6 @@
 using System.IO;
 using EquipmentEvolved.Assets.CharmsModule.Core;
-using EquipmentEvolved.Assets.Core;
+using EquipmentEvolved.Assets.CrossMod;
 using EquipmentEvolved.Assets.Misc;
 using EquipmentEvolved.Assets.Utilities.Spritebatch;
 using Terraria.ModLoader;

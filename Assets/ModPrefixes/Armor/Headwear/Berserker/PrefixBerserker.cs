@@ -3,7 +3,6 @@ using EquipmentEvolved.Assets.Balance;
 using EquipmentEvolved.Assets.Core;
 using EquipmentEvolved.Assets.Misc;
 using EquipmentEvolved.Assets.ModPrefixes.Core;
-using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.ModLoader;
 
@@ -15,13 +14,13 @@ public class PrefixBerserker : BaseEvolvedPrefix, ISpecializedPrefix
     public override float ReforgeMultiplier => PrefixBalance.ARMOR_REFORGING_MULTIPLIER;
     public SpecializedPrefixType SpecializedPrefixType => SpecializedPrefixType.Headwear;
 
-    public override IEnumerable<TooltipLine> GetTooltipLines(Item item)
+    protected override IEnumerable<TooltipLine> OnGetTooltipLines(Item item)
     {
         int maxBonus = (int)(PrefixBalance.BERSERKER_MAX_DAMAGE_BONUS * 100);
 
         yield return new TooltipLine(Mod, "BerserkerDescription", Description.Format(maxBonus))
         {
-            OverrideColor = Color.DarkRed
+            IsModifier = true
         };
     }
 }

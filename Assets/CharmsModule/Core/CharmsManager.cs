@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using EquipmentEvolved.Assets.Balance;
 using EquipmentEvolved.Assets.CharmsModule.Augmentations;
 using EquipmentEvolved.Assets.CharmsModule.Augmentations.WeaponAugmentations;
@@ -56,7 +55,7 @@ public static class CharmsManager
 
         for (int i = 0; i < tries; i++)
         {
-            float rarityDice = Main.rand.NextFloat(); // Rolls 0.0 to 1.0
+            float rarityDice = Main.rand.NextFloat();
             foreach ((float chance, CharmRarity rarity) drop in CharmBalance.CharmRarityDropTable)
             {
                 if (rarityDice <= drop.chance)
@@ -111,6 +110,27 @@ public static class CharmsManager
 
         return rarityColor.ToVector3() * multiplier;
     }
+    
+    /// <summary>
+    /// A dedicated method for formatting charms that are generated via crafting or UI
+    /// </summary>
+    public static void InitializeCraftedCharm(Charm charmItem, CharmRarity rarity, CharmType type, Player crafter)
+    {
+        charmItem.CharmRarity = rarity;
+        charmItem.CharmType = type;
+        charmItem.UniqueID = Guid.NewGuid();
+        
+        int nameID = GetNameStartPoint(rarity);
+        charmItem.CharmNameID = Main.rand.Next(nameID, nameID + 10);
+        
+        float augmentationDice = Main.rand.NextFloat();
+        if (rarity >= CharmRarity.Mythical || augmentationDice < CharmBalance.LEGENDARY_AUGMENTATION_CHANCE)
+        {
+            charmItem.Augmentations = GetRandomAugmentations(charmItem, crafter);
+        }
+        
+        RollCharmStats(charmItem, rarity);
+    }
 
     /// <summary>
     ///     Spawns charms originating from an NPC
@@ -145,8 +165,6 @@ public static class CharmsManager
 
             CreateAndSetupCharm(finalRarity, charmType, pos, playerWhoAmI, npc);
             
-            // NEW: Only reset pity here if a high rarity charm naturally dropped or spawned from pity. 
-            // We no longer increase pity here.
             if (finalRarity is CharmRarity.Legendary or CharmRarity.Mythical or CharmRarity.Exalted)
             {
                 charmPlayer.ResetPity(finalRarity);
@@ -212,7 +230,7 @@ public static class CharmsManager
 
         for (int i = 0; i < dice; i++)
         {
-            EquipmentStat rolledStat; // Changed from PlayerStat
+            EquipmentStat rolledStat;
             do
             {
                 rolledStat = CharmBalance.GetRandomStat();

@@ -1,11 +1,11 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using EquipmentEvolved.Assets.Balance;
 using EquipmentEvolved.Assets.CharmsModule.Core;
 using EquipmentEvolved.Assets.CharmsModule.Items;
 using EquipmentEvolved.Assets.Core;
 using EquipmentEvolved.Assets.Misc;
 using EquipmentEvolved.Assets.ModPrefixes.Armor.Universal.Symbiotic;
+using EquipmentEvolved.Assets.ModPrefixes.Core;
 using EquipmentEvolved.Assets.ModPrefixes.Melee.Sealed;
 using EquipmentEvolved.Assets.ModPrefixes.Ranged.Ascendant;
 using EquipmentEvolved.Assets.ModPrefixes.Summoner.MinionWeapons.Frenzied;
@@ -29,7 +29,28 @@ public class Detours : ModSystem
         On_ItemSlot.RightClick_ItemArray_int_int += ApplyCharmAnywhere;
         On_ItemSlot.RightClick_refItem_int += ApplyCharmAnywhere_Ref;
         On_Item.Prefix += On_ItemOnPrefix;
-        On_Item.GetRollablePrefixes += On_ItemOnGetRollablePrefixes;
+        //On_Item.GetRollablePrefixes += On_ItemOnGetRollablePrefixes;
+        //On_Item.CanRollPrefix += ItemOnCanRollPrefix;
+        //On_Item.RollAPrefix += OnRollAPrefix;
+        //On_Item.CanApplyPrefix += ItemOnCanApplyPrefix;
+        //On_Item.RollAPrefix += OnRollAPrefix;
+        //On_Item.CanApplyPrefix += ItemOnCanApplyPrefix;
+    }
+    
+    
+    
+    private static bool ItemOnCanApplyPrefix(On_Item.orig_CanApplyPrefix orig, Item self, int prefix)
+    {
+        if (prefix >= PrefixID.Count)
+        {
+            ModPrefix modPrefix = PrefixLoader.GetPrefix(prefix);
+            if (modPrefix is IWorkInProgressPrefix || modPrefix is ILegacyPrefix)
+            {
+                return PrefixValidator.CanApplyPrefix(self, prefix);
+            }
+        }
+
+        return orig.Invoke(self, prefix);
     }
 
     private static bool On_ItemOnPrefix(On_Item.orig_Prefix orig, Item self, int prefixWeWant)
@@ -164,32 +185,38 @@ public class Detours : ModSystem
     private static bool OnRollAPrefix(On_Item.orig_RollAPrefix orig, Item self, UnifiedRandom random, ref int rolledPrefix)
     {
         int forcedPrefix = ItemLoader.ChoosePrefix(self, random);
-        if (forcedPrefix > 0 && PrefixValidator.CanApplyPrefix(self, forcedPrefix))
+        if (forcedPrefix > 0 && self.CanApplyPrefix(forcedPrefix))
         {
+            if (forcedPrefix >= PrefixID.Count)
+            {
+                ModPrefix forcedModPrefix = PrefixLoader.GetPrefix(forcedPrefix);
+                if (forcedModPrefix is IWorkInProgressPrefix || forcedModPrefix is ILegacyPrefix) return false;
+            }
             rolledPrefix = forcedPrefix;
             return true;
         }
-
         WeightedRandom<int> validPrefixes = new(random);
 
         for (int i = 1; i < PrefixLoader.PrefixCount; i++)
         {
-            if (!PrefixValidator.CanApplyPrefix(self, i) || !ItemLoader.AllowPrefix(self, i)) continue;
-
-            double weight = 1.0;
+            if (!self.CanApplyPrefix(i) || !ItemLoader.AllowPrefix(self, i)) continue;
 
             if (i >= PrefixID.Count)
             {
                 ModPrefix modPrefix = PrefixLoader.GetPrefix(i);
                 if (modPrefix != null)
                 {
+                    if (modPrefix is IWorkInProgressPrefix || modPrefix is ILegacyPrefix) continue;
+
                     if (!modPrefix.CanRoll(self)) continue;
 
-                    weight = modPrefix.RollChance(self);
+                    validPrefixes.Add(i, modPrefix.RollChance(self));
                 }
             }
-
-            validPrefixes.Add(i, weight);
+            else
+            {
+                validPrefixes.Add(i, 1.0);
+            }
         }
 
         if (validPrefixes.elements.Count <= 0) return false;

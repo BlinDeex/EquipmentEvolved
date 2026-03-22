@@ -15,7 +15,7 @@ public class PrefixUnyielding : BaseEvolvedPrefix, ISpecializedPrefix
     public override float ReforgeMultiplier => PrefixBalance.ARMOR_REFORGING_MULTIPLIER;
     public SpecializedPrefixType SpecializedPrefixType => SpecializedPrefixType.Chestplate;
 
-    public override IEnumerable<TooltipLine> GetTooltipLines(Item item)
+    protected override IEnumerable<TooltipLine> OnGetTooltipLines(Item item)
     {
         int drPercent = (int)Math.Round(PrefixBalance.UNYIELDING_MAX_DR * 100);
         yield return new TooltipLine(Mod, "UnyieldingDesc", Description.Format(drPercent)) { IsModifier = true };

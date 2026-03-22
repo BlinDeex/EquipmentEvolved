@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using EquipmentEvolved.Assets.Balance;
 using EquipmentEvolved.Assets.Utilities;
+using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.ModLoader;
 
@@ -26,7 +27,7 @@ public class CoreGlobalItem : GlobalItem
         if (!item.accessory || item.prefix == 0 || tooltips.Count == 0) return;
 
         TooltipLine title = tooltips[0];
-        title.OverrideColor = Main.DiscoColor;
+        title.OverrideColor = Color.AliceBlue;
     }
 
     public override bool AllowPrefix(Item item, int pre)

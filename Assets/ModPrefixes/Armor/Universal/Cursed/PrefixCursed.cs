@@ -19,13 +19,12 @@ public class PrefixCursed : BaseEvolvedPrefix, ISpecializedPrefix
 
     public LocalizedText SetBonus { get; private set; }
 
-    public override void SetStaticDefaults()
+    protected override void OnSetStaticDefaults()
     {
-        base.SetStaticDefaults();
         SetBonus = GetLoc(nameof(SetBonus));
     }
 
-    public override IEnumerable<TooltipLine> GetTooltipLines(Item item)
+    protected override IEnumerable<TooltipLine> OnGetTooltipLines(Item item)
     {
         bool setBonusActive = Main.LocalPlayer.GetModPlayer<CursedArmorPlayer>().CursedSetBonus;
 

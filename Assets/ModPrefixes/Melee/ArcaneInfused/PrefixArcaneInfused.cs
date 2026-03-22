@@ -18,9 +18,9 @@ public class PrefixArcaneInfused : BaseEvolvedPrefix, ISpecializedPrefix
     public LocalizedText ManaPerSwing { get; private set; }
     public LocalizedText ManaSicknessWorks { get; private set; }
 
-    public override void SetStaticDefaults()
+    protected override void OnSetStaticDefaults()
     {
-        base.SetStaticDefaults(); 
+         
         ManaPerSwing = GetLoc(nameof(ManaPerSwing));
         ManaSicknessWorks = GetLoc(nameof(ManaSicknessWorks));
     }
@@ -30,7 +30,7 @@ public class PrefixArcaneInfused : BaseEvolvedPrefix, ISpecializedPrefix
         damageMult *= PrefixBalance.ARCANE_INFUSED_DAMAGE;
     }
 
-    public override IEnumerable<TooltipLine> GetTooltipLines(Item item)
+    protected override IEnumerable<TooltipLine> OnGetTooltipLines(Item item)
     {
         yield return new TooltipLine(Mod, "manaLine", ManaPerSwing.Format(PrefixBalance.ARCANE_INFUSED_MANA_PER_SWING))
         {

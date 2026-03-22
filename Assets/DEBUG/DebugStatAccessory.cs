@@ -8,11 +8,7 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.UI;
 
-namespace EquipmentEvolved.Assets.DEBUG; // Ensure this matches your folder structure!
-
-// ==========================================
-// 1. ORIGINAL DEBUG ACCESSORY (Filtered List)
-// ==========================================
+namespace EquipmentEvolved.Assets.DEBUG;
 public class DebugStatAccessory : ModItem
 {
     public override string Texture => "Terraria/Images/Item_" + ItemID.Radar;
@@ -30,13 +26,8 @@ public class DebugStatAccessory : ModItem
         player.GetModPlayer<DebugStatPlayer>().ShowStats = true;
     }
 }
-
-// ==========================================
-// 2. NEW DEBUG ACCESSORY (Full Gray/Green List)
-// ==========================================
 public class DebugAllStatAccessory : ModItem
 {
-    // Using a different texture so you can tell them apart!
     public override string Texture => "Terraria/Images/Item_" + ItemID.GPS;
 
     public override void SetDefaults()
@@ -52,14 +43,10 @@ public class DebugAllStatAccessory : ModItem
         player.GetModPlayer<DebugStatPlayer>().ShowAllStats = true;
     }
 }
-
-// ==========================================
-// 3. PLAYER DATA
-// ==========================================
 public class DebugStatPlayer : ModPlayer
 {
     public bool ShowStats;
-    public bool ShowAllStats; // NEW: Track the new accessory
+    public bool ShowAllStats;
 
     public override void ResetEffects()
     {
@@ -67,10 +54,6 @@ public class DebugStatPlayer : ModPlayer
         ShowAllStats = false;
     }
 }
-
-// ==========================================
-// 4. UI DRAWING
-// ==========================================
 public class DebugStatUI : ModSystem
 {
     public override void ModifyInterfaceLayers(List<GameInterfaceLayer> layers)
@@ -81,7 +64,7 @@ public class DebugStatUI : ModSystem
             layers.Insert(mouseTextIndex, new LegacyGameInterfaceLayer("EquipmentEvolved: Debug Stats", delegate
             {
                 DrawDebugStats();
-                DrawAllDebugStats(); // NEW: Call the full list drawer
+                DrawAllDebugStats(); 
                 return true;
             }));
         }
@@ -95,13 +78,18 @@ public class DebugStatUI : ModSystem
 
         StatPlayer statPlayer = player.GetModPlayer<StatPlayer>();
         string text = "--- ACTIVE STATS ---\n";
-
-        foreach (EquipmentStat stat in ModContent.GetContent<EquipmentStat>())
+        
+        for (int i = 0; i < EquipmentStatLoader.StatCount; i++)
         {
-            float totalValue = statPlayer.GetTotalStat(stat);
-            if (totalValue != 0f)
+            EquipmentStat stat = EquipmentStatLoader.GetStatByNetID(i);
+            
+            if (stat != null)
             {
-                text += $"{stat.Name}: {totalValue:0.##}\n";
+                float totalValue = statPlayer.GetTotalStat(stat);
+                if (totalValue != 0f)
+                {
+                    text += $"{stat.Name}: {totalValue:0.##}\n";
+                }
             }
         }
 
@@ -124,29 +112,35 @@ public class DebugStatUI : ModSystem
 
         var allStats = ModContent.GetContent<EquipmentStat>().ToList();
         
-        // Calculate the height of a single line, and the total height to keep it vertically centered
         float lineHeight = font.MeasureString("A").Y * textScale;
-        float totalHeight = (allStats.Count + 1) * lineHeight; // +1 for the header
+        float totalHeight = (allStats.Count + 1) * lineHeight; 
 
-        // Starting position (Centered vertically based on the total list height)
         Vector2 currentPos = new(player.Right.X - Main.screenPosition.X + 32, player.Center.Y - Main.screenPosition.Y - (totalHeight / 2f));
 
-        // Draw Header
         Utils.DrawBorderStringFourWay(Main.spriteBatch, font, "--- ALL STATS DEBUG ---", currentPos.X, currentPos.Y, Color.White, Color.Black, Vector2.Zero, textScale);
         currentPos.Y += lineHeight;
 
-        // Draw each stat line-by-line so we can apply different colors!
         foreach (EquipmentStat stat in allStats)
         {
             float totalValue = statPlayer.GetTotalStat(stat);
             
-            // Green if active, Gray if inactive (0f)
             Color textColor = totalValue != 0f ? Color.LimeGreen : Color.Gray;
             string text = $"{stat.Name}: {totalValue:0.##}";
 
+            var tempStats = statPlayer.GetActiveTempStats(stat);
+            if (tempStats.Count > 0)
+            {
+                float stackedTempTotal = statPlayer.CalculateTempStatTotal(stat, tempStats);
+                
+                string tempStacksInfo = string.Join(" ", tempStats.Select(t => $"[{t.Value:0.##} | {(t.TimeLeft / 60f):0.#}sec]"));
+                
+                text += $"  (Temp): {stackedTempTotal:0.##} ( {tempStacksInfo} )";
+                
+                textColor = Color.Cyan; 
+            }
+
             Utils.DrawBorderStringFourWay(Main.spriteBatch, font, text, currentPos.X, currentPos.Y, textColor, Color.Black, Vector2.Zero, textScale);
             
-            // Move down for the next line
             currentPos.Y += lineHeight;
         }
     }

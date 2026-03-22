@@ -20,14 +20,14 @@ public class PrefixPhalanx : BaseEvolvedPrefix, ISpecializedPrefix
     public LocalizedText SetBonus { get; private set; }
     public LocalizedText DescDamage { get; private set; }
 
-    public override void SetStaticDefaults()
+    protected override void OnSetStaticDefaults()
     {
-        base.SetStaticDefaults();
+        
         SetBonus = GetLoc(nameof(SetBonus));
         DescDamage = LocalizationManager.GetSharedLocalizedText(LocalizationManager.XDamageAdded);
     }
 
-    public override IEnumerable<TooltipLine> GetTooltipLines(Item item)
+    protected override IEnumerable<TooltipLine> OnGetTooltipLines(Item item)
     {
         TooltipLine newLine = new(Mod, "newLine", DescDamage.Format(MathF.Round((PrefixBalance.PHALANX_DAMAGE_INCREASE - 1) * 100, 1)))
         {

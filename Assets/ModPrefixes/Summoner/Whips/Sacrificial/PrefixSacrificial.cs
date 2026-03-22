@@ -19,7 +19,7 @@ public class PrefixSacrificial : BaseEvolvedPrefix, ISpecializedPrefix
         useTimeMult *= PrefixBalance.CONTROLLED_FIRERATE;
     }
 
-    public override IEnumerable<TooltipLine> GetTooltipLines(Item item)
+    protected override IEnumerable<TooltipLine> OnGetTooltipLines(Item item)
     {
         yield return new TooltipLine(Mod, "newLine", Description.Value)
         {

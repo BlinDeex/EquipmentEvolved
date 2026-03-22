@@ -1,4 +1,7 @@
 using System;
+using EquipmentEvolved.Assets.Balance;
+using EquipmentEvolved.Assets.CharmsModule.Augmentations.ArmorAugmentations;
+using EquipmentEvolved.Assets.Core;
 using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.ID;
@@ -134,7 +137,14 @@ public class PhantomArmorProjectile : ModProjectile
     public override void PostAI()
     {
         owner.AddBuff(ModContent.BuffType<VoidSealBuff>(), 2);
-        owner.AddBuff(ModContent.BuffType<SoulBurnBuff>(), 1);
+        
+        int soulBurnTicks = 1;
+        if (owner.GetModPlayer<StatPlayer>().HasFlag<PhantomAugmentation>())
+        {
+            soulBurnTicks *= PrefixBalance.PHANTOM_AUGMENTATION_SOULBURN_RAMP_MULT;
+        }
+
+        owner.AddBuff(ModContent.BuffType<SoulBurnBuff>(), soulBurnTicks);
     }
 
     public void Initialize(float initialAngle)

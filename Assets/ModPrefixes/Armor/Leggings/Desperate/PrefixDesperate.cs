@@ -15,7 +15,7 @@ public class PrefixDesperate : BaseEvolvedPrefix, ISpecializedPrefix
     public override float ReforgeMultiplier => PrefixBalance.ARMOR_REFORGING_MULTIPLIER;
     public SpecializedPrefixType SpecializedPrefixType => SpecializedPrefixType.Leggings;
 
-    public override IEnumerable<TooltipLine> GetTooltipLines(Item item)
+    protected override IEnumerable<TooltipLine> OnGetTooltipLines(Item item)
     {
         int speedPercent = (int)Math.Round(PrefixBalance.DESPERATE_MAX_SPEED_BONUS * 100);
 

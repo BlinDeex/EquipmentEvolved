@@ -3,34 +3,153 @@ using System.Collections.Generic;
 using System.Linq;
 using EquipmentEvolved.Assets.CharmsModule.Core;
 using EquipmentEvolved.Assets.ModPrefixes.Melee.Sealed;
+using EquipmentEvolved.Assets.Utilities;
+using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.ModLoader;
 
 namespace EquipmentEvolved.Assets.Core;
 
 /// <summary>
-/// The central ledger for the Equipment Evolved stat system.
-/// Tracks, aggregates, and calculates all <see cref="EquipmentStat"/> modifications applied to the player.
+/// The central ledger for the Equipment Evolved player modification system.
+/// Tracks, aggregates, and calculates all persistent <see cref="EquipmentStat"/> modifications,
+/// manages ticking temporary stats, and registers binary state flags (such as Augmentations or Set Bonuses) applied to the player.
 /// </summary>
 public class StatPlayer : ModPlayer
 {
-    /// <summary>
-    /// A dictionary mapping each active stat to its respective values, separated by their originating <see cref="StatSource"/>.
-    /// </summary>
     private Dictionary<EquipmentStat, Dictionary<StatSource, float>> _activeStats = new();
+    
+    private List<TemporaryStat> _tempStats = new();
+    
+    private HashSet<string> _activeFlags = new();
 
     public override void ResetEffects()
     {
         _activeStats.Clear();
+        _activeFlags.Clear();
+        
+        for (int i = _tempStats.Count - 1; i >= 0; i--)
+        {
+            _tempStats[i].TimeLeft--;
+            
+            if (_tempStats[i].TimeLeft <= 0)
+            {
+                _tempStats.RemoveAt(i);
+            }
+            else
+            {
+                AddStat(_tempStats[i].Stat, _tempStats[i].Value, _tempStats[i].Source);
+            }
+        }
+    }
+    
+    // --- FLAG METHODS ---
+
+    /// <summary>
+    /// Registers a string-based binary flag to the player for the current frame.
+    /// Useful for cross-mod compatibility or generic states (e.g., "PhantomArmorSet" or "HasCursedDebuff").
+    /// </summary>
+    /// <param name="flagName">The unique string identifier for the flag.</param>
+    public void AddFlag(string flagName)
+    {
+        _activeFlags.Add(flagName);
     }
 
     /// <summary>
-    /// Adds a value to a specific stat for a given source.
-    /// The value is mathematically combined with existing values from the same source based on the stat's <see cref="StatStackingMode"/>.
+    /// Registers a type-based binary flag to the player for the current frame.
+    /// This is the preferred method for internal mod use (such as Augmentations) to ensure compile-time safety and prevent typos.
     /// </summary>
-    /// <param name="stat">The stat to modify.</param>
-    /// <param name="value">The value to add to the stat.</param>
-    /// <param name="source">The originating source of the stat modification (defaults to <see cref="StatSource.Generic"/>).</param>
+    /// <typeparam name="T">The class type representing the flag or augmentation.</typeparam>
+    public void AddFlag<T>()
+    {
+        _activeFlags.Add(typeof(T).Name);
+    }
+
+    /// <summary>
+    /// Checks if a specific string-based flag is currently active on the player.
+    /// </summary>
+    /// <param name="flagName">The unique string identifier for the flag.</param>
+    /// <returns><see langword="true"/> if the flag is active this frame; otherwise, <see langword="false"/>.</returns>
+    public bool HasFlag(string flagName)
+    {
+        return _activeFlags.Contains(flagName);
+    }
+
+    /// <summary>
+    /// Checks if a specific type-based flag is currently active on the player.
+    /// </summary>
+    /// <typeparam name="T">The class type representing the flag or augmentation.</typeparam>
+    /// <returns><see langword="true"/> if the flag is active this frame; otherwise, <see langword="false"/>.</returns>
+    public bool HasFlag<T>()
+    {
+        return _activeFlags.Contains(typeof(T).Name);
+    }
+    
+    /// <summary>
+    /// Calculates the accurately stacked total value of a specific list of temporary stats,
+    /// respecting the EquipmentStat's defined StackingMode.
+    /// </summary>
+    public float CalculateTempStatTotal(EquipmentStat stat, List<TemporaryStat> tempStats)
+    {
+        if (stat == null || tempStats == null || tempStats.Count == 0) return 0f;
+        
+        return StackValues(stat.StackingMode, tempStats.Select(t => t.Value));
+    }
+    
+    /// <summary>
+    /// Retrieves all currently active temporary stats for a specific EquipmentStat.
+    /// Used primarily for Debug UI.
+    /// </summary>
+    public List<TemporaryStat> GetActiveTempStats(EquipmentStat stat)
+    {
+        return _tempStats.Where(s => s.Stat == stat).ToList();
+    }
+    
+    /// <summary>
+    /// Instantly removes all active temporary stats from the player.
+    /// </summary>
+    public void ClearTemporaryStats()
+    {
+        _tempStats.Clear();
+    }
+    
+    /// <summary>
+    /// Applies a temporary stat to the player that automatically ticks down.
+    /// </summary>
+    public void AddTemporaryStat(EquipmentStat stat, float value, int durationTicks, StatReapplicationMode mode, StatSource source = StatSource.Generic)
+    {
+        if (stat == null || durationTicks <= 0) return;
+        
+        TemporaryStat existingStat = _tempStats.FirstOrDefault(s => s.Stat == stat && s.Source == source);
+         
+        if (existingStat != null)
+        {
+            switch (mode)
+            {
+                case StatReapplicationMode.Independent:
+                    _tempStats.Add(new TemporaryStat { Stat = stat, Value = value, TimeLeft = durationTicks, Source = source });
+                    break;
+                case StatReapplicationMode.RefreshDuration:
+                    existingStat.TimeLeft = Math.Max(existingStat.TimeLeft, durationTicks);
+                    break;
+                case StatReapplicationMode.StackDuration:
+                    existingStat.TimeLeft += durationTicks;
+                    break;
+                case StatReapplicationMode.StackValue:
+                    existingStat.Value += value;
+                    break;
+                case StatReapplicationMode.Ignore:
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(mode), mode, null);
+            }
+        }
+        else
+        {
+            _tempStats.Add(new TemporaryStat { Stat = stat, Value = value, TimeLeft = durationTicks, Source = source });
+        }
+    }
+
     public void AddStat(EquipmentStat stat, float value, StatSource source = StatSource.Generic)
     {
         if (stat == null) return;
@@ -64,23 +183,66 @@ public class StatPlayer : ModPlayer
         }
     }
 
-    /// <summary>
-    /// Calculates the total combined value of a specific stat across all active sources.
-    /// The total is mathematically aggregated based on the stat's <see cref="StatStackingMode"/>.
-    /// </summary>
-    /// <param name="stat">The stat to calculate.</param>
-    /// <returns>The total aggregated value of the stat, or 0f if the stat is not currently active.</returns>
     public float GetTotalStat(EquipmentStat stat)
     {
-        if (stat == null || !_activeStats.ContainsKey(stat)) return 0f;
+        if (stat == null || !_activeStats.TryGetValue(stat, out Dictionary<StatSource, float> value)) return 0f;
         
-        float total = stat.StackingMode == StatStackingMode.Min ? float.MaxValue : 0f;
+        // Pass the dictionary's values directly to the helper
+        return StackValues(stat.StackingMode, value.Values);
+    }
+
+    public float GetStatFromSource(EquipmentStat stat, StatSource source)
+    {
+        if (stat == null || !_activeStats.TryGetValue(stat, out Dictionary<StatSource, float> value)) return 0f;
+        return value.GetValueOrDefault(source, 0f);
+    }
+
+    public void MultiplySourceStats(StatSource source, float multiplier)
+    {
+        foreach (var statDict in _activeStats.Values)
+        {
+            if (statDict.ContainsKey(source))
+            {
+                statDict[source] *= multiplier;
+            }
+        }
+    }
+
+    /// <summary>
+    /// Extracts and applies stats from the player's currently held item (Weapons/Tools).
+    /// </summary>
+    private void HeldItemStats()
+    {
+        Item heldItem = Player.HeldItem;
+        if (heldItem == null || heldItem.IsAir) return;
+        
+        // NEW: Abort if the item in our hand is an accessory or an armor piece! 
+        // This ensures stats are only pulled when holding a weapon/tool.
+        if (heldItem.accessory || heldItem.IsArmor()) return;
+        
+        if (heldItem.TryGetGlobalItem(out CharmGlobalItem charmData))
+        {
+            charmData.ApplyHeldStats(Player);
+        }
+        
+        if (heldItem.TryGetGlobalItem(out SealedGlobalItem sealedData) && sealedData.IsRevealed)
+        {
+            ApplyCharmStats(sealedData.Rolls);
+        }
+    }
+    
+    /// <summary>
+    /// Helper method to mathematically stack a collection of values based on the provided StackingMode.
+    /// </summary>
+    private float StackValues(StatStackingMode mode, IEnumerable<float> values)
+    {
+        float total = mode == StatStackingMode.Min ? float.MaxValue : 0f;
         bool hasValues = false;
-        
-        foreach (float val in _activeStats[stat].Values)
+
+        foreach (float val in values)
         {
             hasValues = true;
-            switch (stat.StackingMode)
+            switch (mode)
             {
                 case StatStackingMode.Additive:
                     total += val;
@@ -101,65 +263,12 @@ public class StatPlayer : ModPlayer
                     throw new ArgumentOutOfRangeException();
             }
         }
-        
-        if (stat.StackingMode == StatStackingMode.Min && !hasValues) return 0f;
-        
+
+        if (mode == StatStackingMode.Min && !hasValues) return 0f;
+
         return total;
     }
-
-    /// <summary>
-    /// Retrieves the raw value of a stat associated exclusively with a specific source.
-    /// </summary>
-    /// <param name="stat">The stat to retrieve.</param>
-    /// <param name="source">The source to check.</param>
-    /// <returns>The value of the stat from the given source, or 0f if not found.</returns>
-    public float GetStatFromSource(EquipmentStat stat, StatSource source)
-    {
-        if (stat == null || !_activeStats.ContainsKey(stat)) return 0f;
-        return _activeStats[stat].TryGetValue(source, out float val) ? val : 0f;
-    }
-
-    /// <summary>
-    /// Multiplies all currently active stat values originating from a specific source by a given multiplier.
-    /// Useful for set bonuses or buffs that globally amplify certain equipment types.
-    /// </summary>
-    /// <param name="source">The stat source to amplify.</param>
-    /// <param name="multiplier">The multiplier to apply.</param>
-    public void MultiplySourceStats(StatSource source, float multiplier)
-    {
-        foreach (var statDict in _activeStats.Values)
-        {
-            if (statDict.ContainsKey(source))
-            {
-                statDict[source] *= multiplier;
-            }
-        }
-    }
-
-    /// <summary>
-    /// Extracts and applies stats from the player's currently held item, such as applied charms or sealed modifiers.
-    /// </summary>
-    private void HeldItemStats()
-    {
-        Item heldItem = Player.HeldItem;
-        if (heldItem == null || heldItem.IsAir) return;
-        
-        if (heldItem.TryGetGlobalItem(out CharmGlobalItem charmData))
-        {
-            charmData.ApplyHeldStats(Player);
-        }
-        
-        if (heldItem.TryGetGlobalItem(out SealedGlobalItem sealedData) && sealedData.IsRevealed)
-        {
-            ApplyCharmStats(sealedData.Rolls);
-        }
-    }
     
-    /// <summary>
-    /// Applies a list of charm rolls to the player under the <see cref="StatSource.Charm"/> source.
-    /// Automatically ignores stats that are null or unloaded.
-    /// </summary>
-    /// <param name="rolls">The list of charm rolls to apply.</param>
     public void ApplyCharmStats(List<CharmRoll> rolls)
     {
         foreach (var roll in rolls)
@@ -180,15 +289,7 @@ public class StatPlayer : ModPlayer
     
     public override bool CanUseItem(Item item)
     {
-        foreach (var stat in _activeStats.Keys)
-        {
-            if (!stat.CanUseItem(Player, item, GetTotalStat(stat)))
-            {
-                return false;
-            }
-        }
-    
-        return base.CanUseItem(item);
+        return _activeStats.Keys.All(stat => stat.CanUseItem(Player, item, GetTotalStat(stat))) && base.CanUseItem(item);
     }
 
     public override void PostUpdateEquips()
@@ -312,5 +413,13 @@ public class StatPlayer : ModPlayer
     {
         foreach (var stat in _activeStats.Keys)
             stat.GetHealLife(Player, item, quickHeal, ref healValue, GetTotalStat(stat));
+    }
+    
+    public override void ModifyShootStats(Item item, ref Vector2 position, ref Vector2 velocity, ref int type, ref int damage, ref float knockback)
+    {
+        foreach (var stat in _activeStats.Keys)
+        {
+            stat.ModifyShootStats(Player, item, ref position, ref velocity, ref type, ref damage, ref knockback, GetTotalStat(stat));
+        }
     }
 }

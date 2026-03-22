@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.IO;
-using EquipmentEvolved.Assets.CharmsModule.Data;
 using EquipmentEvolved.Assets.Core;
 using Terraria;
 using Terraria.Audio;

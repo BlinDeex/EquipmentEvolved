@@ -1,247 +1,251 @@
-﻿(From here on out, this is a pure info dump of available reforges)
+﻿🗡️ Melee Reforges
+Arcane Infused: Requires mana to swing and inflicts Mana Sickness, but massively boosts raw damage. Scales directly with Magic damage bonuses.
 
-🗡️ Melee Reforges
-Arcane Infused
-Requires mana to attack and suffers from Mana Sickness, but deals increased damage. Benefits from Magic damage bonuses.
+Gigantic: Massively increases weapon size at the cost of swing speed.
 
-Gigantic
-Increases weapon size, but decreases use speed.
+Perceptive: Boosts Critical Strike chance. The critical damage multiplier scales infinitely with your total crit chance, up to a hard cap.
 
-Perceptive
-Increases Critical Strike chance. The critical damage multiplier scales up based on your total critical strike chance, up to a cap.
+Titan Force: Heavily increases both damage and knockback.
 
-Titan Force
-Increases knockback and damage.
+Ultra Light: Grants auto-swing and drastically increases swing speed, sacrificing raw damage and weapon size.
 
-Ultra Light
-Increases swing speed and grants auto-swing capability, at the cost of decreased damage and size.
+Untouchable: Damage ramps up infinitely as long as you avoid taking hits. High ramp-up levels also accelerate swing speed. Taking damage shatters the bonus and inflicts multiplied incoming damage based on your lost stacks.
 
-Untouchable
-Damage ramps up infinitely as long as you do not take damage. At higher ramp-up levels, swing speed begins increasing as well. If you are hit, you lose the accumulated bonus and take multiplied incoming damage based on your current ramp-up level.
+Sealed: Rolls entirely random, highly exotic stats unavailable on other reforges. Applying a Charm beforehand boosts the roll quality based on the Charm's tier. Stats remain hidden until you close the menu. Cannot be reforged again.
 
-Sealed
-Rolls random, potentially rare stats not seen in other reforges. Applying a Charm before reforging boosts the rolled stats based on the Charm's tier. Stats remain hidden until you leave the reforge menu, and the weapon cannot be reforged again.
+Payback: Dealing melee damage knocks coins loose from your inventory. These coins linger briefly before homing in on the struck enemy, dealing damage based on their monetary value. Most coins are recovered on hit.
 
-Payback
-Dealing melee damage causes coins to drop from your inventory. The coins briefly linger before tracking toward the hit enemy, dealing damage based on the coin's value. Most coins dropped this way will reappear as items for pickup on hit.
+Kinetic: Multiplies damage dealt based on your exact movement speed at the moment of impact.
 
-Kinetic
-Boosts damage dealt depending on how fast you were moving at the exact moment of the hit.
+Sundering: Reduces base damage, but every strike permanently shreds the enemy's defense.
 
-Sundering
-Decreases base damage, but each hit permanently reduces the enemy's defense.
+Gravitic: Swings emit gravitational waves that drag enemies towards you. The pull radius and strength scales inversely with attack speed.
 
 🏹 Ranged Reforges
-Adaptable
-Accepts any ammo type and increases firing speed. Disabled for Rocket Launchers.
+Adaptable: Accepts any ammo type and significantly boosts fire rate. (Disabled for Rocket Launchers).
 
-Infernal
-The weapon grows stronger as it deals damage. Eventually, it "burns out," preventing further use. Near the end of its life, projectiles emit secondary explosions that burn and damage enemies in an area.
+Infernal: Weapon damage aggressively scales up as you fight until it "burns out" and disables itself. Near burnout, projectiles trigger violent secondary explosions that scorch nearby enemies.
 
-Challenger
-Activates a difficult minigame requiring you to shoot specific colored orbs. Weapon stats are multiplied by your accumulated minigame score.
+Challenger: Triggers a high-stakes minigame requiring you to shoot specific colored orbs. Weapon stats are massively multiplied based on your final minigame score.
 
-Controlled
-Changes the firing mechanism to burst-fire, heavily increasing the fire rate during the burst. Incompatible with weapons that already have custom firing mechanics.
+Controlled: Converts firing mechanics to a high-speed burst fire. (Incompatible with native custom-fire weapons).
 
-Equalizer
-Converts physical damage into True Damage equal to a percentage of the enemy's total health. This damage ignores defense and resistance.
+Equalizer: Converts physical damage into True Damage based on a percentage of the target's maximum health. Completely ignores defense and damage reduction.
 
-Vampiric
-Grants flat lifesteal on-hit, but decreases firing speed.
+Vampiric: Grants flat, guaranteed lifesteal on every hit at the cost of fire rate.
 
-Delayed
-Fired projectiles freeze in mid-air. When you stop shooting or after a set time, all frozen projectiles instantly blink along their trajectory, leaving a damaging line that pierces through tiles.
+Delayed: Fired projectiles freeze dead in mid-air. Ceasing fire or reaching the time limit causes all suspended projectiles to instantly blink along their trajectories, leaving devastating, tile-piercing damage trails.
 
-Ricochet
-Projectiles split upon hitting terrain.
+Ricochet: Projectiles violently fracture and split upon striking terrain.
 
-Thaumic
-Applies a random positive buff to the player on hit. The weapon prioritizes buffs you don't currently have, allowing you to rapidly build up an arsenal of buffs during combat. If the rolled buff is already active, its duration is extended.
+Thaumic: Grants a random positive buff on hit. Prioritizes unapplied buffs to rapidly build a massive arsenal of effects. Hitting with an active buff extends its duration.
 
-Flow State
-Applies a stacking bleed to enemies on hit. The bleed deals a percentage of the weapon's base damage, mitigated by the enemy's defense. If you fail to maintain consistent hits, the stacks decay rapidly.
+Flow State: Inflicts a stacking bleed on hit that deals a percentage of the weapon's base damage (mitigated by defense). Stacks decay rapidly if you fail to maintain relentless fire.
 
 🔮 Magic Reforges
-Chaotic
-The weapon periodically gains a new selection of stats. These can be highly positive (massive damage multipliers) or highly negative (dropping coins, damaging you, or healing enemies).
+Chaotic: Periodically rerolls a completely new set of stats. Can grant massive, game-breaking damage multipliers, or inflict severe penalties like draining coins, damaging you, or healing enemies.
 
-Endless
-Requires zero mana to use, but deals decreased damage.
+Endless: Completely removes mana cost, but reduces overall damage.
 
-Inverted
-Replaces Mana Sickness with Mana Surge. Mana Surge increases damage dealt but deals constant damage to the player. Dying causes a massive explosion that damages everything, including other players.
+Inverted: Replaces Mana Sickness with Mana Surge. Mana Surge massively boosts damage but constantly drains your health. Dying triggers a catastrophic explosion that obliterates everything nearby, including other players.
 
-Tidal
-Damage scales based on how full your mana bar is. Casting at full mana grants the projectile bonus damage.
+Tidal: Damage scales directly with your current mana pool. Casting while at maximum mana injects the projectile with a massive damage surge.
 
-Splintering
-Hits have a chance to emit mana shards in random directions. Critical strikes emit more shards. Shards cannot hit the original target.
+Splintering: Hits have a chance to violently erupt into random mana shards. Critical strikes guarantee more shards. Shards seek out secondary targets.
 
-Triple Shot
-Each projectile spawns additional projectiles with altered trajectories. Increases mana cost and decreases damage.
+Triple Shot: Splits every cast into three projectiles with erratic trajectories. Heavily increases mana cost and reduces base damage.
 
-Overloaded
-Holding the attack button does not fire the weapon. Instead, it rapidly drains your mana to charge the spell. Releasing the button fires a single, massively scaled, condensed version of the projectile.
+Overloaded: Holding attack suppresses fire and rapidly drains mana to charge the spell. Releasing unleashes a single, massively scaled, hyper-condensed projectile.
 
 🦇 Summoner Reforges
-Frenzied (Minion)
-Minions move and attack faster, but deal decreased damage.
+Frenzied (Minion): Minions move and attack with blistering speed, but suffer a penalty to raw damage.
 
-Monarch (Minion)
-Summoning a minion that is already active will not spawn a new one; instead, it multiplies the existing minion's size and damage. This effect stacks infinitely.
+Monarch (Minion): Resummoning an active minion will not spawn a duplicate. Instead, it absorbs the cast to permanently multiply its size and damage. Stacks infinitely.
 
-Vanguard (Minion)
-Minions deal reduced damage, but aggressively body-block enemy projectiles and taunt nearby enemies to attack them instead of you.
+Proxy (Minion): Minions freeze in place and become temporary turrets. They perfectly mirror all projectiles you fire. Damage scales from both weapon and minion stats. (Incompatible with worms/upgradeable minions).
 
-Proxy (Minion)
-Summoned minions freeze in place with a limited lifetime. They will perfectly mirror all projectiles you shoot, with damage scaling from both the weapon and the minion's stats, incompatible with worm and upgradeable minions
+Sacrificial (Whip): Striking enemies grants a protective ward. Taking lethal damage instantly executes all active minions to prevent your death, granting invulnerability time based on the number of minions sacrificed. Prevents summoning while on cooldown.
 
-Sacrificial (Whip)
-Hitting an enemy applies a buff. Upon taking lethal damage, all active minions are sacrificed to prevent your death, providing invincibility time that scales with the number of minions sacrificed. Prevents you from summoning for a duration after activation.
-
-Detonating (Whip)
-Hitting friendly minions attaches a bomb to them. The bomb explodes on their next contact with an enemy, dealing damage that scales with minion strength.
+Detonating (Whip): Whipping your own minions rigs them with explosives. The bomb detonates on their next enemy contact, dealing massive burst damage scaled to the minion's base strength.
 
 💍 Accessory Reforges
-Aerodynamic: Increases movement speed and flight time.
-Blood Forged: Increases damage but decreases maximum health.
-Earth Shaper: Increases mining speed.
-Efficient: Decreases mana usage.
-Equilibrium: Increases defense, minion slots, movement speed, flight time, and health regeneration.
-Fortified: Increases defense.
-Lethal: Increases critical strike damage.
-Revitalizing: Increases life regeneration.
-Risky: Increases damage but decreases defense.
+Aerodynamic: Boosts movement speed and maximum flight time.
+
+Blood Forged: Heavily increases damage but sacrifices maximum health.
+
+Earth Shaper: Drastically increases mining speed.
+
+Efficient: Reduces overall mana usage.
+
+Equilibrium: Grants a balanced boost to defense, minion slots, movement speed, flight time, and health regeneration.
+
+Fortified: Massively increases raw defense.
+
+Lethal: Amplifies critical strike damage.
+
+Revitalizing: Accelerates passive life regeneration.
+
+Risky: Spikes your damage output but cripples your defense.
+
 Sharpshooter: Increases critical strike chance.
-Stoic: Increases defense but decreases damage.
-Warlord: Increases maximum minions.
-Void Piercer: Increases true damage dealt.
-Hollow: Decreases total health, but increases all mobility stats.
-Lucky: Increases charm luck.
-Zealous: Increases attack speed.
-Greedy: Increases coins dropped from enemies.
+
+Stoic: Trades damage output for heavily increased defense.
+
+Warlord: Increases maximum minion capacity.
+
+Void Piercer: Amplifies all True Damage dealt.
+
+Hollow: Shreds your maximum health, but heavily boosts all mobility stats.
+
+Lucky: Increases Charm drop luck.
+
+Zealous: Boosts raw attack speed.
+
+Greedy: Causes enemies to drop significantly more coins.
 
 ⛏️ Tool Reforges
-Fortune (Axe): Chance to drop additional items when cutting trees.
-Revealing (Pickaxe): Chance to briefly reveal valuable tiles around you when mining.
-Vein Miner (Pickaxe): Mines entire ore veins at once (limit based on Pickaxe Power).
-Clearing (Pickaxe, Hammer): Mines an area of effect. Mined tiles have a high chance of not dropping items.
-Geological (Pickaxe): Mining dirt or stone has a chance to drop random gems.
+Fortune (Axe): Grants a chance to yield extra loot when chopping trees.
+
+Revealing (Pickaxe): Mining has a chance to briefly pulse and reveal valuable tiles hidden in the darkness.
+
+Vein Miner (Pickaxe): Instantly obliterates entire ore veins at once (limit scales with Pickaxe Power).
+
+Clearing (Pickaxe, Hammer): Destroys tiles in a massive area of effect. Mined tiles have a high chance to turn to dust and yield no items.
+
+Geological (Pickaxe): Mining basic dirt or stone carries a chance to unearth random gems.
 
 🛡️ Armor Reforges
-There are two distinct categories of armor reforges:
+Note: Activating any Universal Set Bonus applies a global cooldown to all armor abilities, preventing hot-swapping during combat.
 
-1. Universal Reforges
-These exist for all armor pieces. They are individually weaker but grant a powerful Set Bonus when all three pieces share the reforge. Activating a set bonus applies a global cooldown to all armor abilities, preventing you from hot-swapping armor during combat to cycle abilities.
-
+Universal Reforges
 Phalanx
 
-Piece Bonus: Increased damage.
+Piece: Increases overall damage.
 
-Set Bonus (Passive): Reactive Plating. If a projectile dealing substantial or lethal damage is about to hit you, the armor shoots a piece of itself to intercept and destroy it in an explosion.
+Set (Passive): Reactive Plating. Incoming lethal or heavy-damage projectiles trigger the armor to eject a physical plate, intercepting and destroying the threat in a localized explosion.
 
 Symbiotic
 
-Piece Bonus: Increases stats gained from Charms. Charms can only be applied once, and the equipment cannot be removed without destroying it (Shift-click to remove).
+Piece: Amplifies stats gained from applied Charms. Charms become permanent; the armor cannot be unequipped normally and must be destroyed to be removed (Shift-click).
 
-Set Bonus (Passive): Raises applied Charm tiers by one. Keeps the original rolls but boosts their power to maintain the same roll quality, and adds one new roll. If the charm had an augmentation, it is consumed to boost stats even further.
+Set (Passive): Elevates all applied Charms by one full tier. Retains the original rolls but scales their power to the new tier, and generates one entirely new roll. Consumes any existing augmentations to permanently hyper-boost the stats.
 
 Augmented
 
-Piece Bonus: Grants positive buffs at specific defense thresholds.
+Piece: Grants powerful positive buffs upon reaching specific defense thresholds.
 
-Set Bonus (Passive): Grants a damage increase for every active buff on the player.
+Set (Passive): Multiplies your damage output for every active buff currently on your character.
 
 Chrono
 
-Piece Bonus: Increased movement speed.
+Piece: Increases movement speed.
 
-Set Bonus (Active): Time Stop. Freezes enemies and projectiles in a radius around you. Frozen objects do not deal contact damage.
+Set (Active): Time Stop. Completely freezes all enemies and projectiles in a massive radius around you. Frozen entities cannot deal contact damage.
 
 Phantom
 
-Set Bonus (Active): Summons two clones that mimic your actions. Reactivate the ability to make them charge and explode. While active, you are inflicted with Voidseal (stops all health/mana regeneration and prevents potion usage) and Soulburn (causes hallucinations and damage over time that escalates the longer it lasts).
+Set (Active): Spawns two shadowy clones that perfectly mirror your actions. Reactivating the ability commands them to charge and detonate. Activation inflicts Voidseal (halts all regeneration and disables potions) and Soulburn (triggers escalating damage-over-time and hallucinations).
 
 Cursed
 
-Piece Bonus: Increased lifesteal.
+Piece: Increases lifesteal effectiveness.
 
-Set Bonus (Passive): Ignore all incoming damage that is below a specific threshold of your maximum health. However, any damage that breaks that threshold instantly deals a massive percentage of your maximum health, regardless of the attack's actual damage.
+Set (Passive): Completely ignores all incoming damage that falls below a specific threshold of your max health. However, any attack that breaks this threshold instantly nukes a massive percentage of your max health, ignoring the attack's actual damage value.
 
 Conduit
 
-Piece Bonus: Increased total mana.
+Piece: Increases maximum mana capacity.
 
-Set Bonus (Passive): Replaces standard mana regeneration mechanics with a fast, uninterrupted, constant flow of mana.
+Set (Passive): Disables normal mana regeneration, replacing it with a rapid, uninterrupted, and infinite flow of mana.
 
 Raid Boss
 
-Piece Bonus: Increases the base defense provided by the specific armor piece.
+Piece: Increases the base defense of the specific armor piece.
 
-Set Bonus (Passive): Decreases all mobility, but increases total defense, damage reduction, and enemy aggro.
+Set (Passive): Cripples your mobility, but massively boosts total defense, damage reduction, and enemy aggro. You become the wall.
 
 Gladiator
 
-Piece Bonus: Increased melee speed.
+Piece: Increases melee swing speed.
 
-Set Bonus (Active): Creates a localized arena ring around the player. While inside the ring, you take reduced damage and gain increased lifesteal, while enemies take increased damage. Leaving the ring while an enemy is still inside inflicts you with severe mobility and defense debuffs. Enemies that leave the ring while you are still inside take a burst of damage and have their defense shredded.
+Set (Active): Summons a localized arena ring. Inside the ring, you take reduced damage and gain massive lifesteal and damage amplification. Leaving the ring while an enemy is trapped inside heavily penalizes your mobility and damage. Enemies attempting to flee the ring suffer a burst of damage and severe defense shred.
 
-2. Specialized Reforges
-These are unique to specific armor slots (Head, Chest, or Legs). They offer no set bonuses, but provide significantly stronger individual effects.
+Overdrive
 
+Piece: Amplifies critical strike damage.
+
+Set (Active): Halts all mana recovery and incinerates your remaining mana pool to fuel a catastrophic burst of using speed and fire rate. The overload violently ends and triggers a cooldown the moment you run dry.
+
+Paradoxical
+
+Piece: Accelerates mana regeneration.
+
+Set (Passive): Completely inverts your health and mana pools. Incoming damage drains mana—if it hits zero, you die. Magic weapons consume health to cast. Grants immunity to Potion Sickness, but Mana Sickness now severely penalizes mana potions.
+
+Eclipse
+
+Piece: Increases maximum health.
+
+Set (Active): Equinox Swap. Instantly shift between Sun, Moon, or Neutral stances. Sun Stance constantly drains health but grants devastating damage and attack speed. Moon Stance drops your damage output but heavily fortifies defense and regeneration. Swapping emits a violent shockwave scaling with your held weapon. Stances only activate while actively using an item.
+
+Specialized Reforges (No Set Bonuses)
 Headwear:
 
-Enraging: Increases enemy aggro range and chance.
+Enraging: Maximizes enemy aggro range and targeting priority.
 
-Berserker: Damage increases as your health decreases.
+Berserker: Damage output aggressively scales up as your health drops.
 
-Exposing: Reveals weak points on bosses. Hitting a weak point shreds boss defense and makes the next weak point narrower.
+Reinforced: Heavily bolsters the base defense of this helmet.
 
-Reinforced: Increases defense.
+Weak Link: Strips the defense from this helmet, but transfers a massive defense boost to your equipped chestplate and leggings.
 
-Weak Link: Reduces the defense of this helmet, but boosts the defense of your equipped chestplate and leggings.
+Catalyst: Magic attacks inflict Pierced Veil. Striking an afflicted enemy with a Ranged weapon detonates the veil, causing the initial projectile to violently shatter inside them, dealing massive internal damage and continuing its trajectory.
 
-Catalyst: Magic attacks inflict Pierced Veil. Striking an afflicted enemy with ranged damage detonates it, making the initial projectile shatter inside the enemy dealing damage and continuing its trajectory
+Malignant: Healing potions completely bypass Potion Sickness, but permanently inflict a stacking reduction to your maximum health every time they are used.
 
+Psionic: Massively extends item pickup range and amplifies the healing/mana restored from dropped hearts and stars.
 
-Psionic: Item pickup range is increased, and the health and mana restored from dropped hearts and stars is amplified.
+Phasing: All dashes and teleports gain extra invincibility frames, allowing you to slip through attacks.
 
 Chestplate:
 
-Vitalis: Increases healing received from potions and lifesteal.
+Vitalis: Amplifies all healing received from potions and lifesteal effects.
 
-Void: Amplifies all true damage sources.
+Void: Massively scales all sources of True Damage.
 
-Unyielding: Gain damage reduction as your health decreases.
+Unyielding: Grants escalating damage reduction as your health pool depletes.
 
-Rebounding: Emits piercing shrapnel when hit with high knockback. Grants a temporary, stacking defense boost after getting hit. Accumulating too many stacks will cause the armor piece to shatter.
+Rebounding: Taking heavy knockback causes the armor to violently eject piercing shrapnel. Getting hit grants a stacking, temporary defense boost. Accumulating too many stacks overheats the armor, causing it to shatter and strip all your defense for a short duration.
 
-Dashing: Allows dashing towards your cursor using charges. Dashing does not grant invulnerability.
+Dashing: Grants charge-based dashes that instantly snap you toward your cursor. Does not provide invulnerability.
 
-Conductor: Melee attacks inflict Kinetic Charge. Striking an afflicted enemy with magic damage detonates it.
+Conductor: Melee attacks inflict Kinetic Charge. Striking an afflicted enemy with Magic damage detonates the charge for massive burst damage.
 
 Leggings:
 
-Silent: Decreases enemy aggro, making enemies significantly less likely to target you.
+Silent: Plummets your aggro, making enemies practically ignore your existence.
 
-Terra: Increases the native defense of this specific armor piece as long as your character is touching the ground.
+Terra: Grants a massive native defense boost to these leggings, but only while your feet are planted firmly on the ground.
 
-Desperate: Increases your movement speed as your health decreases, scaling up to a massive bonus when near death.
+Desperate: Movement speed accelerates as you take damage, culminating in a massive mobility spike when hovering near death.
 
-Resonant: Boosts all accessory reforge stats.
+Resonant: Globally amplifies the stats provided by all your accessory reforges.
 
-Weaver: Ranged attacks inflict Arcane Resonance. Striking an afflicted enemy with melee damage detonates it, triggering a cluster explosion based on your attack damage.
+Weaver: Ranged attacks inflict Arcane Resonance. Striking an afflicted enemy with Melee damage violently detonates it, triggering a localized cluster explosion that scales with your melee damage.
+
+Quantum: Upgrades all standard dashes into instant, omnidirectional teleports that bypass solid matter. Teleporting leaves a volatile energy afterimage that collapses to your new location, shredding any enemies caught in its path with damage scaled from your defense.
 
 🔮 Augmentations
-Clearing: Further increases the area mined at once.
+Clearing: expands the area-of-effect destruction radius.
 
-Cursed: Raises the cap for damage negation, and lowers the damage taken from threshold-breaking hits.
+Cursed: Pushes the damage negation threshold higher, and reduces the lethal penalty taken from hits that manage to break it.
 
 Omni: ???
 
-Phalanx: After intercepting a projectile, the armor gains a short window to reflect additional projectiles before going on cooldown.
+Phalanx: After successfully intercepting a threat, the armor enters an overclocked state, allowing it to rapidly reflect additional projectiles for a moment before triggering its cooldown.
 
-Phantom: Increases the number of phantoms spawned and accelerates the hallucination ramping speed.
+Phantom: Increases phantoms count, you become immune to voidseal effects but soulburn ramping speed increases
 
-Gladiator: Decreases the arena size, renders the user invincible while in the circle with an enemy, grants the circle a damaging aura, and removes the penalties for exiting the ring.
+Gladiator: Shrinks the arena for close-quarters combat. Renders you completely invincible while trapped inside with an enemy, ignites the ring with a damaging aura, and completely removes the penalty for fleeing.
+
+Eclipse: Synchronizing your active stance with the actual time of day (Sun during the day, Moon at night) massively amplifies the stance's effects.

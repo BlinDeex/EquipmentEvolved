@@ -1,4 +1,6 @@
-﻿using Terraria;
+﻿using Microsoft.Xna.Framework;
+using Terraria;
+using Terraria.Localization;
 using Terraria.ModLoader;
 
 namespace EquipmentEvolved.Assets.Core;
@@ -46,32 +48,33 @@ public enum StatStackingMode
 public abstract class EquipmentStat : ModType
 {
     public int NetID { get; internal set; }
+
+    public virtual bool HiddenFromDebugAccessory => false;
     
     public virtual StatStackingMode StackingMode => StatStackingMode.Additive;
+    
+    public virtual string LocalizationCategory => "EquipmentStat";
+
+    /// <summary>
+    /// Grabs a localized string from the .hjson file for this specific stat.
+    /// Expected format in .hjson: Mods.EquipmentEvolved.EquipmentStat.StatClassName.Key
+    /// </summary>
+    public LocalizedText GetLocalization(string key)
+    {
+        return Language.GetOrRegister($"Mods.{Mod.Name}.{LocalizationCategory}.{Name}.{key}");
+    }
 
     public abstract string FormatTooltip(float totalValue);
-
-    // =================================================================
-    // CORE PASSIVE HOOKS (Health, Defense, MoveSpeed, WingTime, Minions)
-    // =================================================================
     public virtual void UpdateEquips(Player player, float totalValue) { }
     public virtual void PostUpdateEquips(Player player, float totalValue) { }
     public virtual void UpdateLifeRegen(Player player, float totalValue) { }
     public virtual void ModifyMaxStats(Player player, ref StatModifier health, ref StatModifier mana, float totalValue) { }
-
-    // =================================================================
-    // OFFENSIVE COMBAT HOOKS (Damage, Crit, Speed, Mana)
-    // =================================================================
     public virtual void ModifyWeaponDamage(Player player, Item item, ref StatModifier damage, float totalValue) { }
     public virtual void ModifyWeaponCrit(Player player, Item item, ref float crit, float totalValue) { }
     public virtual void ModifyWeaponKnockback(Player player, Item item, ref StatModifier knockback, float totalValue) { }
     public virtual void ModifyManaCost(Player player, Item item, ref float reduce, ref float mult, float totalValue) { }
     
     public virtual float UseSpeedMultiplier(Player player, Item item, float totalValue) => 1f;
-
-    // =================================================================
-    // ON-HIT / HIT MODIFIER HOOKS (True Damage, Lifesteal, Coin Drops)
-    // =================================================================
     public virtual void ModifyHitNPCWithProj(Player player, Projectile proj, NPC target, ref NPC.HitModifiers modifiers, float totalValue) { }
     
     public virtual void OnHitNPCWithProj(Player player, Projectile proj, NPC target, NPC.HitInfo hit, int damageDone, float totalValue) { }
@@ -83,25 +86,26 @@ public abstract class EquipmentStat : ModType
     // 2. Physical Melee Swings (Has Item Context)
     public virtual void ModifyHitNPCWithItem(Player player, Item item, NPC target, ref NPC.HitModifiers modifiers, float totalValue) { }
     public virtual void OnHitNPCWithItem(Player player, Item item, NPC target, NPC.HitInfo hit, int damageDone, float totalValue) { }
-
-    // =================================================================
-    // DEFENSIVE / HURT HOOKS (Damage Reduction, Iframes, Dodges)
-    // =================================================================
     public virtual void ModifyHurt(Player player, ref Player.HurtModifiers modifiers, float totalValue) { }
     public virtual void OnHurt(Player player, Player.HurtInfo info, float totalValue) { }
     public virtual void PostHurt(Player player, Player.HurtInfo info, float totalValue) { }
     
     // Returns true if the stat successfully dodged the attack
     public virtual bool FreeDodge(Player player, Player.HurtInfo info, float totalValue) => false;
-
-    // =================================================================
-    // MOBILITY / UTILITY HOOKS (Wing speeds, Pickaxe speed, Healing)
-    // =================================================================
+    
+    /// <summary>
+    /// must be called manually
+    /// </summary>
     public virtual void HorizontalWingSpeeds(Player player, ref float speed, ref float acceleration, float totalValue) { }
+    /// <summary>
+    /// must be called manually
+    /// </summary>
     public virtual void VerticalWingSpeeds(Player player, ref float ascentWhenFalling, ref float ascentWhenRising, ref float maxCanAscendMultiplier, ref float maxAscentMultiplier, ref float constantAscend, float totalValue) { }
     public virtual void GetHealLife(Player player, Item item, bool quickHeal, ref int healValue, float totalValue) { }
     
     public virtual bool CanUseItem(Player player, Item item, float totalValue) => true;
+    
+    public virtual void ModifyShootStats(Player player, Item item, ref Vector2 position, ref Vector2 velocity, ref int type, ref int damage, ref float knockback, float statValue) { }
 
     protected override void Register()
     {

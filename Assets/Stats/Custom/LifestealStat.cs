@@ -11,8 +11,7 @@ namespace EquipmentEvolved.Assets.Stats.Custom;
 
 public class LifeStealStat : EquipmentStat
 {
-    public override string FormatTooltip(float totalValue) => 
-        $"+{Math.Round(totalValue, 1)} Lifesteal on Hit";
+    public override string FormatTooltip(float totalValue) => GetLocalization("Tooltip").Format(Math.Round(totalValue, 2));
 
     public override void OnHitNPC(Player player, NPC target, NPC.HitInfo hit, int damageDone, float totalValue)
     {

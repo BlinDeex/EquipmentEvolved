@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using EquipmentEvolved.Assets.Balance;
 using EquipmentEvolved.Assets.Core;
 using EquipmentEvolved.Assets.Misc;
@@ -14,9 +15,9 @@ public class PrefixSplintering : BaseEvolvedPrefix, ISpecializedPrefix
     public override float ReforgeMultiplier => PrefixBalance.WEAPON_REFORGING_MULTIPLIER;
     public SpecializedPrefixType SpecializedPrefixType => SpecializedPrefixType.MagicWeapon;
 
-    public override IEnumerable<TooltipLine> GetTooltipLines(Item item)
+    protected override IEnumerable<TooltipLine> OnGetTooltipLines(Item item)
     {
-        yield return new TooltipLine(Mod, "newLine", Description.Format(PrefixBalance.SPLINTERING_CHANCE * 100))
+        yield return new TooltipLine(Mod, "newLine", Description.Format(Math.Round(PrefixBalance.SPLINTERING_CHANCE * 100, 2)))
         {
             IsModifier = true
         };

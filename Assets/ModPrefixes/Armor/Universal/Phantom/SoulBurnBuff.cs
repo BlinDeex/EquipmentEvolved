@@ -15,7 +15,9 @@ public class SoulBurnBuff : ModBuff
     public override bool ReApply(Player player, int time, int buffIndex)
     {
         int index = player.FindBuffIndex(Type);
-        player.buffTime[index] += time;
+        int totalTime = player.buffTime[index] + time;
+        if (totalTime > 1200) totalTime = 1200;
+        player.buffTime[index] = totalTime;
         return true;
     }
 

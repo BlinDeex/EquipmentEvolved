@@ -5,7 +5,7 @@ Your equipment is no longer just a collection of numbers—it dictates your play
 ⚙️ Core Changes
 Vanilla Prefixes Disabled: By default, vanilla prefixes are disabled to prevent pool dilution (configurable). Existing items with vanilla prefixes will retain them.
 
-Stat Squish: To accommodate the high power level of these new mechanics, global weapon damage and armor defense have been squished
+Stat Squish: To accommodate the high power level of these new mechanics, global weapon damage and armor defense have been reduced
 
 Earlier Access: The Goblin Tinkerer is now available as soon as you acquire your first reforged weapon. (Note: He will not sell items until his vanilla requirements are met).
 
@@ -31,48 +31,47 @@ Shapes: Charms drop as a Circle (Weapons), Square (Armor), or Triangle (Accessor
 
 Tiers: Common > Rare > Epic > Legendary > Mythical.
 
-Pity System: You are guaranteed Legendary and Mythical drops after a certain number of dry rolls. Use the /checkpity command to check your current status.
-
 Augmentations: High-tier Charms may possess augmentations that specifically buff a certain Reforge type, changing its behavior in some way (like the Clearing augmentation expanding your mining radius).
+    
+The Exalted Tier: Rumors say there is a charm tier above Mythical, and it is the only one capable of stabilizing the Omni augmentation... if you are lucky
 
-The Exalted Tier: Rumors say there is a charm tier above Mythical, and it is the only one capable of stabilizing the Omni augmentation if you are lucky...
 
 🧩 Deep Synergies & Builds
-Every reforge interacts with the rest of your equipment in various ways, allowing countless unexpected and powerful synergies to emerge. Here are couple examples of what you can build:
+Every reforge interacts with the rest of your equipment in various ways, allowing countless unexpected and powerful synergies to emerge, wont be showing examples of builds, just an example reforge from most categories:
 
-The "Immortal Blood Mage" Build
+[Melee] Untouchable:
+Damage ramps up infinitely as long as you do not take damage. At higher ramp-up levels, swing speed begins increasing as well. If you are hit, you lose the accumulated bonus and take multiplied incoming damage based on your current ramp-up level.
 
-Weapon: A Vampiric ranged weapon. This reforge grants flat lifesteal on-hit, though it does decrease your firing speed.
+[Ranged] Flow State:
+Applies a stacking bleed to enemies on hit. The bleed deals a percentage of the weapon's base damage, mitigated by the enemy's defense. If you fail to maintain consistent hits, the stacks decay rapidly.
 
-Armor: The complete Cursed universal armor set. Each individual piece provides a bonus of increased lifesteal. When all three pieces are equipped, the passive set bonus allows you to ignore all incoming damage that falls below a specific threshold of your maximum health. However, any damage that breaks this threshold will instantly deal a massive percentage of your maximum health, regardless of the attack's actual raw damage.
+[Magic] Triple Shot:
+Each projectile spawns additional projectiles with altered trajectories. Increases mana cost and decreases damage.
 
-Accessories: A combination of Blood Forged and Hollow accessories. Blood Forged increases your damage while decreasing your maximum health. Hollow decreases your total health even further, but compensates by increasing all of your mobility stats.
+[Whips] Detonating:
+Whipping your own minions rigs them with explosives. The bomb detonates on their next enemy contact, dealing massive burst damage scaling with minions damage
 
-How it works: The goal of this build is to intentionally shrink your maximum health pool to be as small as possible using the Blood Forged and Hollow accessory reforges. 
-Because the Cursed armor set punishes heavy, threshold-breaking strikes by dealing damage based entirely on a percentage of your maximum health, having a tiny health pool means the 
-actual numerical damage you take is incredibly low. You then leverage the flat lifesteal from your Vampiric weapon and the innate lifesteal piece bonuses from the Cursed armor to instantly 
-heal that small amount of missing health back to full before the enemy can land another attack, on the other side of spectrum you can try to get so much defense and hp that enemies rarely hit
-you for more than minimum damage threshold of cursed armor resulting in damage being negated altogether
+[Axe] Fortune:
+Chance to drop additional items when cutting trees.
+
+[Universal armor] Chrono:
+Piece Bonus: Increased movement speed.
+Set Bonus (Active): Time Stop. Freezes enemies and projectiles in a radius around you. Frozen objects do not deal contact damage.
 
 
-The "Momentum Striker" Build
+[Universal armor] Phantom:
+Piece Bonus: Increased true damage from all sources
+Set Bonus (Active): Summons two clones that mimic your actions. Reactivate the ability to make them charge and explode. While active, you are inflicted with these status effects:
+Voidseal: Stops all health/mana regeneration and prevents potion usage
+Soulburn: Causes hallucinations and damage over time that escalates the longer it lasts
+This armor set has an augmentation: [Phantom augmentation]: Increases phantoms count, you become immune to voidseal effects but soulburn ramping speed increases
 
-Weapon: A Kinetic melee weapon. This reforge actively boosts your damage dealt depending on how fast you were moving at the exact moment of the hit.
 
-Armor: The complete Chrono universal armor set. Each individual piece provides a bonus of increased movement speed. When all three pieces are equipped together, 
-the active set bonus grants you a Time Stop ability that freezes enemies and projectiles in a radius around you. Frozen objects do not deal contact damage.
+[Specialized armor - Leggings] Quantum:
+Converts all dashes into an instantaneous, omnidirectional teleport that can bypass solid obstacles. Teleporting leaves behind a high-energy afterimage that rapidly collapses to your new location, dealing damage to any enemies caught in its path scaling with defense.
 
-Accessories: A full set of Aerodynamic accessories. This reforge increases your movement speed and flight time.
 
-How it works: The goal of this build is to stack as much passive movement speed as possible using the Aerodynamic accessories and Chrono 
-armor piece bonuses to constantly maximize the damage multiplier of your Kinetic weapon. Chrono armor set bonus is time stop, it will completely freeze everything within range
-for a few seconds, if you want to maximize speed you would use desperate leggings which give tons of extra movement speed when losing health, and since majority of reduced hp sources
-in the mod use a custom stat "max health cap" it will reduce maximum point to which you can heal yourself, instead of reducing max health itself, because of this you can effectively
-always gain low hp bonuses from other reforges assuming you reduce your health cap low enough
 
-Some reforges are extremely good on their own and other equipment can be utility based, for example delayed ranger reforge makes all your bullets freeze when shot, after a delay
-all of them instantly travel along their trajectory passing blocks leaving a laser beam behind damaging everything caught in path, it is designed to kill worm type enemies. 
-On the other side of spectrum we got flow state ranger reforge, it applies infinitely stacking bleeding debuff on enemy as long as you maintain it, each stack adds a percentage of weapon 
-damage to the bleed, as you can guess it is extremely good against immobile and big singular bosses with lots of hp.
+
 
 

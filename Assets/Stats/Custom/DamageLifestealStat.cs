@@ -7,8 +7,7 @@ namespace EquipmentEvolved.Assets.Stats.Custom;
 
 public class DamageLifestealStat : EquipmentStat
 {
-    public override string FormatTooltip(float totalValue) => 
-        $"+{Math.Round(totalValue, 1)}% of Damage Dealt as Lifesteal";
+    public override string FormatTooltip(float totalValue) => GetLocalization("Tooltip").Format(MathF.Round(totalValue, 2));
 
     public override void OnHitNPC(Player player, NPC target, NPC.HitInfo hit, int damageDone, float totalValue)
     {
@@ -16,9 +15,18 @@ public class DamageLifestealStat : EquipmentStat
         
         float healingMul = 1f + player.GetModPlayer<StatPlayer>().GetTotalStat(ModContent.GetInstance<HealingMulStat>());
         
-        // Value is stored as a raw percentage (e.g. 5 for 5%), so we divide by 100
-        float healAmount = damageDone * (totalValue / 100f) * healingMul;
+        float rawHealAmount = damageDone * (totalValue / 100f) * healingMul;
+        int actualHeal = (int)rawHealAmount;
         
-        LifeStealStat.ApplyHealOrHurt(player, target, target.Center, healAmount);
+        float leftover = rawHealAmount - actualHeal;
+        if (Main.rand.NextFloat() < leftover)
+        {
+            actualHeal++;
+        }
+        
+        if (actualHeal > 0)
+        {
+            LifeStealStat.ApplyHealOrHurt(player, target, target.Center, actualHeal);
+        }
     }
 }

@@ -3,7 +3,6 @@ using EquipmentEvolved.Assets.Balance;
 using EquipmentEvolved.Assets.Core;
 using EquipmentEvolved.Assets.Misc;
 using EquipmentEvolved.Assets.ModPrefixes.Core;
-using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.ModLoader;
 
@@ -15,7 +14,7 @@ public class PrefixDelayed : BaseEvolvedPrefix, ISpecializedPrefix, IExperimenta
     public override float ReforgeMultiplier => PrefixBalance.WEAPON_REFORGING_MULTIPLIER;
     public SpecializedPrefixType SpecializedPrefixType => SpecializedPrefixType.RangedWeapon;
 
-    public override IEnumerable<TooltipLine> GetTooltipLines(Item item)
+    protected override IEnumerable<TooltipLine> OnGetTooltipLines(Item item)
     {
         float pulseSeconds = PrefixBalance.DELAYED_PULSE_TIMER / 60f;
         int laserDamagePct = (int)(PrefixBalance.DELAYED_LASER_DAMAGE_MULT * 100);
@@ -24,7 +23,7 @@ public class PrefixDelayed : BaseEvolvedPrefix, ISpecializedPrefix, IExperimenta
         
         yield return new TooltipLine(Mod, "DelayedDescription", formattedDescription)
         {
-            OverrideColor = Color.Cyan
+            IsModifier = true
         };
     }
 }

@@ -11,7 +11,8 @@ public class HealthCapMulStat : EquipmentStat
     public override string FormatTooltip(float totalValue)
     {
         int percent = (int)Math.Round(totalValue * 100);
-        return percent < 0 ? $"{percent}% Maximum Health Cap" : $"+{percent}% Maximum Health Cap";
+        string key = percent >= 0 ? "TooltipPositive" : "TooltipNegative";
+        return GetLocalization(key).Format(percent);
     }
 
     public override void UpdateLifeRegen(Player player, float totalValue)

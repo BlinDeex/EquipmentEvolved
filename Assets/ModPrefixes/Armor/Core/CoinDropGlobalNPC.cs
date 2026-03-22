@@ -16,8 +16,10 @@ public class CoinDropGlobalNPC : GlobalNPC
         if (!killer.active || killer.dead) return true;
 
         StatPlayer statPlayer = killer.GetModPlayer<StatPlayer>();
-
-        npc.value *= statPlayer.GetTotalStat(ModContent.GetInstance<CoinDropMulStat>());
+        
+        float coinMultiplier = 1f + statPlayer.GetTotalStat(ModContent.GetInstance<CoinDropMulStat>());
+        
+        npc.value *= coinMultiplier;
 
         return true;
     }

@@ -17,9 +17,9 @@ public class DebugNPC : ModNPC
         NPC.height = 32;
         NPC.damage = 0;
         NPC.defense = 100;
-        NPC.lifeMax = 9999999;
+        NPC.lifeMax = 1000000;
         NPC.HitSound = SoundID.NPCHit1;
-        NPC.knockBackResist = 0f;
+        NPC.knockBackResist = 1f;
         NPC.aiStyle = -1;
         NPC.noGravity = true;
         NPC.noTileCollide = true;

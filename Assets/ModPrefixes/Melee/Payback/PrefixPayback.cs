@@ -3,7 +3,6 @@ using EquipmentEvolved.Assets.Balance;
 using EquipmentEvolved.Assets.Core;
 using EquipmentEvolved.Assets.Misc;
 using EquipmentEvolved.Assets.ModPrefixes.Core;
-using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.ModLoader;
 
@@ -15,7 +14,7 @@ public class PrefixPayback : BaseEvolvedPrefix, ISpecializedPrefix
     public override float ReforgeMultiplier => PrefixBalance.WEAPON_REFORGING_MULTIPLIER;
     public SpecializedPrefixType SpecializedPrefixType => SpecializedPrefixType.MeleeWeapon | SpecializedPrefixType.Whip;
 
-    public override IEnumerable<TooltipLine> GetTooltipLines(Item item)
+    protected override IEnumerable<TooltipLine> OnGetTooltipLines(Item item)
     {
         string desc = Description.Format(PrefixBalance.PAYBACK_MIN_COINS, PrefixBalance.PAYBACK_MAX_COINS, (int)(PrefixBalance.PAYBACK_COPPER_MULT * 100),
             (int)(PrefixBalance.PAYBACK_SILVER_MULT * 100), (int)(PrefixBalance.PAYBACK_GOLD_MULT * 100), (int)(PrefixBalance.PAYBACK_PLATINUM_MULT * 100),
@@ -23,7 +22,7 @@ public class PrefixPayback : BaseEvolvedPrefix, ISpecializedPrefix
 
         yield return new TooltipLine(Mod, "PaybackDescription", desc)
         {
-            OverrideColor = Color.Gold
+            IsModifier = true
         };
     }
 }

@@ -2,7 +2,6 @@
 using EquipmentEvolved.Assets.Balance;
 using EquipmentEvolved.Assets.Misc;
 using EquipmentEvolved.Assets.ModPrefixes.Armor.Core;
-using EquipmentEvolved.Assets.ModPrefixes.Shared;
 using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.Audio;

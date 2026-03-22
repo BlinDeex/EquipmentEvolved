@@ -7,8 +7,7 @@ namespace EquipmentEvolved.Assets.Stats.Combat;
 
 public class MagicDamageStat : EquipmentStat
 {
-    public override string FormatTooltip(float totalValue) => 
-        $"+{Math.Round(totalValue * 100)}% Melee Damage";
+    public override string FormatTooltip(float totalValue) => GetLocalization("Tooltip").Format(Math.Round(totalValue * 100));
 
     public override void PostUpdateEquips(Player player, float totalValue)
     {

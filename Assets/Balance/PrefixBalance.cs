@@ -75,6 +75,7 @@ public static class PrefixBalance
     // Perceptive
     public static int PERCEPTIVE_CRIT = 50; // +50% base crit (requires accessories to hit the 800% cap!)
     public static float PERCEPTIVE_CRIT_DAMAGE = 0.90f;
+    public static int PERCEPTIVE_MAX_TIER = 6; // <-- ADD THIS HERE!
 
     // Untouchable
     public static float UNTOUCHABLE_INCREASE_PER_TICK = 1f / (60f * 15f); // Reaches max in 15 seconds 
@@ -93,13 +94,24 @@ public static class PrefixBalance
     // PAYBACK SETTINGS
     public static int PAYBACK_MIN_COINS = 1;
     public static int PAYBACK_MAX_COINS = 3;
-    public static float PAYBACK_COIN_RETURN_CHANCE = 0.80f; // 80% chance to not lose the money
+    public static float PAYBACK_COIN_RETURN_CHANCE = 0.95f; // 95% chance to not lose the money
 
     // Payback Multipliers (Heavily rewards risking Platinum)
     public static float PAYBACK_COPPER_MULT = 0.10f;
     public static float PAYBACK_SILVER_MULT = 0.40f;
     public static float PAYBACK_GOLD_MULT = 1.0f;
     public static float PAYBACK_PLATINUM_MULT = 4.0f;
+    
+    // Gravitic Balance
+    public static float GRAVITIC_BASE_PULL_RADIUS = 100f; // Starting radius at 0 useTime
+    public static float GRAVITIC_RADIUS_PER_USE_TIME = 8f; // Flat radius added per useTime tick
+    public static float GRAVITIC_MAX_PULL_RADIUS = 800f; 
+
+    public static float GRAVITIC_BASE_PULL_SPEED = 1.0f; // Base pull speed
+    public static float GRAVITIC_SPEED_EXPONENT = 1.1f; // Exponential multiplier (e.g. 1.05^useTime)
+    public static float GRAVITIC_MAX_PULL_SPEED = 15f; 
+    
+    public static float GRAVITIC_VISUAL_DISTORTION_MULT = 0.005f;
 
     #endregion
 
@@ -123,7 +135,7 @@ public static class PrefixBalance
     public static float INFERNAL_RANGED_MAX_CRIT = 40f;
 
     // Equalizer
-    public static float EQUALIZER_PERCENT_DAMAGE = 0.3f / 100f; // 0.3% max hp per hit (Shreds high-HP modded bosses)
+    public static float EQUALIZER_PERCENT_DAMAGE = 0.003f; // 0.003% max hp per hit (Shreds high-HP modded bosses)
 
     // Challenger
     public static float CHALLENGER_GOOD_ORB_HIT_MULTIPLIER = 1.1f;
@@ -267,6 +279,12 @@ public static class PrefixBalance
     public static int SACRIFICIAL_ON_HIT_BUFF_TICKS = 300;
     public static int SACRIFICIAL_IMMUNE_FRAMES_PER_MINION = 30; // 0.5 seconds of invincibility per minion
     public static int SACRIFICIAL_COOLDOWN_TICKS = 3600;
+    
+    // Detonating
+    public static float DETONATING_DAMAGE_MULTIPLIER = 3.0f; // Explosion deals 300% of the minion's base damage
+    public static float DETONATING_EXPLOSION_RADIUS = 120f; // Radius in pixels
+    public static float DETONATING_USE_SPEED_MUL = 1.15f;
+    public static int DETONATING_AUTO_EXPLODE_TICKS = 300; // 5 seconds
 
     #endregion
 
@@ -326,7 +344,7 @@ public static class PrefixBalance
     public static float LUCKY_CHARM_LUCK_MULT = 1.30f; // +30% Luck
 
     // Zealous
-    public static float ZEALOUS_ATTACK_SPEED_MULT = 1.12f; // +12% Attack Speed
+    public static float ZEALOUS_ATTACK_SPEED_MULT = 1.15f; // +15% Attack Speed
 
     // Greedy
     public static float GREEDY_COIN_DROP_MULT = 1.50f; // +50% Coins
@@ -337,6 +355,7 @@ public static class PrefixBalance
 
     // Clearing
     public static float CLEARING_CHANCE_TO_LOSE_MINED_BLOCK = 0.60f;
+    public static float CLEARING_MINING_AREA = 3;
 
     // Vein miner
     //public static int VEIN_MINER_MAXIMUM_BLOCKS_MINED = 50; // currently using pickaxe power as the cap
@@ -370,11 +389,20 @@ public static class PrefixBalance
     public static int PHALANX_BURN_EFFECT_TICKS = 180;
     public static int PHALANX_REACT_COOLDOWN_TICKS = 60 * 30;
     public static float PHALANX_DAMAGE_INCREASE = 1.08f; // 8% increase per piece (+24% total)
+    // Phalanx Augmentation
+    public static int PHALANX_AUGMENTATION_OVERCLOCK_TICKS = 120; // 2 seconds of rapid-fire reflection
+    
+    // Inevitable
+    public static int INEVITABLE_CLOCK_TICKS = 720; // 12 seconds
+    public static float INEVITABLE_BOSS_MAX_HP_DAMAGE_PERCENT = 0.10f; // 10% max HP true damage to bosses
+    public static int INEVITABLE_COOLDOWN_TICKS = 60 * 180; // 3 minute cooldown
+    public static float INEVITABLE_RANGE = 2000f; // Range of the screen wipe
+    public static float INEVITABLE_PIECE_DAMAGE_MULT = 0.08f; // +8% damage per piece
 
     #region Specialized
 
     // Vitalis
-    public static float VITALIS_LIFESTEAL_AMP = 2.0f; // +100% lifesteal/potion healing efficiency
+    public static float VITALIS_LIFESTEAL_AMP = 1.5f; // +100% lifesteal/potion healing efficiency
 
     // Reinforced
     public static float REINFORCED_DEFENSE_AMP = 0.50f; // +50% defense for this specific piece
@@ -390,7 +418,7 @@ public static class PrefixBalance
 
     // Rebounding
     public static float REBOUNDING_DEFENSE_SCALING = 3.0f; // Shrapnel deals 300% of Defense as damage
-    public static int REBOUNDING_DEFENSE_PER_STACK = 12; // +12 Defense per hit taken
+    public static float REBOUNDING_DEFENSE_PER_STACK = 0.33f; // +12 Defense per hit taken
     public static int REBOUNDING_MAX_STACKS = 5;
     public static int REBOUNDING_STACK_DURATION = 300;
 
@@ -406,6 +434,10 @@ public static class PrefixBalance
 
     // Psionic
     public static float PSIONIC_HEAL_BONUS_MULT = 2.00f; // Hearts and stars heal 100% more
+    
+    // Phasing
+    public static int PHASING_DASH_IFRAMES = 30; // 0.5 seconds of invincibility
+    public static int PHASING_TELEPORT_IFRAMES = 60; // 1 second of invincibility
 
     // Dashing
     public static int DASHING_MAX_CHARGES = 3;
@@ -415,6 +447,16 @@ public static class PrefixBalance
 
     // Resonant
     public static float RESONANT_PREFIX_BOOST = 0.33f; // +33% to accessory prefixes
+    
+    // Quantum
+    public static float QUANTUM_TELEPORT_DISTANCE = 250f;
+    public static float QUANTUM_AFTERIMAGE_DEFENSE_MULT = 3.5f; //
+    public static int QUANTUM_DASH_COOLDOWN_TICKS = 60; // 1 second
+    public static int QUANTUM_FORGIVING_SEARCH_RADIUS_BLOCKS = 3;
+    public static int QUANTUM_AFTERIMAGE_WAIT_TICKS = 30; // Half a second before moving
+    public static float QUANTUM_AFTERIMAGE_RETURN_SPEED = 35f;
+    public static float QUANTUM_AFTERIMAGE_MERGE_DISTANCE = 40f;
+    public static Color QUANTUM_AFTERIMAGE_COLOR = new(0, 255, 255, 100);
 
     #endregion Specialized
 
@@ -427,8 +469,11 @@ public static class PrefixBalance
     // Phantom
     public static int PHANTOM_ABILITY_COOLDOWN = 60 * 20; //TODO soulburn doesnt deal damage to the player
     public static int PHANTOM_CLONES_COUNT = 2;
-    public static int PHANTOM_CLONES_COUNT_AUGMENTED = 3;
+    public static int PHANTOM_CLONES_COUNT_AUGMENTED = 6;
     public static int PHANTOM_RECOVERY_SPEED = 5;
+    public static float PHANTOM_TRUE_DAMAGE_AMP = 0.15f;
+    // Phantom Augmentation
+    public static int PHANTOM_AUGMENTATION_SOULBURN_RAMP_MULT = 2; // Soulburn builds up 2x as fast per phantom
 
     // Conduit
     public static int CONDUIT_MANA_PER_PIECE = 40; // Total of +120 Mana with the full set

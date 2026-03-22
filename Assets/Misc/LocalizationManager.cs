@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Text;
-using EquipmentEvolved.Assets.Balance;
-using EquipmentEvolved.Assets.CharmsModule.Data;
-using EquipmentEvolved.Assets.Core;
 using EquipmentEvolved.Assets.ModPrefixes.Core;
 using Terraria.Localization;
 using Terraria.ModLoader;
@@ -11,36 +8,10 @@ namespace EquipmentEvolved.Assets.Misc;
 
 public static class LocalizationManager
 {
-    public const string PrefixAscendant = "AscendantDesc";
     public const string XDamageAdded = "XDamageAdded";
-    public const string XDamageDecreased = "XDamageDecreased";
     public const string XCritAdded = "XCritAdded";
-    public const string XCritDecreased = "XCritDecreased";
-    public const string XDecreasedManaUsage = "XDecreasedManaUsage";
-    public const string XIncreasedManaUsage = "XIncreasedManaUsage";
-    public const string XUseTimeReduced = "XUseTimeReduced";
-    public const string XUseTimeIncreased = "XUseTimeIncreased";
-    public const string XCritDamageIncreased = "XCritDamageIncreased";
-    public const string XCritDamageDecreased = "XCritDamageDecreased";
-    public const string XOnHitIncreasedCoinDropChance = "XOnHitIncreasedCoinDropChance";
-    public const string XOnHitDecreasedCoinDropChance = "XOnHitDecreasedCoinDropChance";
-    public const string XIncreasedCoinDropValue = "XIncreasedCoinDropValue";
-    public const string XDecreasedCoinDropValue = "XDecreasedCoinDropValue";
     public const string XIncreasedLifesteal = "XIncreasedLifesteal";
-    public const string XDecreasedLifesteal = "XDecreasedLifesteal";
-    public const string XNegativeMaxHealthDamage = "XNegativeMaxHealthDamage";
-    public const string XPositiveMaxHealthDamage = "XPositiveMaxHealthDamage";
     public const string NoArmorSetBonus = "NoArmorSetBonus";
-    public const string XMovementSpeedIncreased = "XMovementSpeedIncreased";
-    public const string XMovementSpeedDecreased = "XMovementSpeedDecreased";
-    public const string XSizeIncreased = "XSizeIncreased";
-    public const string XSizeDecreased = "XSizeDecreased";
-    public const string XDefenseIncreased = "XDefenseIncreased";
-    public const string XDefenseDecreased = "XDefenseDecreased";
-    public const string XRegenIncreased = "XRegenIncreased";
-    public const string XRegenDecreased = "XRegenDecreased";
-    public const string XIframesIncreased = "XIframesIncreased";
-    public const string XIframesDecreased = "XIframesDecreased";
 
     private const string weapon = "Weapon.";
     private const string armor = "Armor.";

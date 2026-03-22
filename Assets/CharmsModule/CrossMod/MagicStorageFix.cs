@@ -11,7 +11,7 @@ namespace EquipmentEvolved.Assets.CharmsModule.CrossMod;
 
 /// <summary>
 /// Bypasses Magic Storage fast-withdrawal optimization. 
-/// MS ignores custom ModItem data (like our Guid) during extraction equivalence checks. 
+/// MS ignores custom ModItem data during extraction equivalence checks. 
 /// Intercepts the withdrawal, finds exact Charm via Guid, and spoofs its prefix 
 /// to force Magic Storage to extract the correct instance.
 /// </summary>

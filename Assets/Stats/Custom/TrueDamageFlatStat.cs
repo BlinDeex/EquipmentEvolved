@@ -1,4 +1,5 @@
-﻿using EquipmentEvolved.Assets.Core;
+﻿using System;
+using EquipmentEvolved.Assets.Core;
 using EquipmentEvolved.Assets.Utilities;
 using Terraria;
 using Terraria.ModLoader;
@@ -9,8 +10,7 @@ namespace EquipmentEvolved.Assets.Stats.Custom;
 
 public class TrueDamageFlatStat : EquipmentStat
 {
-    public override string FormatTooltip(float totalValue) => 
-        $"+{(int)totalValue} True Damage";
+    public override string FormatTooltip(float totalValue) => GetLocalization("Tooltip").Format(Math.Round(totalValue, 2));
 
     public override void OnHitNPC(Player player, NPC target, NPC.HitInfo hit, int damageDone, float totalValue)
     {

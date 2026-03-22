@@ -50,6 +50,14 @@ Configs: {
 	}
 }
 
+UI: {
+	ConverterNotice: {
+		Line1: Your inventory is getting cluttered with Charms!
+		Line2: Craft a [c/00FFFF:Charm Converter] to automatically scrap them into dust.
+		Line3: Recipe: 5 Gold/Platinum Bars + 10 Wire at an Anvil.
+	}
+}
+
 Projectiles: {
 	DelayedLaserProjectile.DisplayName: Delayed Laser Projectile
 	PaybackCoinProjectile.DisplayName: Payback Coin Projectile
@@ -58,6 +66,7 @@ Projectiles: {
 	InvertedProjectile.DisplayName: Inverted Projectile
 	PhantomArmorProjectile.DisplayName: Phantom Armor Projectile
 	PhalanxPlatingProjectile.DisplayName: Phalanx Plating Projectile
+	QuantumAfterimageProjectile.DisplayName: Quantum Afterimage Projectile
 }
 
 Tool: {
@@ -65,7 +74,7 @@ Tool: {
 		Clearing: {
 			DisplayName: Clearing
 			ClearingChanceToLoseBlocks: "{0}% chance for loss of mined item"
-			ClearingAreaImprovement: This tool mines in 3x3 area
+			ClearingAreaImprovement: This tool mines in {0}x{0} area
 			Description: "[Clearing Augmentation] Boosts mined area by clearing tools from 3x3 to 7x7"
 		}
 	}
@@ -102,6 +111,16 @@ Weapon: {
 				DisplayName: Sacrificial
 				Description: TODO: Add Sacrificial Description
 			}
+
+			Detonating: {
+				DisplayName: Detonating
+				Description:
+					'''
+					Whipping your own minions rigs them with explosives.
+					The bomb detonates on enemy contact or after {0} seconds.
+					Deals {1}% of the minion's base damage.
+					'''
+			}
 		}
 
 		MinionWeapon: {
@@ -129,7 +148,7 @@ Weapon: {
 	RangedWeapon: {
 		Vampiric: {
 			DisplayName: Vampiric
-			Description: "{0} Increased lifesteal"
+			Description: "{0} Increased on-hit lifesteal"
 		}
 
 		Thaumic: {
@@ -163,8 +182,8 @@ Weapon: {
 				'''
 				Applies an infinitely stacking bleed to enemies on hit ({0}-second duration).
 				The bleed deals {1}% of the weapon's base damage per stack.
-				Stacks decay rapidly if hits are not maintained.
 				'''
+			Description2: Stacks decay rapidly if hits are not maintained.
 		}
 
 		Delayed: {
@@ -190,7 +209,7 @@ Weapon: {
 			YellowOrb: Yellow orb - Adds both green and blue orb effects, heals you by {0}hp
 			BlueOrb: Blue orb - Increases projectile velocity by {0}% and critical strike chance by {1}%
 			GreenOrb: Green orb - Increases both damage and defense by {0}%
-			Title: Holding weapon enables difficult minigame but with great rewards:
+			Title: Holding this weapon enables difficult minigame but with great rewards:
 			Description: Hitting Beneficial orbs increase stats pool and current score, score multiplies all stats before they are applied
 		}
 
@@ -225,7 +244,7 @@ Weapon: {
 
 		Sundering: {
 			DisplayName: Sundering
-			Description: Striking enemies permanently tears away their armor.
+			Description: Striking enemies permanently reduce {0}% of their total base defense
 		}
 
 		Sealed: {
@@ -238,7 +257,13 @@ Weapon: {
 
 		Perceptive: {
 			DisplayName: Perceptive
-			Description: "{0}% Chance to deal quadruple damage"
+			Description:
+				'''
+				{0}% Chance to upgrade critical strikes to the next tier
+				Critical strike chance over 100% pushes crits into higher damage tiers
+				(Caps at Tier {1} / {2}x Crit Multiplier)
+				'''
+			Warning: Critical strike chance must exceed 100% to enable this effect
 		}
 
 		Payback: {
@@ -268,6 +293,22 @@ Weapon: {
 			ManaPerSwing: Consumes {0} mana per swing
 			Description: Consumes {0} mana per swing
 		}
+
+		Gravitic: {
+			DisplayName: Gravitic
+			Description:
+				'''
+				Warps gravity with every swing to pull enemies towards you
+				Effective Radius: {0} pixels
+				Pull Strength: {1}
+				'''
+		}
+
+		Inevitable: {
+			Description: Mods.EquipmentEvolved.Weapon.MeleeWeapon.Inevitable.Description
+			SetBonus: Mods.EquipmentEvolved.Weapon.MeleeWeapon.Inevitable.SetBonus
+			DisplayName: Mods.EquipmentEvolved.Weapon.MeleeWeapon.Inevitable.DisplayName
+		}
 	}
 
 	MagicWeapon: {
@@ -287,7 +328,7 @@ Weapon: {
 				'''
 				Hold attack to infinitely charge the spell
 				Mana drain increases rapidly over time
-				Deals {0}% damage per weapon mana cost consumed!
+				Deals {0}% damage per weapon mana cost consumed
 				'''
 		}
 
@@ -341,7 +382,7 @@ Armor: {
 				Voidseal: Completely stops all health and mana regeneration, health and mana potions cannot be consumed
 				Soulburn: Deals damage over time and impairs vision, grows more intense the longer it lasts
 				'''
-			Description: TODO: Add Phantom Description
+			Description: "{0}% Increased all true damage"
 		}
 
 		Phalanx: {
@@ -366,7 +407,7 @@ Armor: {
 
 		Conduit: {
 			DisplayName: Conduit
-			SetBonus: Conduit Set Bonus: Replaces standard mana regeneration with a fast, uninterrupted constant flow
+			SetBonus: SET BONUS [Passive]: Replaces standard mana regeneration with a fast, uninterrupted constant flow
 			Description: Increases maximum mana by {0}
 		}
 
@@ -375,24 +416,27 @@ Armor: {
 			SetBonus:
 				'''
 				SET BONUS [Active]: Disrupts time flow in area around you resulting in enemies and all projectiles
-				completely stopping for {0} {^0:second;seconds}, while time stop is active enemies dont deal damage on contact
+				completely stopping for {0} {^0:second;seconds}, objects do not deal contact damage while frozen
 				'''
 			Description: "{0}% Increased movement speed"
 		}
 
 		Augmented: {
 			DisplayName: Augmented
-			LeggingsLvl3: "{0} Defense > Gain gravitation buff"
-			LeggingsLvl2: "{0} Defense > Gain rage buff"
-			LeggingsLvl1: "{0} Defense > Gain swiftness buff"
-			ChestplateLvl3: "{0} Defense > Gain endurance buff"
-			ChestplateLvl2: "{0} Defense > Gain wrath buff"
-			ChestplateLvl1: "{0} Defense > Gain iron skin buff"
-			HeadwearLvl3: "{0} Defense > Gain life force buff"
-			HeadwearLvl2: "{0} Defense > Gain exquisitely stuffed buff"
-			HeadwearLvl1: "{0} Defense > Gain hunter buff"
-			SetBonus: SET BONUS [Passive]: Damage is increased by {0}% for each buff active
 			Description: You gain buffs for each armor piece equipped, scales with defense:
+			SetBonus: SET BONUS [Passive]: Damage is increased by {0}% for each buff active
+			LevelLine: "{0} Defense > Gain {1}"
+		}
+
+		Inevitable: {
+			DisplayName: Inevitable
+			SetBonus:
+				'''
+				SET BONUS [Active]: Summons a doomsday clock that tolls for {0} seconds. 
+				When the countdown finishes, inevitable death claims all non-boss enemies nearby and deals {1}% maximum health as true damage to bosses.
+				Applies a {2} {^2:second;seconds} armor ability cooldown.
+				'''
+			Description: Increases all damage by {0}%
 		}
 	}
 
@@ -416,6 +460,15 @@ Armor: {
 			DisplayName: Desperate
 			Description: Increases movement speed by up to {0}% as your Health decreases.
 		}
+
+		Quantum: {
+			Description:
+				'''
+				Replaces dashes with an omnidirectional teleport that bypasses walls
+				Leaves an afterimage that collapses to your new location, dealing {0}% of your Defense as damage
+				'''
+			DisplayName: Quantum
+		}
 	}
 
 	Headwear: {
@@ -430,7 +483,7 @@ Armor: {
 
 		Reinforced: {
 			DisplayName: Reinforced
-			Description: Increases defense gained from this equipment by {0} ({1}%)
+			Description: Increases defense gained from this equipment by {0}%
 		}
 
 		Psionic: {
@@ -452,9 +505,13 @@ Armor: {
 			Description: Damage increases as Health decreases, up to {0}%
 		}
 
-		WaterBreathing: {
-			DisplayName: Water Breathing
-			Description: Triples amount of time you can spend underwater before drowning
+		Phasing: {
+			DisplayName: Phasing
+			Description:
+				'''
+				Dashes grant {0} seconds of invincibility
+				Teleports grant {1} seconds of invincibility
+				'''
 		}
 	}
 
@@ -478,11 +535,10 @@ Armor: {
 			DisplayName: Rebounding
 			Description:
 				'''
-				Emits piercing shrapnel when hit with huge knockback.
-				Shrapnel damage scales at {0}% of your total Defense.
-				Grants a temporary Defense boost when hit, which can stack.
-				WARNING: Reaching {1} stacks rapidly will SHATTER and destroy this armor piece!
+				Taking damage grants +{0}% item Defense for {1} seconds
+				Taking heavy damage releases crystal shrapnel dealing {2}% of your total Defense as damage
 				'''
+			ShatterWarning: Reaching {0} stacks shatters the armor, temporarily reducing its Defense to 0
 		}
 
 		Dashing: {
@@ -543,11 +599,8 @@ Accessory: {
 
 	Hollow: {
 		DisplayName: Hollow
-		Description:
-			'''
-			Decreases maximum health by {0}%
-			Increases movement speed and wing mobility by {1}%
-			'''
+		Description: Increases movement speed and wing mobility by {1}%
+		HealthDec: Decreases maximum health by {0}%
 	}
 
 	Greedy: {
@@ -590,6 +643,12 @@ Accessory: {
 		DisplayName: Aerodynamic
 		Description: Increases movement speed by {0}% and maximum flight time by additional {1} ticks
 	}
+
+	Inevitable: {
+		Description: Mods.EquipmentEvolved.Accessory.Inevitable.Description
+		SetBonus: Mods.EquipmentEvolved.Accessory.Inevitable.SetBonus
+		DisplayName: Mods.EquipmentEvolved.Accessory.Inevitable.DisplayName
+	}
 }
 
 Augmentations: {
@@ -618,6 +677,36 @@ Items: {
 	DebugAllStatAccessory: {
 		Tooltip: ""
 		DisplayName: Debug All Stat Accessory
+	}
+
+	ExampleAddonAccessory: {
+		Tooltip: ""
+		DisplayName: Example Addon Accessory
+	}
+
+	CharmConverter: {
+		DisplayName: Charm Converter
+		Tooltip: ""
+	}
+
+	CommonCharmDust: {
+		DisplayName: Common Charm Dust
+		Tooltip: ""
+	}
+
+	RareCharmDust: {
+		DisplayName: Rare Charm Dust
+		Tooltip: ""
+	}
+
+	UnidentifiedEpicCharm: {
+		DisplayName: Unidentified Epic Charm
+		Tooltip: ""
+	}
+
+	UnidentifiedRareCharm: {
+		DisplayName: Unidentified Rare Charm
+		Tooltip: ""
 	}
 }
 
@@ -668,3 +757,66 @@ LocalizationManager: {
 }
 
 Keybinds.ArmorActivationKeybind.DisplayName: Armor Activation Keybind
+
+EquipmentStat: {
+	AggroStat: {
+		TooltipPositive: +{0} Enemy Aggro
+		TooltipNegative: "{0} Enemy Aggro"
+	}
+
+	CharmLuckStat.Tooltip: +{0}% Charm Luck
+	CoinDropMulStat.Tooltip: +{0}% All Coin Drops
+	CoinDropOnHitStat.Tooltip: +{0} Coins Dropped on Hit
+	MoveSpeedStat.Tooltip: +{0}% Movement Speed
+
+	PickSpeedStat: {
+		TooltipPositive: +{0}% Mining Speed
+		TooltipNegative: "{0}% Mining Speed"
+	}
+
+	WingHorizontalAccStat.Tooltip: +{0}% Wing Horizontal Acceleration
+	WingHorizontalSpeedStat.Tooltip: +{0}% Wing Horizontal Speed
+	WingTimeStat.Tooltip: +{0} Wing Time
+	WingVerticalAccStat.Tooltip: +{0}% Wing Vertical Acceleration
+	WingVerticalSpeedStat.Tooltip: +{0}% Wing Vertical Speed
+	DamageReductionStat.Tooltip: +{0}% Damage Reduction
+
+	DefenseMulStat: {
+		TooltipPositive: +{0}% Defense
+		TooltipNegative: "{0}% Defense"
+	}
+
+	FlatDefenseStat.Tooltip: +{0} Defense
+
+	HealthCapMulStat: {
+		TooltipPositive: +{0}% Maximum Health Cap
+		TooltipNegative: "{0}% Maximum Health Cap"
+	}
+
+	IframesStat.Tooltip: +{0} Invincibility Frames on Hit
+	MaxHealthMulStat.Tooltip: +{0}% Maximum Health
+	RegenStat.Tooltip: +{0} Life Regeneration
+	DamageLifestealStat.Tooltip: +{0}% of Damage Dealt as Lifesteal
+	HealingMulStat.Tooltip: +{0}% Healing Received
+	LifeStealStat.Tooltip: +{0} Lifesteal on Hit
+	TrueDamageFlatStat.Tooltip: +{0} True Damage
+	TrueDamageMulStat.Tooltip: +{0}% True Damage
+	TrueDamagePercentageStat.Tooltip: +{0}% Target Max Health as True Damage
+	CritDamageStat.Tooltip: +{0}% Critical Strike Damage
+	CritStat.Tooltip: +{0}% Critical Strike Chance
+	DamageStat.Tooltip: +{0}% Damage
+	MagicDamageStat.Tooltip: +{0}% Magic Damage
+	ProjectileVelocityStat.Tooltip: +{0}% Increased Projectile Velocity
+	InvincibilityStat.Tooltip: +{0} Invincibility [Currently there is no way to get this in item form, its a bug]
+
+	ManaUsageStat: {
+		TooltipPositive: +{0}% Mana Cost
+		TooltipNegative: "{0}% Mana Cost"
+	}
+
+	MeleeDamageStat.Tooltip: +{0}% Melee Damage
+	MinionsStat.Tooltip: +{0} Max Minions
+	RangedDamageStat.Tooltip: +{0}% Ranged Damage
+	SummonDamageStat.Tooltip: +{0}% Summon Damage
+	UseSpeedStat.Tooltip: +{0}% Attack Speed
+}

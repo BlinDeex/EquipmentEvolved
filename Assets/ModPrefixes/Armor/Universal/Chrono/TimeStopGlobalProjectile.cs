@@ -4,7 +4,7 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
 
-namespace EquipmentEvolved.Assets.ModPrefixes.Shared;
+namespace EquipmentEvolved.Assets.ModPrefixes.Armor.Universal.Chrono;
 
 public class TimeStopGlobalProjectile : GlobalProjectile
 {

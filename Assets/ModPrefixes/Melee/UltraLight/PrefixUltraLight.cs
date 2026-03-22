@@ -17,9 +17,9 @@ public class PrefixUltraLight : BaseEvolvedPrefix, ISpecializedPrefix
 
     public LocalizedText AutoReuse { get; private set; }
 
-    public override void SetStaticDefaults()
+    protected override void OnSetStaticDefaults()
     {
-        base.SetStaticDefaults(); // Safely sets up standard Description if you ever add one!
+         // Safely sets up standard Description if you ever add one!
         AutoReuse = GetLoc(nameof(AutoReuse));
     }
 
@@ -30,7 +30,7 @@ public class PrefixUltraLight : BaseEvolvedPrefix, ISpecializedPrefix
         damageMult *= PrefixBalance.ULTRA_LIGHT_DAMAGE;
     }
 
-    public override IEnumerable<TooltipLine> GetTooltipLines(Item item)
+    protected override IEnumerable<TooltipLine> OnGetTooltipLines(Item item)
     {
         yield return new TooltipLine(Mod, "newLine", AutoReuse.Value)
         {

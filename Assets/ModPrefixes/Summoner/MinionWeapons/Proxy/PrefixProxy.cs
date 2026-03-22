@@ -22,7 +22,7 @@ public class PrefixProxy : BaseEvolvedPrefix, ISpecializedPrefix
         return true;
     }
 
-    public override IEnumerable<TooltipLine> GetTooltipLines(Item item)
+    protected override IEnumerable<TooltipLine> OnGetTooltipLines(Item item)
     {
         yield return new TooltipLine(Mod, "ProxyDesc", Description.Format(MathF.Round(PrefixBalance.PROXY_MAX_DURATION_TICKS, 1)))
         {

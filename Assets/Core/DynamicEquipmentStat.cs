@@ -3,26 +3,17 @@ using System.Collections.Generic;
 
 namespace EquipmentEvolved.Assets.Core;
 
-// This internal class wraps stats added by OTHER mods via Mod.Call
-internal class DynamicEquipmentStat : EquipmentStat
+internal class DynamicEquipmentStat(string customName, Func<float, string> tooltipFormatter, StatStackingMode stackingMode) : EquipmentStat
 {
-    private readonly string _customName;
-    private readonly Func<float, string> _tooltipFormatter;
+    public override string Name => customName;
+    public override StatStackingMode StackingMode => stackingMode;
 
-    public override string Name => _customName;
-
-    public DynamicEquipmentStat(string customName, Func<float, string> tooltipFormatter)
-    {
-        _customName = customName;
-        _tooltipFormatter = tooltipFormatter;
-    }
-
-    public override string FormatTooltip(float value) => _tooltipFormatter(value);
+    public override string FormatTooltip(float value) => tooltipFormatter(value);
 }
 
 public static class EquipmentStatLoader
 {
-    private static readonly List<EquipmentStat> statsByNetId = new();
+    private static readonly List<EquipmentStat> statsByNetId = [];
     private static readonly Dictionary<string, EquipmentStat> statsByFullName = new();
 
     public static int StatCount => statsByNetId.Count;
@@ -36,12 +27,15 @@ public static class EquipmentStatLoader
         statsByFullName[$"{modName}/{stat.Name}"] = stat;
     }
     
-    public static void AddDynamicStat(string externalModName, string statName, Func<float, string> tooltipFormatter)
+    public static string AddDynamicStat(string externalModName, string statName, Func<float, string> tooltipFormatter, int stackingModeInt = 0)
     {
-        string combinedName = $"{externalModName}_{statName}";
-        var dynamicStat = new DynamicEquipmentStat(combinedName, tooltipFormatter);
+        string internalName = $"{externalModName}_{statName}";
+        var dynamicStat = new DynamicEquipmentStat(internalName, tooltipFormatter, (StatStackingMode)stackingModeInt);
         
         RegisterStat(dynamicStat);
+        
+        // Return the exact dictionary key so the external mod knows how to reference it later
+        return $"DynamicEquipmentStat/{internalName}";
     }
 
     public static EquipmentStat GetStatByNetID(int netId)

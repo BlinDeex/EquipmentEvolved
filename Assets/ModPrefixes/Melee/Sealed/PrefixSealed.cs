@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using EquipmentEvolved.Assets.Balance;
-using EquipmentEvolved.Assets.CharmsModule.Data;
 using EquipmentEvolved.Assets.Core;
 using EquipmentEvolved.Assets.Misc;
 using EquipmentEvolved.Assets.ModPrefixes.Core;
@@ -21,9 +20,9 @@ public class PrefixSealed : BaseEvolvedPrefix, ISpecializedPrefix
     public LocalizedText Instruction { get; private set; }
     public LocalizedText LockedWarning { get; private set; }
 
-    public override void SetStaticDefaults()
+    protected override void OnSetStaticDefaults()
     {
-        base.SetStaticDefaults(); 
+         
         HiddenDesc = GetLoc(nameof(HiddenDesc));
         Instruction = GetLoc(nameof(Instruction));
         LockedWarning = GetLoc(nameof(LockedWarning));
@@ -39,7 +38,7 @@ public class PrefixSealed : BaseEvolvedPrefix, ISpecializedPrefix
         }
     }
 
-    public override IEnumerable<TooltipLine> GetTooltipLines(Item item)
+    protected override IEnumerable<TooltipLine> OnGetTooltipLines(Item item)
     {
         if (!item.TryGetGlobalItem(out SealedGlobalItem instanced) || !instanced.IsSealed) yield break;
 
@@ -58,14 +57,13 @@ public class PrefixSealed : BaseEvolvedPrefix, ISpecializedPrefix
 
                 yield return new TooltipLine(Mod, $"SealedStat_{statName}", statText)
                 {
-                    OverrideColor = Color.Gold,
                     IsModifier = true
                 };
             }
 
             yield return new TooltipLine(Mod, "SealedWarning", LockedWarning.Value)
             {
-                OverrideColor = Color.Red
+                IsModifier = true, IsModifierBad = true
             };
         }
     }

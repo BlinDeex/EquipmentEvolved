@@ -8,9 +8,9 @@ public class ManaUsageStat : EquipmentStat
 {
     public override string FormatTooltip(float totalValue)
     {
-        // If it's a negative value (like -0.15 for 15% reduction), we format it nicely
         int percent = (int)Math.Round(totalValue * 100);
-        return percent < 0 ? $"{percent}% Mana Cost" : $"+{percent}% Mana Cost";
+        string key = percent >= 0 ? "TooltipPositive" : "TooltipNegative";
+        return GetLocalization(key).Format(percent);
     }
 
     public override void ModifyManaCost(Player player, Item item, ref float reduce, ref float mult, float totalValue)

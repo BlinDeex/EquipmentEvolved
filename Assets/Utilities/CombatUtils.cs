@@ -11,8 +11,6 @@ namespace EquipmentEvolved.Assets.Utilities;
 
 public static class CombatUtils
 {
-    private static readonly int[] coinIds = [ItemID.CopperCoin, ItemID.SilverCoin, ItemID.GoldCoin, ItemID.PlatinumCoin];
-
     public static void Lifesteal(Entity victim, Vector2 hitPosition, int healAmount, int playerWhoAmI)
     {
         if (victim is NPC { type: NPCID.TargetDummy } && !PrefixBalance.DEV_MODE) return;
@@ -45,48 +43,30 @@ public static class CombatUtils
         absValue -= silverCoins * 100;
 
         int copperCoins = (int)absValue;
-
-        List<(int coinType, int count)> coinList =
-        [
-            (coinIds[3], platinumCoins),
-            (coinIds[2], goldCoins),
-            (coinIds[1], silverCoins),
-            (coinIds[0], copperCoins)
-        ];
-
-        while (coinList.Any(c => c.count > 0))
-        {
-            List<(int coinType, int count)> availableCoins = coinList.Where(c => c.count > 0).ToList();
-            (int coinType, int count) selectedCoin = availableCoins[Main.rand.Next(availableCoins.Count)];
-            if (isNegative) player.BuyItem(selectedCoin.coinType);
-
-            DropCoin(entityToDropCoinsFrom, selectedCoin.coinType);
-
-            for (int i = 0; i < coinList.Count; i++)
-            {
-                if (coinList[i].coinType != selectedCoin.coinType) continue;
-
-                coinList[i] = (coinList[i].coinType, coinList[i].count - 1);
-                break;
-            }
-        }
+        
+        if (platinumCoins > 0) DropCoinStack(entityToDropCoinsFrom, ItemID.PlatinumCoin, platinumCoins, isNegative, player);
+        if (goldCoins > 0) DropCoinStack(entityToDropCoinsFrom, ItemID.GoldCoin, goldCoins, isNegative, player);
+        if (silverCoins > 0) DropCoinStack(entityToDropCoinsFrom, ItemID.SilverCoin, silverCoins, isNegative, player);
+        if (copperCoins > 0) DropCoinStack(entityToDropCoinsFrom, ItemID.CopperCoin, copperCoins, isNegative, player);
     }
 
-    private static void DropCoin(Entity entityToDropCoinsFrom, int coinType)
+    private static void DropCoinStack(Entity entity, int coinType, int stack, bool isNegative, Player player)
     {
-        int itemDropID = Item.NewItem(new EntitySource_Loot(entityToDropCoinsFrom, $"{nameof(EquipmentEvolved)} DropCoins"), (int)entityToDropCoinsFrom.position.X,
-            (int)entityToDropCoinsFrom.position.Y, entityToDropCoinsFrom.width, entityToDropCoinsFrom.height, coinType);
+        if (isNegative && player != null)
+        {
+            for (int i = 0; i < stack; i++) player.BuyItem(coinType);
+        }
+        
+        int itemDropID = Item.NewItem(new EntitySource_Loot(entity, $"{nameof(EquipmentEvolved)} DropCoins"), 
+            (int)entity.position.X, (int)entity.position.Y, entity.width, entity.height, coinType, stack);
+        
         Item itemDrop = Main.item[itemDropID];
-
         itemDrop.velocity.Y = Main.rand.Next(-20, 1) * 0.2f;
         itemDrop.velocity.X = Main.rand.Next(-20, 21) * 0.2f;
         itemDrop.noGrabDelay = 100;
         itemDrop.newAndShiny = true;
 
         if (Main.netMode == NetmodeID.MultiplayerClient) NetMessage.SendData(MessageID.SyncItem, -1, -1, null, itemDropID);
-
-        float dice = Main.rand.NextFloat();
-        if (dice > 0.2f) TryMergeCoins(itemDrop.position, itemDrop.type);
     }
 
     /// <param name="velocity">root projectile triple shot originates from velocity</param>
@@ -121,54 +101,5 @@ public static class CombatUtils
 
         return segments.Count > 0;
         //segments.Add(Main.npc[npc.realLife]);
-    }
-
-    private static void TryMergeCoins(Vector2 rootCoinPos, int coinType)
-    {
-        if (coinType == ItemID.PlatinumCoin) return;
-
-        Item[] allSameCoins = Main.item.Where(x => x.type == coinType).ToArray();
-        if (allSameCoins.Length < 100) return;
-
-        List<Item> sameCoinsInArea = [];
-        const float maxDist = 500000f;
-
-        foreach (Item sameTypeCoin in allSameCoins)
-        {
-            float dist = Vector2.DistanceSquared(sameTypeCoin.Center, rootCoinPos);
-            if (dist > maxDist) continue;
-
-            sameCoinsInArea.Add(sameTypeCoin);
-        }
-
-        if (sameCoinsInArea.Count < 100) return;
-
-        int mergeInto = coinType switch
-        {
-            ItemID.CopperCoin => ItemID.SilverCoin,
-            ItemID.SilverCoin => ItemID.GoldCoin,
-            ItemID.GoldCoin => ItemID.PlatinumCoin,
-            _ => throw new ArgumentOutOfRangeException(nameof(coinType), coinType, null)
-        };
-
-
-        for (int i = 0; i < 100; i++)
-        {
-            DeleteCoin(sameCoinsInArea[i]);
-        }
-
-        int itemDropID = Item.NewItem(new EntitySource_Misc("CoinMerge"), rootCoinPos, Vector2.One, mergeInto);
-        Item itemDrop = Main.item[itemDropID];
-        itemDrop.noGrabDelay = 100;
-        itemDrop.newAndShiny = true;
-
-        if (Main.netMode == NetmodeID.MultiplayerClient) NetMessage.SendData(MessageID.SyncItem, -1, -1, null, itemDropID);
-    }
-
-    private static void DeleteCoin(Item coin)
-    {
-        //TODO: main has merge item method
-        coin.TurnToAir();
-        if (Main.netMode == NetmodeID.MultiplayerClient) NetMessage.SendData(MessageID.SyncItem, -1, -1, null, coin.whoAmI);
     }
 }

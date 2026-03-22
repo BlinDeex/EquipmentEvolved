@@ -64,7 +64,7 @@ public class UntouchableModPlayer : ModPlayer
             int newUseTime = (int)(Player.HeldItem.useTime * PrefixBalance.UNTOUCHABLE_SWING_DECREASE);
             if (newUseTime == 0) newUseTime = 1;
 
-            heldItem.useTime = newUseTime;
+            //heldItem.useTime = newUseTime;
             heldItem.useAnimation = newUseTime;
             return;
         }

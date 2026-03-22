@@ -19,14 +19,14 @@ public class PrefixRisky : BaseEvolvedPrefix
     public LocalizedText DescDefense { get; private set; }
     public LocalizedText DamageDesc { get; private set; }
 
-    public override void SetStaticDefaults()
+    protected override void OnSetStaticDefaults()
     {
-        base.SetStaticDefaults(); // Gets the standard setup safely
+         // Gets the standard setup safely
         DescDefense = GetLoc(nameof(DescDefense));
         DamageDesc = LocalizationManager.GetSharedLocalizedText(LocalizationManager.XDamageAdded);
     }
 
-    public override IEnumerable<TooltipLine> GetTooltipLines(Item item)
+    protected override IEnumerable<TooltipLine> OnGetTooltipLines(Item item)
     {
         yield return new TooltipLine(Mod, "newLine", DescDefense.Format(PrefixBalance.RISKY_DEFENSE_DECREASE * 100))
         {

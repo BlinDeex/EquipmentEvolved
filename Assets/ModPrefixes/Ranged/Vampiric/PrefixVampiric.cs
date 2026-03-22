@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using EquipmentEvolved.Assets.Balance;
 using EquipmentEvolved.Assets.Core;
 using EquipmentEvolved.Assets.Misc;
@@ -20,10 +19,10 @@ public class PrefixVampiric : BaseEvolvedPrefix, ISpecializedPrefix
         useTimeMult *= PrefixBalance.VAMPIRIC_FIRERATE;
     }
 
-    public override IEnumerable<TooltipLine> GetTooltipLines(Item item)
+    protected override IEnumerable<TooltipLine> OnGetTooltipLines(Item item)
     {
         // Double check your original .Format() arguments here!
-        yield return new TooltipLine(Mod, "newLine2", Description.Format(MathF.Round((1f - PrefixBalance.VAMPIRIC_FIRERATE) * 100)))
+        yield return new TooltipLine(Mod, "newLine2", Description.Format(PrefixBalance.VAMPIRIC_LIFESTEAL))
         {
             IsModifier = true
         };

@@ -1,7 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using EquipmentEvolved.Assets.Balance;
 using EquipmentEvolved.Assets.Core;
-using EquipmentEvolved.Assets.ModPrefixes.Core;
 using EquipmentEvolved.Assets.Stats.MobilityUtility;
 using Terraria;
 using Terraria.ModLoader;
@@ -13,9 +13,9 @@ public class PrefixEarthShaper : BaseEvolvedPrefix
     public override PrefixCategory Category => PrefixCategory.Accessory;
     public override float ReforgeMultiplier => PrefixBalance.ACCESSORY_REFORGING_MULTIPLIER;
 
-    public override IEnumerable<TooltipLine> GetTooltipLines(Item item)
+    protected override IEnumerable<TooltipLine> OnGetTooltipLines(Item item)
     {
-        yield return new TooltipLine(Mod, "newLine", Description.Format(PrefixBalance.EARTH_SHAPER_PICK_SPEED_REDUCE * 100))
+        yield return new TooltipLine(Mod, "newLine", Description.Format(Math.Round(PrefixBalance.EARTH_SHAPER_PICK_SPEED_REDUCE * 100, 2)))
         {
             IsModifier = true
         };

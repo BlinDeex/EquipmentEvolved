@@ -5,6 +5,5 @@ namespace EquipmentEvolved.Assets.Stats.MobilityUtility;
 
 public class CoinDropMulStat : EquipmentStat
 {
-    public override string FormatTooltip(float totalValue) => 
-        $"+{Math.Round(totalValue * 100)}% Coin Drops";
+    public override string FormatTooltip(float totalValue) => GetLocalization("Tooltip").Format(Math.Round(totalValue * 100));
 }

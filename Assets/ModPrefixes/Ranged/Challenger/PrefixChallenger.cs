@@ -23,9 +23,9 @@ public class PrefixChallenger : BaseEvolvedPrefix, ISpecializedPrefix, IExperime
     public LocalizedText RedOrb { get; private set; }
     public LocalizedText Desc2 { get; private set; }
 
-    public override void SetStaticDefaults()
+    protected override void OnSetStaticDefaults()
     {
-        base.SetStaticDefaults(); // Automatically maps your old "Desc" to Description!
+         // Automatically maps your old "Desc" to Description!
         Title = GetLoc(nameof(Title));
         GreenOrb = GetLoc(nameof(GreenOrb));
         BlueOrb = GetLoc(nameof(BlueOrb));
@@ -34,7 +34,7 @@ public class PrefixChallenger : BaseEvolvedPrefix, ISpecializedPrefix, IExperime
         Desc2 = GetLoc(nameof(Desc2));
     }
 
-    public override IEnumerable<TooltipLine> GetTooltipLines(Item item)
+    protected override IEnumerable<TooltipLine> OnGetTooltipLines(Item item)
     {
         yield return new TooltipLine(Mod, "newLine", Title.Value) { OverrideColor = Color.SandyBrown };
         yield return new TooltipLine(Mod, "newLine2", GreenOrb.Format((int)(PrefixBalance.CHALLENGER_GREEN_ORB_DAMAGE * 100f))) { OverrideColor = Color.Green };

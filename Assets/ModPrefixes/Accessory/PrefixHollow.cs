@@ -1,10 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using EquipmentEvolved.Assets.Balance;
 using EquipmentEvolved.Assets.Core;
 using EquipmentEvolved.Assets.Stats.Defense;
 using EquipmentEvolved.Assets.Stats.MobilityUtility;
-using Microsoft.Xna.Framework;
 using Terraria;
+using Terraria.Localization;
 using Terraria.ModLoader;
 
 namespace EquipmentEvolved.Assets.ModPrefixes.Accessory;
@@ -13,16 +14,27 @@ public class PrefixHollow : BaseEvolvedPrefix
 {
     public override PrefixCategory Category => PrefixCategory.Accessory;
     public override float ReforgeMultiplier => PrefixBalance.ACCESSORY_REFORGING_MULTIPLIER;
+    
+    public LocalizedText HealthDec { get; private set; }
 
-    public override IEnumerable<TooltipLine> GetTooltipLines(Item item)
+    protected override void OnSetStaticDefaults()
     {
-        int healthDec = (int)((1f - PrefixBalance.HOLLOW_MAX_HEALTH_MULT) * 100);
-        int mobInc = (int)((PrefixBalance.HOLLOW_MOBILITY_MULT - 1f) * 100);
+        HealthDec = GetLoc(nameof(HealthDec));
+    }
 
-        yield return new TooltipLine(Mod, "newLine", Description.Format(mobInc, healthDec))
+    protected override IEnumerable<TooltipLine> OnGetTooltipLines(Item item)
+    {
+        float healthDec = MathF.Round((1f - PrefixBalance.HOLLOW_MAX_HEALTH_MULT) * 100, 2);
+        float mobInc = MathF.Round((PrefixBalance.HOLLOW_MOBILITY_MULT - 1f) * 100, 2);
+        
+        yield return new TooltipLine(Mod, "newLine", Description.Format(mobInc))
         {
-            OverrideColor = Color.LightSlateGray,
             IsModifier = true
+        };
+        yield return new TooltipLine(Mod, "newLine", Description.Format(healthDec))
+        {
+            IsModifier = true,
+            IsModifierBad = true
         };
     }
 

@@ -19,7 +19,7 @@ public class PrefixVeinMiner : BaseEvolvedPrefix, ISpecializedPrefix
         useTimeMult += PrefixBalance.VEIN_MINER_MINING_SPEED;
     }
 
-    public override IEnumerable<TooltipLine> GetTooltipLines(Item item)
+    protected override IEnumerable<TooltipLine> OnGetTooltipLines(Item item)
     {
         yield return new TooltipLine(Mod, "newLine", Description.Value)
         {

@@ -5,6 +5,5 @@ namespace EquipmentEvolved.Assets.Stats.Custom;
 
 public class TrueDamageMulStat : EquipmentStat
 {
-    public override string FormatTooltip(float totalValue) => 
-        $"+{Math.Round(totalValue * 100)}% True Damage";
+    public override string FormatTooltip(float totalValue) => GetLocalization("Tooltip").Format(Math.Round(totalValue * 100));
 }

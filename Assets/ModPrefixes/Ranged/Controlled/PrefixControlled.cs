@@ -18,9 +18,9 @@ public class PrefixControlled : BaseEvolvedPrefix, ISpecializedPrefix
     public LocalizedText BurstFire { get; private set; }
     public LocalizedText IncreasedVelocity { get; private set; }
 
-    public override void SetStaticDefaults()
+    protected override void OnSetStaticDefaults()
     {
-        base.SetStaticDefaults(); // Gets the standard Description
+         // Gets the standard Description
         BurstFire = GetLoc(nameof(BurstFire));
         IncreasedVelocity = GetLoc(nameof(IncreasedVelocity));
     }
@@ -30,7 +30,7 @@ public class PrefixControlled : BaseEvolvedPrefix, ISpecializedPrefix
         useTimeMult *= PrefixBalance.CONTROLLED_FIRERATE;
     }
 
-    public override IEnumerable<TooltipLine> GetTooltipLines(Item item)
+    protected override IEnumerable<TooltipLine> OnGetTooltipLines(Item item)
     {
         yield return new TooltipLine(Mod, "newLine2", IncreasedVelocity.Format((PrefixBalance.CONTROLLED_BULLET_VELOCITY - 1f) * 100))
         {
