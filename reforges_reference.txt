@@ -1,5 +1,6 @@
 EQUIPMENT EVOLVED — REFORGES REFERENCE
-Generated from source code. For brainstorming new reforges.
+Generated from source code (Opus re-read). For brainstorming new reforges.
+Known bugs noted inline with [BUG].
 ===============================================================
 
 
@@ -8,68 +9,63 @@ MELEE WEAPON REFORGES (11)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 ULTRA LIGHT
-  Stats: -20% size, -20% use time, -20% damage
-  Grants auto-reuse. Reduces NPC hit cooldown by 20% on all projectiles
-  (uses localNPCImmunity system if weapon doesn't use static immunity).
+  Stats: -15% size, 2× swing speed, -35% damage
+  Grants auto-reuse. Halves NPC hit cooldown on all spawned projectiles
+  (switches to localNPCImmunity system if needed).
 
 GIGANTIC
-  Stats: +50% size, -20% use time (faster swing, bigger weapon)
-  All spawned projectiles scale to +50% size with corrected center position.
+  Stats: +75% size, -15% swing speed
+  All spawned projectiles also scale +75% size with corrected center position.
 
 TITAN FORCE
-  Stats: +100% knockback, -10% damage
-  Pure knockback amplifier. No special logic.
+  Stats: ×5 knockback, +25% damage
 
 ARCANE INFUSED
-  Stats: -5% damage
-  Every swing costs 10 mana and triggers 300-tick mana regen delay.
-  While ManaSickness buff is active: damage is further reduced
-  proportionally to buff duration remaining (scales from 0 up to -10% at max).
+  Stats: +85% damage
+  Every swing costs 10 mana (blocks swing if insufficient, triggers 300t regen delay).
+  While ManaSickness debuff is on the PLAYER: damage.Flat is overwritten proportionally
+  to buff time remaining (effectively cancels the bonus while sick).
 
 KINETIC
-  Stats: -25% base damage
-  Damage multiplier = 1 + (playerVelocity * 0.1), capped at +250% bonus.
-  Faster you're moving, harder you hit. Updates every frame.
+  Stats: -20% damage
+  Damage multiplier = 1 + (playerVelocity.Length × 0.25), capped at +250% bonus.
+  Standing still gives no bonus (net -20%). Updates every frame.
 
 UNTOUCHABLE
-  Stats: damage taken multiplied by (1 + currentStack)
-  Passively stacks +0.01 damage increase per frame while held without being hit.
-  Stack cap: 1.0 (at max: weapon swing speed doubled, eye glow visual).
-  Any damage received resets stack to 0 immediately.
+  Stats: (dynamic, see below)
+  Stacks +damage linearly over 15s while held without being hit. Max stack = 2.5 (250% bonus).
+  At max stack: weapon swing animation halved (useTime unchanged), eye glow visual.
+  Player takes (1 + currentStack) damage multiplier — at max, player takes 3.5× damage.
+  Any hit resets stack to 0 instantly.
 
 GRAVITIC
-  On every swing, pulls all nearby hostile NPCs toward the player.
-  Pull radius: 150 + (useTime * 4), capped at 800. Pull speed: 8 * (0.95^useTime).
-  Respects NPC knockback resistance. Screen distortion shader during swing.
+  On every swing frame, pulls all nearby non-boss hostile NPCs toward the player.
+  Pull radius: 100 + (useTime × 8), capped at 800px. Respects NPC knockback resistance.
+  Screen distortion shader active during swing.
 
 SUNDERING
-  Stats: -15% damage
-  Each hit adds (targetDefense * 0.2) to a per-NPC shred counter.
-  On the next hit, all accumulated shred applies as armor penetration.
-  Shred persists between hits on the same NPC. Synced in multiplayer.
+  Stats: -50% damage
+  Each hit adds (targetDefense × 0.02) to a per-NPC armor penetration counter.
+  On every incoming hit to that NPC (from anyone), all accumulated penetration applies.
+  No decay — permanent stacking per NPC for their lifetime.
 
 PERCEPTIVE
-  Stats: +10% crit chance, +15% damage
-  Activates only when total crit chance exceeds 100%.
-  Excess crit checked in 100% tiers — each tier has 50% chance to add damage:
-    Tier 1: +100% damage multiplier
-    Tier 2+: +50% each, up to tier 3 maximum (2.0x total multiplier cap)
-  Hides vanilla combat text, shows custom damage number with tier indicator.
-  Synced over network for visual effect.
+  Stats: +50 crit chance, -10% damage
+  On crit hit, if total weapon crit > 100%: each 100% over threshold rolls a cascade tier
+  (50% chance each, up to 6 tiers). Tier 1: +1.0× damage. Each extra tier: +0.5×.
+  Custom combat text (orange→red by tier). Vanilla combat text hidden.
 
 PAYBACK
-  On any melee hit, spawns 3–5 coins as homing projectiles.
-  Coins fall and drift for 45 ticks, then home to the target NPC at speed 24.
-  Damage per coin = hit damage * coin multiplier (copper 0.3x → platinum 1.0x).
-  20% chance each coin returns as a pickup item on death.
+  On melee hit: consumes 1–3 coins from inventory (lowest slots first), spawns them as
+  homing projectiles. Damage = hit damage × coin tier (copper 0.10×, silver 0.40×,
+  gold 1.0×, platinum 4.0×). Coins fall 45t then home to target. 95% chance to return
+  as pickup on death.
 
 SEALED
-  Generates 1–10 hidden stat rolls on application (weighted RNG).
-  Roll count: 30% chance for 1 roll, 25% for 2 ... down to 0.2% for 10.
-  Strength multiplier per roll: 30% at 1.0x up to 0.2% at 10.0x.
-  Possible stats: CharmLuck, CritDamage, Damage, Regen, Lifesteal, Iframes.
-  Right-click to reveal stats. Once revealed, cannot be reforged (locked).
-  Stats persist through save/load and multiplayer sync.
+  On application: generates 1–10 hidden stat rolls (weighted RNG).
+  Stat pool: CharmLuck, CritDamage, Damage, Regen, Lifesteal, Iframes.
+  Roll count: 30% for 1, down to 0.2% for 10. Strength multiplier: 1× to 10× (weighted).
+  Right-click to reveal stats — permanently locks the item (cannot be reforged again).
 
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -77,70 +73,66 @@ RANGED WEAPON REFORGES (10)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 ADAPTABLE
-  Stats: -10% use time (faster fire)
-  Allows all ammo types regardless of weapon restrictions.
-  Converts rocket ammo fired from non-rocket weapons into proper rocket projectiles
-  (full lookup table of 12 rocket types).
+  Stats: +20% slower fire rate
+  Allows any ammo type in any ranged weapon. When a non-rocket weapon fires rocket ammo,
+  kills the spawned projectile and replaces it with the proper rocket type (full 12-type
+  lookup table). Rocket weapons are excluded from the swap.
 
 CONTROLLED
-  Stats: -15% use time, +25% projectile velocity
-  Alternates between a 180-tick burst window and a 120-tick cooldown.
-  During cooldown, ammo selection is blocked — weapon cannot fire.
-  Only applicable to auto-reuse weapons.
+  Stats: massively faster fire rate during burst window (×0.15 use time)
+  Burst 12 ticks, cooldown 35 ticks (~0.8s cycle). During cooldown CanUseItem = false.
+  Projectile velocity ×1.75. Only applicable to auto-reuse weapons.
 
 VAMPIRIC
-  Stats: -10% use time
-  Adds 8% lifesteal via LifeStealStat (works through the stat system).
+  Stats: +25% slower fire rate, +0.5 lifesteal (heals ~0.5 HP per hit, fractional RNG)
+  Lifesteal applied through the stat system; healing boosted by HealingMulStat.
 
 GIANT SLAYER  [Experimental]
-  Adds 15% true damage (bypasses defense) via TrueDamagePercentageStat.
-  Flagged experimental; interacts with FullHitCancellation bypass logic.
+  Converts all damage into true damage = 0.3% of the target's max HP per hit.
+  The normal hit is cancelled (set to 1 damage, no crit). True damage bypasses defense.
+  White "true damage" combat text. Skips target dummies outside dev mode.
 
 RICOCHET
-  On tile collision, projectile splits into 2 new projectiles (±22.5° spread).
-  Each split: -25% damage, -10% scale. Up to 3 splits per projectile chain.
-  Children inherit compounded multipliers from parents (damage compounds).
+  On tile collision: projectile dies, spawns 2 copies in a 30° spread.
+  Each split: ×0.70 damage, ×0.75 scale. Up to 2 split generations (4 final projectiles).
+  Children inherit compounded multipliers.
 
 THAUMIC
-  On projectile hit: applies a random positive buff from the vanilla buff pool.
-  Base duration: 300 ticks (5s). Each additional hit extends by 60 ticks, cap 3600.
-  If buff is already active, extends it instead of reapplying.
-  Buff pool is dynamically built at startup (filters out debuffs, pets, blacklisted buffs).
+  On projectile hit: applies a random positive vanilla buff to the PLAYER.
+  If player is missing any valid buffs, applies one for 5s base. If all valid buffs active,
+  extends a random one by 3s. Hard cap 30s per buff.
+  Buff pool built at startup (filters debuffs, pets, persistent, blacklisted IDs).
 
-DELAYED
-  Projectiles freeze in place on spawn, storing velocity and a laser endpoint
-  (scanned 3000 units forward to find solid geometry).
-  Every 60 ticks while firing, or on release: all frozen projectiles simultaneously
-  fire a laser beam (80% damage, 15-tick duration, penetrating) at their stored endpoints.
-  Visual: cyan line drawn from projectile to endpoint during charge phase.
+DELAYED  [Experimental]
+  On spawn, projectile freezes in place, stores velocity + traces endpoint 3000px ahead.
+  Every 180 ticks while firing, or when firing stops: all frozen projectiles simultaneously
+  fire a laser (10px width, 0.33× damage, 15-frame lifespan, infinite penetration).
+  Preview line drawn from projectile to endpoint while frozen.
 
 ASCENDANT
-  Tracks cumulative damage dealt. As damage approaches the threshold (weapon damage × 40),
-  bonuses scale linearly from 0 to max:
-    +150% damage, +30 crit chance at full charge.
-  At threshold: weapon burns out and becomes unusable (grayed out in inventory).
-  Reforging the weapon resets the burn state and counters.
+  Tracks cumulative damage dealt. Threshold = weaponDamage × (50/useTime) × 1000.
+  As damage approaches threshold: scales linearly to +190% damage, +40 crit.
+  At threshold: weapon permanently burns out (unusable, grayed in inventory).
+  Reforging resets the burnout and counters.
 
-CHALLENGER  [Minigame reforge]
-  Spawns color-coded orbs behind the player (90° cone opposite mouse direction).
-  Orb spawn rate accelerates with score. Orbs have a perfect hit window (frames 20–38).
-  Orb types and effects (stackable):
-    Green:  +0.15 defense multiplier, +0.10 damage multiplier
-    Blue:   +0.25 projectile velocity multiplier, +0.05 crit multiplier
-    Yellow: Green + Blue combined, +heals player (VampireHeal projectile)
-    Red:    Resets ALL bonuses, deals 50 damage to player
-  Score range: 1.0 to 10.0.
-  Mode activates at score ≥ 5.0, deactivates at ≤ 3.0.
-  While active: applies all accumulated multipliers to weapon stats and defense.
-  Score synced over network.
+CHALLENGER  [Experimental, minigame reforge]
+  Spawns color-coded orbs in a 90° arc behind the player (relative to mouse), 50–100px away.
+  Score range 1–10. Mode activates at score ≥ 2, deactivates at ≤ 1.5.
+  Orb timing window: frames 20–38 of 56 = "perfect" hit.
+  Per-orb effects (stackable multipliers applied while mode active):
+    Green:  +0.03 defense mult, +0.03 damage mult on player
+    Blue:   +0.15 proj velocity mult, +0.05 crit mult on player
+    Yellow: Green + Blue, heals player 15 HP
+    Red:    resets all multipliers + score, deals 35 true damage to player
+  Miss (orb expires): score ×0.75, all multipliers scale toward 1 by ×0.75 on excess.
+  While active: player defense/damage/crit/velocity all multiplied by (score × multiplier).
 
 FLOW STATE
-  On hit, applies a stacking DoT debuff to the enemy.
-  Stack duration: 180 ticks per hit (resets on new hit). Stacks decay at 1/120 ticks.
-  Damage per tick: (projectileDamage × 0.25 × stacks) - (defense × 0.5), minimum 1.
-  Fractional damage accumulates between ticks.
-  Displays real-time stack count, damage, and timer above affected enemy.
-  Applies damage directly to NPC.life (server-authoritative).
+  On hit: adds 1 stack + refreshes 60t timer on the target NPC.
+  When timer expires, stacks decay 1 per 2 ticks.
+  DoT per tick: (weaponDamage × 0.15 × stacks − npcDefense × 0.5) / 60, min 1 DPS.
+  Displays stack count, accumulated damage, timer above the NPC.
+  NPC life reduced directly (server-authoritative kill).
 
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -148,45 +140,42 @@ MAGIC WEAPON REFORGES (7)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 ENDLESS
-  Stats: -15% damage, 0% mana cost (free casting)
-  Removes mana cost entirely. No other mechanics.
+  Stats: 0% mana cost, -15% damage. No other mechanics.
 
-MANA CHARGED  (listed as "Tidal" in design docs)
-  Damage scales with current mana percentage.
-  Bonus = (currentMana / maxMana) × maxBonusMultiplier, max +100% damage at full mana.
-  Tooltip shows dynamic damage value.
+MANA CHARGED  (called "Tidal" in design docs)
+  Damage bonus scales with current mana %: up to +100% base damage at full mana, 0 at empty.
+  Tooltip shows live value.
 
 INVERTED  (Mana Surge)
-  Replaces vanilla ManaSickness with a custom InvertedBuff.
-  Buff stacks up to 600 ticks; each reapplication extends by 300 ticks.
-  While buff is active: magic damage bonus scales up to +125% at 600 ticks.
-  Each frame with buff: 2.5% chance to deal 15 true damage to self.
-  On death while buff is active: death is cancelled once. Player explodes outward
-  with 10 burst nodes × 10–20 projectiles each (2000–6000 damage), one-time only.
+  While holding the weapon, vanilla ManaSickness is replaced with InvertedBuff (custom).
+  InvertedBuff: adds up to +125% magic damage scaling with remaining time (max 600t / 10s).
+  Each reapplication extends by 300t capped at 600t.
+  While buff active: 97.5% chance per tick to deal 15 true damage to the PLAYER (self-hurt).
+  On death from this: death cancelled (once). Explodes outward — 10 nodes × 10–20 projectiles
+  (friendly, 20 dmg each, 999 penetrate), plays explosion sound. One-time only.
 
 TRIPLE SHOT
   Stats: -40% damage, ×3.5 mana cost
-  Every projectile fired spawns 2 clones at ±10° (±5° random variation).
-  3 total projectiles per cast, all with identical AI parameters.
+  Every projectile spawns 2 clones at ±10° (±5° random variation). 3 total per cast.
+  Clones are flagged to prevent recursion.
 
 SPLINTERING
-  30% chance on projectile hit to spawn 1–4 shard nodes.
-  On crit: node count ×2.
-  Each node spawns 1–2 shards. Shards: speed 10 (±4), 5× extraUpdates (fast),
-  120-tick lifespan, cannot hit the original target, 4px size.
+  30% chance on projectile hit to spawn 1–4 shard nodes inside the target.
+  On crit: node count ×2. Each node fires 1–3 shards (friendly magic, 5× extra updates,
+  120t lifespan, cannot hit the original target).
 
 CHAOTIC
-  Periodically re-rolls a set of stat bonuses/penalties while the weapon is held
-  or in inventory. Rolls drawn from a weighted pool:
-    Common (10w) / Rare (5w) / Epic (3w) / Legendary (1.5w) / Negative (9w)
-  Current rolled effects shown dynamically in tooltip with color-coded rarity.
+  Every 30t while held (or in inventory), re-rolls a bundle of 1–5 stats from a weighted pool.
+  Rarities: Common (10w), Rare (5w), Epic (3w), Legendary (1.5w), Negative (9w).
+  Negative rolls flip all bonuses into drawbacks (×-1.2 intensity).
+  Stats applied to the PLAYER while the weapon is held. Tooltip shows current roll with color.
+  Also displays a random "faked" magic prefix label — that prefix's mechanic is NOT applied.
 
 OVERLOADED  [Experimental]
-  Forces weapon into channel mode (must hold fire button).
-  While held: drains mana every 10 ticks at an increasing rate (+1.0× per second).
-  Fires when button released or mana runs out.
-  Damage scales with total mana consumed: up to 2.0× at maximum efficiency.
-  Projectile scale also grows up to 4.0×. Visual: expanding dust ring while charging.
+  Forces weapon into channel mode. While held: drains mana every 10t at increasing rate
+  (+1× cost per second of charging). Fires on release or when mana runs out.
+  Output damage: ×2.0 max scaling based on total mana consumed. Scale grows up to ×4.0.
+  Visual: expanding dust ring while charging.
 
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -194,27 +183,28 @@ SUMMONER — MINION WEAPON REFORGES (3)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 FRENZIED
-  Marks spawned minions with a flag for external speed amplification.
-  Full speed multiplier applied through the stat system when marked.
+  Spawned minions run 4× AI updates per tick (via a detour on Projectile.AI).
+  Effectively quadruples minion movement and attack speed.
 
 MONARCH
-  Absorbs new summons of the same minion type into the existing one, stacking them.
-  Each absorbed summon increments MonarchStacks (capped at player.maxMinions).
-  Stacks scale stats:
-    Size: 0.7 + (stacks - 1) × 0.68 (grows large quickly)
-    Damage: effectiveStacks × (1 + (effectiveStacks - 1) × 0.35) — quadratic scaling
-  Soft cap at 10 stacks; above that, diminishing returns at 0.2× rate.
-  On death: if a new same-type minion spawns within 1 tick, stacks partially restored.
-  Child projectiles from the minion inherit the scaled stats.
-  Tooltip shows current Monarch stats live.
+  When a new minion of the same type is summoned while one already exists:
+  if combined slots fit within maxMinions, the new minion is absorbed into the existing one
+  (MonarchStacks++, slots grow). Otherwise the new one spawns normally.
+  Stat scaling from stacks (soft cap 10, diminishing returns at 0.2× above):
+    Size:   0.7 + (stacks-1) × 0.68 per stack
+    Damage: effectiveStacks × (1 + (effectiveStacks-1) × 0.35) — roughly quadratic
+  Child projectiles from the minion inherit the damage multiplier.
+  On death: if same type respawned within 1 tick, stacks partially restored.
+  Cannot roll on StormTigerStaff, StardustDragonStaff, AbigailsFlower.
 
 PROXY
-  Spawned minion becomes stationary at a fixed location (120px random offset from summon point).
-  Minion faces mouse direction and lasts 10 seconds (600 ticks), then despawns with smoke.
-  While active: every re-summon fires a copy of the minion's attack at 60% damage
-  toward mouse direction from the proxy's position instead of summoning new minions.
-  Duration bar displayed below the proxy.
-  Cannot be used with Storm Tiger Staff, Stardust Dragon Staff, or Abigail's Flower.
+  Spawned minion is anchored stationary at a random point 120px from summon location.
+  Faces player's mouse direction. Lasts 600t (10s), then despawns with smoke.
+  Duration bar displayed below the minion.
+  While the proxy exists: whenever the PLAYER fires any weapon, a copy of that projectile
+  spawns from the proxy's position aimed toward the mouse, at 60% combined damage
+  (originalDamage + minionDamage) × 0.60. The proxy itself does not attack independently.
+  Cannot roll on StormTigerStaff, StardustDragonStaff, AbigailsFlower.
 
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -222,19 +212,18 @@ SUMMONER — WHIP REFORGES (2)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 DETONATING
-  Stats: +15% use speed (faster whip)
-  Whip swing rigs touched minions as explosives.
-  Rigged minion detonates after 5 seconds (300 ticks) or immediately when it hits an NPC.
-  Explosion: 3× weapon damage, 120px radius AoE (Summon damage type), 30 smoke/fire dust.
-  Visual during rigging: sparks, bomb overlay with scale pulse, red tint in final 30 ticks.
+  Stats: +15% slower use speed
+  To rig a minion: the whip's hitbox must physically collide with the minion during a swing.
+  Rigged minion shows a pulsing bomb overlay. Detonates when it hits an NPC, or after 300t (5s).
+  Explosion: 3× weapon damage, 120px AoE (Summon type). Smoke + fire dust, explosion sound.
 
 SACRIFICIAL
-  Stats: drastically increased attack speed (×0.15 use time multiplier — very fast)
-  On any hit: applies SacrificialBuff (non-removable debuff) for 5 seconds (300 ticks) if not on cooldown.
-  While buff is active: the next fatal hit is cancelled.
-    Instead: grants iframes = numMinions × 30 (0.5s per minion), then dismisses ALL minions.
-    Buff removed. Cooldown: 60 seconds (3600 ticks).
-  Trade: minions as a death shield, lost on trigger.
+  Stats: massively faster whip (use time ×0.15, ~6.7× speed)
+  On any hit: applies SacrificialBuff (non-removable self-debuff) to the PLAYER for 300t (5s),
+  if not on cooldown.
+  While buff active: next fatal hit is cancelled instead — grants iframes equal to
+  (numMinions × 30 ticks), then ALL minions are dismissed. Buff removed.
+  Cooldown after trigger: 3600t (60s).
 
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -243,26 +232,26 @@ TOOL REFORGES
 
 GEOLOGICAL  [Pickaxe]
   5% chance per tile broken (Dirt or Stone only) to drop a random gem at that location.
-  Gem pool: Amethyst, Topaz, Sapphire, Emerald, Ruby, Diamond, Amber. Drop synced in MP.
+  Gem pool: Amethyst, Topaz, Sapphire, Emerald, Ruby, Diamond, Amber.
 
 REVEALING  [Pickaxe]
-  25% chance per tile broken to apply the Spelunker buff for 30 ticks.
-  Highlights ore and gem deposits in the surrounding area briefly.
+  25% chance per tile broken to apply Spelunker buff to the PLAYER for 20 ticks.
+  Also sets a 30-tick internal timer used for brightness visuals.
 
 VEIN MINER  [Pickaxe]
-  Slightly slower swing speed (+0.25 use time).
-  When an ore or gem tile is broken, flood-fills and breaks all connected tiles of the
-  same type (bounded by pickaxe power). Entire veins destroyed in one swing.
+  Stats: +25% slower swing
+  When an ore or gem tile is broken: flood-fills and breaks all connected tiles of the same
+  type within pickaxe power range. Entire veins cleared in one swing.
 
 CLEARING  [Pickaxe / Hammer]
-  Breaks a 3×3 area centered on the target tile.
-  60% chance per extra tile to destroy the drop (item lost, not dropped).
+  Breaks a 3×3 area around the broken tile.
+  60% chance per extra tile to destroy the item drop (not dropped, just lost).
   Will not destroy chests, dressers, demon altars, or tree trunks.
 
 FORTUNE  [Axe]
-  While held during swing, activates a 30-tick Fortune window.
-  Within 1000px, any item spawned from tile breaks has a 75% chance for 1–4 bonus stacks
-  (takes the better of two random rolls, max +4 per item). Marks drops to prevent re-processing.
+  While swinging, activates a 30-tick Fortune window.
+  Any item drop within 1000px has a 75% chance for bonus stacks (1–4 extra, best of 2 rolls).
+  Drops are flagged to prevent re-processing.
 
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -270,84 +259,78 @@ ARMOR REFORGES — UNIVERSAL (any slot, set bonuses at 3 pieces)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 CHRONO
-  Per piece: +movement speed bonus (MoveSpeedStat).
-  Set (3 pieces): Keybind ability — freezes all hostile NPCs and projectiles within
-  CHRONO_ABILITY_RANGE for CHRONO_ABILITY_LENGTH ticks. Cooldown applies after.
-  Sends packet in multiplayer; server applies freeze to targets.
+  Per piece: +8% move speed (self).
+  Set (3 pieces): Keybind (R) — freezes all hostile NPCs and projectiles within ~632px
+  for 420t (7s). NPCs locked in position, cannot move or hit player.
+  Projectiles paused (no movement, no damage). Cooldown: 3600t (60s) on the player.
 
 PHANTOM
-  Per piece: applies true damage amplification (PHANTOM_TRUE_DAMAGE_AMP).
-  Spawns orbiting clone phantoms (count increased with PhantomAugmentation).
-  Clones mirror the player's weapon, animation, and direction.
-  Clones apply two debuffs to affected enemies:
-    VoidSeal: prevents healing, caps regen.
-    SoulBurn: stacks to 1200 ticks max, extends while clones are active.
-  Ability: toggle clones on/off (keybind). Destroying clones returns no cooldown;
-  spawning them costs full cooldown. Shader effect scales with SoulBurn intensity.
+  No stat changes in code. [BUG: tooltip claims +15% true damage but it is never applied]
+  Set (3 pieces): Keybind (R) toggles clones.
+    Summoning clones (no clones active): spawns 2 orbiting clones (6 with augmentation).
+    Clones mirror the player's held weapon — they physically run ItemCheck() at their position,
+    firing copies of whatever the player fires from their orbit location. No cooldown on summon.
+    Dismissing clones (clones active): kills all clones. Cooldown: 1200t (20s) on player.
+  Self-debuffs while clones are active (applied to the PLAYER each tick, not enemies):
+    VoidSealBuff: blocks use of healing items, clamps HP/mana preventing regen ticks.
+    SoulBurnBuff: accumulates up to 1200t. Scales screen shader + distorts all sounds
+    (lower volume, lower pitch, more variance at high intensity).
+  When clones are dismissed: SoulBurn decays 5t/tick (faster recovery).
 
 PHALANX
-  Per piece: +PHALANX_DAMAGE_INCREASE to DamageStat.
-  Set (3 pieces): When a projectile hits the player for more than PHALANX_MIN_DAMAGE
-  AND more than player's current HP — triggers reaction:
-    Grants 30 ticks immunity.
-    Fires 15 counterburst projectiles (8 side, 3 forward, 4 shockwave).
-    All deal 100 damage + Burning debuff.
-  Cooldown: PHALANX_REACT_COOLDOWN_TICKS.
-  PhalanxOverclock augmentation: ignores cooldown, applies temporary overclock stat instead.
+  Per piece: +8% damage (self).
+  Set (3 pieces): When a hostile projectile hits the player AND (damage ≥ 10 OR hit is lethal):
+    Negates the hit (CanBeHitByProjectile returns false).
+    Grants 30t iframes to the PLAYER.
+    Fires 15 plating projectiles from the impact point (8 side, 3 forward, 4 shockwave).
+    Each plating projectile: 100 damage, friendly, on hit applies Burning debuff to the ENEMY (3s).
+    Cooldown: 1800t (30s) on the player.
+    With PhalanxOverclock augmentation: cooldown skipped, temporary overclock stat applied instead.
 
 SYMBIOTIC
-  Per piece: increases charm quality (SYMBIOTIC_BASE_QUALITY_BOOST, tooltip only).
-  Set (3 pieces): Upgrades all charms socketed in Symbiotic armor pieces:
-    Bumps rarity up by 1 (capped at Exalted).
-    Recalculates and increases all stat roll strengths.
-    Adds 1 new stat roll.
-    If charm had augmentations, consumes them for an additional quality bonus.
-  Reverts upgrade when set falls below 3 pieces. Stores original snapshot for reversion.
-  Note: 3× Symbiotic + all Exalted charms is the condition for Exalted charm drops.
+  No direct stat changes.
+  Set (3 pieces): Upgrades charms socketed into all 3 Symbiotic armor pieces each tick:
+    Bumps charm rarity +1 (capped at Exalted). Recalculates stat rolls upward. Adds 1 new roll.
+    Augmentations consumed for additional quality bonus.
+  Reverts when set falls below 3 pieces. Original charm data stored in snapshot.
+  Note: 3× Symbiotic + all Exalted charms = condition for Exalted charm drops.
 
 CONDUIT
-  Per piece: +CONDUIT_MANA_PER_PIECE to max mana.
-  Set (3 pieces): Completely replaces vanilla mana regeneration with a custom system.
-  Vanilla regen is disabled (delay set to 999, regen set to 0).
-  Custom regen: +CONDUIT_SET_MANA_REGEN_PER_TICK per tick, applied from an accumulator.
-  Effectively gives extremely fast and consistent mana regeneration.
+  Per piece: +40 max mana (self).
+  Set (3 pieces): Replaces vanilla mana regen entirely.
+  Custom regen: constant 1 mana/tick (60 mana/s), accumulator-based. Vanilla regen zeroed.
 
 AUGMENTED
-  Per piece: checks armor defense against configured thresholds; grants specific vanilla buffs
-  while defense meets/exceeds each threshold (continuous 2-tick reapplication).
-  Different threshold tables for helmet, chestplate, leggings.
-  Set (3 pieces): Ability — while not on cooldown, +AUGMENTED_SET_BONUS_DAMAGE_PER_BUFF
-  damage bonus per currently active (non-debuff) buff on the player.
-  Cooldown timer applies after activation.
+  Per piece: grants vanilla buffs to the PLAYER based on that piece's defense value:
+    Helmet  — Hunter (≥5 def), WellFed3 (≥10), Lifeforce (≥15)
+    Chest   — Ironskin (≥5), Wrath (≥10), Endurance (≥15)
+    Legs    — Swiftness (≥5), Rage (≥10), Gravitation (≥15)
+  Buffs reapplied every tick (2t duration = always active while defense threshold met).
+  Set (3 pieces): passive ability — adds +2% damage per non-debuff buff currently active
+  on the player. Suppressed while armor ability cooldown buff is on the player.
 
 CURSED
-  Per piece: +CURSED_FLAT_LIFESTEAL to LifeStealStat.
-  Set (3 pieces): Damage mitigation on hit:
-    If incoming damage > CURSED_IGNORED_DAMAGE_PERCENT_THRESHOLD × maxHP:
-      cap damage to CURSED_DAMAGE_TAKEN_PERCENT × maxHP (excess absorbed).
-    If damage is below threshold:
-      cancel damage entirely, grant 20 ticks immunity, display "Negated!" text.
-  CursedAugmentation: shifts the thresholds to augmented values.
+  Per piece: +0.25 lifesteal (self).
+  Set (3 pieces): modifies incoming damage TO the player:
+    If damage > 5% of player maxHP: caps damage to 80% of maxHP (near-lethal but survivable).
+    If damage ≤ 5% of maxHP: hit fully cancelled, 20t iframes, "Negated!" text shown.
+    With CursedAugmentation: thresholds shift to 20% (cancel) / 60% max taken.
 
 RAID BOSS
-  Per piece: +RAID_BOSS_PIECE_DEFENSE_MULT defense multiplier.
-  Set (3 pieces): Heavy penalties to mobility:
-    -RAID_BOSS_MOBILITY_PENALTY to MoveSpeed, WingHorizontalSpeed, WingVerticalSpeed.
-  Compensating bonuses:
-    +RAID_BOSS_SET_DEFENSE_BONUS flat defense, +RAID_BOSS_SET_DR_BONUS damage reduction,
-    +RAID_BOSS_SET_AGGRO aggro (enemies target you more).
-  Full tank identity — can't move, but extremely durable and draws aggro.
+  Per piece: +40% of that piece's own base defense as flat extra defense (self).
+  Set (3 pieces): self stat changes —
+    -50% move speed, -50% wing horizontal/vertical speed.
+    +25 flat defense, +15% damage reduction, +1000 aggro.
+  Full tank — nearly immobile, draws all enemy attention, extremely durable.
 
-INEVITABLE  [Legacy / WIP]
-  Per piece: +INEVITABLE_PIECE_DAMAGE_MULT to Generic damage.
-  Set (3 pieces): Ability — starts a countdown timer (INEVITABLE_CLOCK_TICKS).
-  During countdown: cyan dust ring around player, tick sound every second.
-  On timer end: ExecuteWipe.
-    ExecuteWipe hits all enemies within INEVITABLE_RANGE:
-      Boss: npc.lifeMax × INEVITABLE_BOSS_MAX_HP_DAMAGE_PERCENT
-      Non-boss: npc.lifeMax × 5
-    Bypasses normal damage calculations (StrikeNPCDirect).
-  Cooldown: INEVITABLE_COOLDOWN_TICKS after activation.
+INEVITABLE  [WIP / Legacy]
+  Per piece: +8% generic damage (self, applied directly each tick).
+  Set (3 pieces): Keybind (R) starts a 720t (12s) countdown on the player.
+  During countdown: cyan dust ring around player, tick sounds every second.
+  At countdown end — ExecuteWipe: hits all enemies within 2000px:
+    Boss: 10% of boss maxHP. Non-boss: maxHP × 5 (one-shots).
+    Bypasses normal damage calculations via StrikeNPCDirect.
+  Cooldown: 10800t (3 min) starts at activation (not at wipe).
 
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -355,35 +338,29 @@ ARMOR REFORGES — HEADWEAR ONLY
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 BERSERKER
-  Damage scales with missing HP.
-  Bonus = (missingHPPercent) × BERSERKER_MAX_DAMAGE_BONUS (applied to DamageStat).
-  At full HP: no bonus. At 0 HP: max bonus.
+  Damage bonus scales with MISSING health: up to +40% at 0 HP, 0 at full HP.
+  Linear scaling applied to DamageStat (self).
 
 ENRAGING
-  Adds +ENRAGING_AGGRO_INCREASE to player.aggro.
-  Enemies target you more aggressively.
+  +500 aggro on the player. Enemies prioritize targeting the player more.
 
 REINFORCED
-  Amplifies the helmet's own defense value: +REINFORCED_DEFENSE_AMP × helmDefense (FlatDefenseStat).
-  Bonus disabled while ArmorAbilityCooldownBuff is active.
+  +50% of the helmet's own base defense as flat extra defense (self).
+  Disabled while armor ability cooldown is active.
 
 WEAK LINK
-  The helmet itself loses defense: -(WEAK_LINK_THIS_DEFENSE_MULT - 1) × helmDefense.
-  Chestplate gains: +(WEAK_LINK_OTHER_DEFENSE_MULT - 1) × chestDefense.
-  Leggings gains: +(WEAK_LINK_OTHER_DEFENSE_MULT - 1) × legsDefense.
-  Trades helmet defense to amplify the other two slots.
+  The helmet itself loses 50% of its own defense.
+  Chestplate gains +40% of its own base defense. Leggings gain +40% of their own base defense.
+  Net: sacrifices helmet defense to boost both other slots.
 
 PHASING
-  Grants iframes on movement abilities:
-    Dash (dashDelay transitions to -1): grants PHASING_DASH_IFRAMES immunity.
-    Teleport (position displacement > velocity + 32px threshold): grants PHASING_TELEPORT_IFRAMES.
-  Only grants iframes if the new duration would exceed current immuneTime.
+  On dash (dashDelay transitions to -1): grants 30t iframes to the player.
+  On teleport (position displacement > velocity + 32px): grants 60t iframes to the player.
+  Only applies if it would extend current immuneTime.
 
 PSIONIC
-  Multiplies all healing item effectiveness by PSIONIC_HEAL_BONUS_MULT.
-    Applies to: Heart, CandyApple, CandyCane (HP items).
-    Applies to: Star, SoulCake, SugarPlum (Mana items).
-  Activates item magnet for hearts, mana stars, and treasure.
+  All healing item pickups (hearts, mana stars) give ×2.0 the normal amount.
+  Activates life magnet, mana magnet, and treasure magnet on the player.
 
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -391,32 +368,28 @@ ARMOR REFORGES — CHESTPLATE ONLY
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 DASHING
-  No stat changes.
-  Keybind ability: dash toward mouse cursor at DASHING_VELOCITY (uses momentum if higher).
-  Has DASHING_MAX_CHARGES charges. Each dash consumes 1 charge.
-  Recharges at 1 charge per DASHING_RECHARGE_TICKS.
-  During dash: velocity locked, gravity off, water ignored, no fall damage.
-  Duration: DASHING_DURATION_TICKS per dash.
+  Keybind (R): dash toward mouse at ≥20 speed (preserves momentum if higher). 3 charges.
+  Dash duration: 20t. Gravity off, water ignored, no fall damage during dash.
+  Charge recharge: 1 per 180t (3s). Charge bar displayed below player.
+  No iframes granted on dash.
 
 REBOUNDING
-  Each time player is hurt (damage > 15% maxHP OR knockback > 4): +1 stack, spawn 5 crystal
-  shrapnel projectiles (damage = statDefense × REBOUNDING_DEFENSE_SCALING).
-  Per stack: +(REBOUNDING_DEFENSE_PER_STACK × stacks × chestDefense) defense.
-  Stack duration: REBOUNDING_STACK_DURATION ticks (resets on new hit).
-  At REBOUNDING_MAX_STACKS: Shatter — defense disabled for 600 ticks, stacks reset,
-  shattering sound and glass particles.
+  On being hit (knockback > 4 OR damage > 15% maxHP): +1 stack, spawn 5 crystal shrapnel
+  (damage = statDefense × 3.0, hits enemies). Stack timer: 300t. Max 5 stacks.
+  Per stack: +(33% × stacks × chestDefense) bonus defense on the player.
+  At 5 stacks — SHATTER: defense penalty equal to the piece's base defense for 600t (10s).
+  Stacks and timer reset. Glass dust + "SHATTERED!" text.
 
 VITALIS
-  Multiplies all lifesteal healing received by VITALIS_LIFESTEAL_AMP.
-  Bonus disabled while ArmorAbilityCooldownBuff is active.
+  HealingMulStat +1.5 (tooltip shows +50% — all lifesteal/healing sources boosted).
+  Disabled while armor ability cooldown is active.
 
 VOID
-  Adds +VOID_TRUE_DAMAGE_BONUS to TrueDamageMulStat (flat true damage multiplier).
-  Bonus disabled while ArmorAbilityCooldownBuff is active.
+  +30% true damage multiplier (self, TrueDamageMulStat).
+  Disabled while armor ability cooldown is active.
 
 UNYIELDING
-  Applies damage reduction up to UNYIELDING_MAX_DR.
-  (Exact implementation is in UI/tooltip layer — core mechanic straightforward DR stat.)
+  Damage reduction scales with missing HP: up to +20% DR at 0 HP, 0 at full HP (self).
 
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -424,72 +397,78 @@ ARMOR REFORGES — LEGGINGS ONLY
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 TERRA
-  Adds (legsDefense × 1.25) as flat defense — but only while the player is grounded
-  (velocity.Y == 0). No bonus in the air.
+  While grounded (velocityY == 0): adds flat defense = leggings base defense × 1.25 (self).
+  Bonus lost entirely while airborne.
+  [BUG: defense is applied twice — once via StatPlayer and once directly — roughly doubling it]
 
 SILENT
-  -500 aggro (AggroStat). Enemies are significantly less likely to target you.
+  -500 aggro (self). Enemies far less likely to target the player.
 
 DESPERATE
-  Maximum movement speed bonus (+60% move speed). Always active.
+  Move speed bonus scales with MISSING health: up to +60% at 0 HP, 0 at full HP (self).
+  Both base moveSpeed and maxRunSpeed scale up.
 
 RESONANT
-  Amplifies all equipped accessory reforge stat values by ×1.33 (33% stronger).
-  Multiplicative with all accessory bonuses.
+  [BUG: tooltip claims +33% to all accessory prefix stats, but no code implements this.
+  Completely unimplemented — purely cosmetic tooltip at present.]
 
 QUANTUM
-  Converts vanilla dashes into teleports.
-  On dash input: teleports player 250px toward mouse (finds safe landing in spiral if blocked).
-  Leaves an afterimage projectile at origin (damage = statDefense × 3.5).
-  Afterimage waits 30 ticks, then homes back to player at speed 35, dissipates within 40px.
-  Player exits teleport with speed = max(previous velocity, 15).
-  Cooldown: 60 ticks.
+  Converts vanilla dashes into teleports toward the mouse (250px).
+  Finds safe landing via 48px spiral search if target is inside solid.
+  Exits at max(previous velocity, 15px/t). Prevents fall damage on landing.
+  Leaves an afterimage projectile at origin: waits 30t, then homes to player at 35px/t,
+  deals statDefense × 3.5 damage, dissipates within 40px of player.
+  Cooldown: 60t between teleports.
 
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ACCESSORY REFORGES (16)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-All stack across multiple accessory slots. Resonant (leggings) amplifies all of these ×1.33.
+All are passive while equipped. Stack across multiple slots.
+Resonant (leggings) claims ×1.33 to all of these — but is currently unimplemented [BUG].
 
-AERODYNAMIC   +8% movement speed, +45 ticks wing time
-BLOOD FORGED  +18% defense, -10% max HP
-EARTH SHAPER  -15% pick speed (faster mining)
-EFFICIENT     -8% mana cost
-EQUILIBRIUM   +3% move speed, +15t wing time, +0.25 minions, +4% defense, +2 HP regen/s
-FORTIFIED     +10% defense
-GREEDY        +50% coin drops
-HOLLOW        -20% max HP, +20% move speed, +20% all wing stats (speed, acceleration)
-LETHAL        +15% crit damage multiplier
-LUCKY         +30% charm luck (affects charm drop rolls)
-REVITALIZING  +2 HP regen per second
-RISKY         +18% damage, -12% defense (high risk/reward, stacks aggressively)
-SHARPSHOOTER  +8% flat crit chance
-STOIC         +18% defense, -10% damage
-WARLORD       +1 minion slot
-ZEALOUS       +15% attack speed
+AERODYNAMIC    +8% move speed, +45t wing time
+BLOOD FORGED   +18% defense, -10% max HP
+EARTH SHAPER   -15% pick speed (faster mining)
+EFFICIENT      -8% mana cost
+EQUILIBRIUM    +3% move speed, +15t wing time, +0.25 minions, +4% defense
+               [BUG: also accidentally adds +0.08 to PickSpeedStat (makes mining slower)]
+               [BUG: tooltip lists regen but RegenStat is never actually added in code]
+FORTIFIED      +10% defense
+GREEDY         +50% coin drops
+HOLLOW         -20% max HP, +20% move speed, +20% all wing stats (4 axes)
+LETHAL         +15% crit damage multiplier
+LUCKY          +30% charm luck
+REVITALIZING   +4 regen units (displayed as 2 HP/s)
+RISKY          +18% damage, -12% defense
+SHARPSHOOTER   +8 flat crit chance
+STOIC          +18% defense, -10% damage
+               [BUG: damage penalty coded as positive +0.10 additive — actually BUFFS damage]
+WARLORD        +1 minion slot per accessory
+ZEALOUS        +15% attack speed
 
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 CHARM SYSTEM NOTES (for synergy context)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-Charms are RNG items socketed into armor pieces.
-Rarities: Common < Rare < Epic < Legendary < Mythical < Exalted
-Exalted charms only drop when wearing 3× Symbiotic armor all socketed with Exalted charms.
+Charms are RNG items socketed into armor. Rarities: Common < Rare < Epic < Legendary < Mythical < Exalted.
+Exalted only drops when wearing 3× Symbiotic armor all socketed with Exalted charms.
 
-Symbiotic (armor reforge) upgrades socketed charms: +1 rarity, stronger stats, extra roll.
-CharmLuckStat (from Lucky accessory, Sealed weapon, Equilibrium) improves charm drop rates.
+Symbiotic (armor) upgrades socketed charms: +1 rarity, stronger stats, extra roll.
+CharmLuckStat (from Lucky acc, Sealed weapon, etc.) improves drop rates.
+Pity system: LegendaryPity and MythicalPity tracked per player, guaranteed drop at threshold.
 
-Augmentations are extra modifiers on Legendary+ charms. Implemented ones:
-  Clearing:  expands AoE radius
-  Cursed:    shifts Cursed armor thresholds
-  Phalanx:   adds Phalanx overclock (ignore cooldown, use overclock stat instead)
-  Phantom:   increases clone count + modifies SoulBurn ramp
-  Omni:      mystery endgame augmentation (chance-gated, Exalted Circle charms only)
+Augmentations on Legendary+ charms (implemented):
+  Clearing:       expands AoE mining radius
+  Cursed:         shifts Cursed armor thresholds (cancel at 20%, cap at 60%)
+  Phalanx:        overclock — reflections ignore cooldown, use 2s overclock stat instead
+  Phantom:        increases clone count from 2 to 6, ramps SoulBurn intensity faster
+  Omni:           endgame augmentation, Exalted Circle charms only, chance-gated
 
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-QUICK STATS INDEX
+STAT INDEX
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 Combat:    Damage, MeleeDamage, RangedDamage, MagicDamage, SummonDamage,
