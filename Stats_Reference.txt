@@ -1,0 +1,368 @@
+EQUIPMENT EVOLVED — STATS REFERENCE
+Generated from source code. For brainstorming and auditing stat coverage.
+Stacking modes and application hooks noted for each stat.
+===============================================================
+
+BASE CLASS CONTRACT (EquipmentStat)
+  Every stat has:
+    StackingMode   — how multiple sources of the same stat combine (see below)
+    FormatTooltip  — display text shown on the item
+  And can override any of these hooks:
+    UpdateEquips / PostUpdateEquips / UpdateLifeRegen / ModifyMaxStats
+    ModifyWeaponDamage / ModifyWeaponCrit / ModifyWeaponKnockback / ModifyManaCost
+    ModifyHitNPC[WithItem/WithProj] / OnHitNPC[WithItem/WithProj]
+    ModifyHurt / OnHurt / PostHurt / FreeDodge
+    GetHealLife / CanUseItem / ModifyShootStats
+    HorizontalWingSpeeds / VerticalWingSpeeds (must be called manually by wing GlobalItem)
+
+STACKING MODES
+  Additive      — sources sum: total = a + b + c
+  Multiplicative — sources compound: total = (1+a)×(1+b)×(1+c) − 1
+  Asymptotic    — diminishing returns: total = 1 − (1−a)×(1−b)×(1−c)  [hard cap <100%]
+  Max           — only the single largest value applies
+  Min           — only the single smallest value applies (starts at float.MaxValue)
+
+TEMPORARY STATS (StatPlayer.AddTemporaryStat reapplication modes)
+  Independent   — parallel tickers; values stack independently
+  RefreshDuration — resets timer to max on reapplication
+  StackDuration  — adds durations together on reapplication
+  StackValue    — adds values together, keeps original timer
+  Ignore        — discards the new application if one already exists
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+COMBAT STATS (12)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+DAMAGE
+  Multiplies all damage types simultaneously via GenericDamageClass.
+  Hook: PostUpdateEquips — player.GetDamage<GenericDamageClass>() += totalValue
+  Stacking: Additive
+  Tooltip: e.g. "+15% damage"
+
+MELEE DAMAGE
+  Multiplies melee damage only via MeleeDamageClass.
+  Hook: PostUpdateEquips — player.GetDamage<MeleeDamageClass>() += totalValue
+  Stacking: Additive
+  Tooltip: e.g. "+15% melee damage"
+
+RANGED DAMAGE
+  Multiplies ranged damage only via RangedDamageClass.
+  Hook: PostUpdateEquips — player.GetDamage<RangedDamageClass>() += totalValue
+  Stacking: Additive
+  Tooltip: e.g. "+15% ranged damage"
+
+MAGIC DAMAGE
+  Multiplies magic damage only via MagicDamageClass.
+  Hook: PostUpdateEquips — player.GetDamage<MagicDamageClass>() += totalValue
+  Stacking: Additive
+  Tooltip: e.g. "+15% magic damage"
+
+SUMMON DAMAGE
+  Multiplies summon damage only via SummonDamageClass.
+  Hook: PostUpdateEquips — player.GetDamage<SummonDamageClass>() += totalValue
+  Stacking: Additive
+  Tooltip: e.g. "+15% summon damage"
+
+CRIT
+  Adds flat crit chance in raw units (not percent; 8 = 8% crit).
+  Hook: ModifyWeaponCrit — crit += totalValue
+  Stacking: Additive
+  Tooltip: e.g. "+8 crit chance"
+
+CRIT DAMAGE
+  Adds to the crit damage multiplier (modifiers.CritDamage).
+  Hook: ModifyHitNPC — modifiers.CritDamage += totalValue
+  Stacking: Additive
+  Tooltip: e.g. "+15.00% crit damage"
+
+USE SPEED
+  Speeds up or slows down attack animation; wraps into UseSpeedMultiplier.
+  Handles sub-frame overflow via UseSpeedModPlayer.Shoot(): if theoretical use time < 1
+  frame, distributes extra shots along the velocity vector to preserve DPS accurately.
+  Hook: UseSpeedMultiplier — returns 1f + totalValue
+  Stacking: Additive
+  Tooltip: e.g. "+20% attack speed"
+
+PROJECTILE VELOCITY
+  Scales projectile launch speed. Bypasses Terraria's 16 px/frame physics cap by
+  converting excess velocity into extraUpdates then renormalizing the velocity vector,
+  so fast projectiles still behave correctly.
+  Hook: OnSpawn (via VelocityGlobalProjectile) — velocity *= (1f + totalValue)
+  Stacking: Additive
+  Tooltip: e.g. "+30.00% projectile velocity"
+
+MINIONS
+  Increases max minion count by a flat integer (fractional values truncated).
+  Hook: PostUpdateEquips — player.maxMinions += (int)totalValue
+  Stacking: Additive
+  Tooltip: e.g. "+2.00 minion slots"
+
+MANA USAGE
+  Scales mana cost; positive values increase cost, negative values reduce it.
+  Clamped to [0×, 10×] so it can never make spells free or absurdly expensive.
+  Hook: ModifyManaCost — mult *= Clamp(1f + totalValue, 0f, 10f)
+  Stacking: Additive
+  Tooltip: signed percentage, e.g. "−8% mana cost" or "+20% mana cost"
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+DEFENSE STATS (7)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+FLAT DEFENSE
+  Adds raw defense points directly to player.statDefense.
+  Hook: UpdateEquips — player.statDefense += (int)totalValue
+  Stacking: Additive
+  Tooltip: e.g. "+10 defense"
+
+DEFENSE MUL
+  Multiplies existing defense via StatModifier.FinalMultiplier (applied after flat defense).
+  Hook: UpdateEquips — player.statDefense.FinalMultiplier *= 1f + totalValue
+  Stacking: Additive
+  Tooltip: signed percentage, e.g. "+18% defense" or "−10% defense"
+
+MAX HEALTH MUL
+  Scales the player's maximum HP upward. Applied via StatModifier multiplication.
+  Hook: ModifyMaxStats — health StatModifier *= (1f + totalValue)
+  Stacking: Additive
+  Tooltip: e.g. "+20% max life"
+
+HEALTH CAP MUL  [Tricky — reduction only]
+  Imposes a hard upper ceiling on the player's current HP expressed as a fraction of
+  their max. Only functions when totalValue is negative (i.e. it caps HP below max;
+  positive values are ignored). Blocks healing items when already at cap, clamps
+  natural regen ticks, and prevents overheal.
+  Applied in three places: UpdateLifeRegen (clamp), CanUseItem (block potions),
+  GetHealLife (clamp heal amount).
+  Stacking: Multiplicative (caps compound: −0.2 + −0.1 → effective cap at 72% max HP)
+  Tooltip: signed percentage, e.g. "−20% max life cap"
+
+DAMAGE REDUCTION
+  Reduces incoming hit damage as a multiplier on the final damage value.
+  Uses Asymptotic stacking so multiple sources never reach 100% reduction.
+  Hook: ModifyHurt — modifiers.FinalDamage *= (1f − totalValue)
+  Stacking: Asymptotic
+  Tooltip: e.g. "+15% damage reduction"
+
+REGEN
+  Adds HP regeneration per tick. Handles fractional values probabilistically:
+  the integer part heals every tick; the decimal part heals with that probability
+  each tick (e.g. 5.3 → guaranteed 5 + 30% chance for +1 each tick).
+  Hook: UpdateLifeRegen — player.lifeRegen += value
+  Stacking: Additive
+  Tooltip: e.g. "+2 HP/s" (displayed as regen units per second; 1 unit ≈ 0.5 HP/s)
+
+IFRAMES
+  Extends invincibility frames after being hit by adding to player.immuneTime.
+  Fractional values are rounded to the nearest integer.
+  Hook: PostHurt — player.immuneTime += (int)Round(totalValue)
+  Stacking: Additive
+  Tooltip: e.g. "+6 invincibility frames"
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+CUSTOM / SPECIAL STATS (6)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+LIFESTEAL
+  Heals the player a flat amount each time any weapon hits an NPC.
+  Fractional HP is resolved via RNG. Healing is scaled by HealingMulStat (1 + mul).
+  Negative values damage the player instead of healing.
+  Respects HealthCapMulStat — healing is blocked/clamped if HP is already at the cap.
+  Death from lifesteal self-damage credits the player as the killer.
+  Hook: OnHitNPC — heals totalValue × healingMul HP per hit
+  Stacking: Additive
+  Tooltip: e.g. "+0.50 lifesteal"
+
+DAMAGE LIFESTEAL
+  Heals a percentage of actual damage dealt (after defense) rather than a flat amount.
+  Same HealingMulStat multiplier and fractional RNG as LifestealStat.
+  Hook: OnHitNPC — heals (damageDone × totalValue / 100) × healingMul HP
+  Stacking: Additive
+  Tooltip: e.g. "+2.00 damage lifesteal"
+
+HEALING MUL
+  Multiplies all healing received from any source: potions, lifesteal, regen ticks,
+  and any code that goes through GetHealLife. Negative values reduce healing received.
+  Hook: GetHealLife — healValue = (int)(healValue × (1f + totalValue))
+  Stacking: Additive
+  Tooltip: e.g. "+50% healing"
+
+TRUE DAMAGE FLAT  [reads TrueDamageMulStat]
+  Deals a fixed amount of armor-ignoring (true) damage on each hit.
+  The flat value is further multiplied by 1 + TrueDamageMulStat before applying.
+  Hook: OnHitNPC — inflicts totalValue × (1f + TrueDamageMul) true damage per hit
+  Stacking: Additive
+  Tooltip: e.g. "+10.00 true damage"
+
+TRUE DAMAGE PERCENTAGE  [reads TrueDamageMulStat]
+  Deals a percentage of the target's max HP as true damage on each hit.
+  Targets the real NPC root for worm-type enemies (uses target.realLife).
+  The percentage is further multiplied by 1 + TrueDamageMulStat before applying.
+  Hook: OnHitNPC — inflicts (target.lifeMax × totalValue × trueMul) true damage
+  Stacking: Additive
+  Tooltip: e.g. "+0.30% of target max HP as true damage"
+
+TRUE DAMAGE MUL  [passive — no own OnHitNPC hook]
+  A passive multiplier read by TrueDamageFlatStat and TrueDamagePercentageStat.
+  Does not deal damage by itself; only amplifies the other two true damage stats.
+  Hook: None (passive read-only)
+  Stacking: Additive
+  Tooltip: e.g. "+30% true damage"
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+MOBILITY / UTILITY STATS (10)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+MOVE SPEED
+  Increases ground movement. Applied in two ways simultaneously:
+  player.moveSpeed += totalValue (base speed addition), and
+  player.maxRunSpeed *= (1f + totalValue) (scales the run cap).
+  Hook: PostUpdateEquips
+  Stacking: Additive
+  Tooltip: e.g. "+8% move speed"
+
+PICK SPEED
+  Speeds up mining by dividing player.pickSpeed (lower value = faster mining).
+  Positive totalValue = faster; negative = slower.
+  Hook: PostUpdateEquips — player.pickSpeed /= (1f + totalValue)
+  Stacking: Additive
+  Tooltip: signed percentage, e.g. "−15% pick speed" (tooltip sign may be counterintuitive)
+
+WING TIME
+  Adds ticks to the wing flight duration (wingTimeMax). Fractional values are rounded.
+  Hook: PostUpdateEquips — player.wingTimeMax += (int)Round(totalValue)
+  Stacking: Additive
+  Tooltip: e.g. "+45 wing time"
+
+WING HORIZONTAL SPEED
+  Scales wing horizontal top speed as a multiplier.
+  IMPORTANT: The stat's HorizontalWingSpeeds hook must be called manually from a
+  GlobalItem that intercepts wing item hooks — it is not invoked automatically.
+  Hook: HorizontalWingSpeeds (manual) — speed *= 1f + totalValue
+  Stacking: Additive
+  Tooltip: e.g. "+20% wing horizontal speed"
+
+WING HORIZONTAL ACC
+  Scales wing horizontal acceleration as a multiplier. Same manual hook requirement
+  as WingHorizontalSpeedStat.
+  Hook: HorizontalWingSpeeds (manual) — acceleration *= 1f + totalValue
+  Stacking: Additive
+  Tooltip: e.g. "+20% wing horizontal acceleration"
+
+WING VERTICAL SPEED
+  Scales wing vertical ascent speed (maxAscentMultiplier and maxCanAscendMultiplier).
+  Same manual hook requirement as the horizontal wing stats.
+  Hook: VerticalWingSpeeds (manual) — maxAscentMultiplier and maxCanAscendMultiplier *= 1f + totalValue
+  Stacking: Additive
+  Tooltip: e.g. "+20% wing vertical speed"
+
+WING VERTICAL ACC
+  Scales wing vertical acceleration while ascending (ascentWhenRising).
+  Same manual hook requirement as the other wing stats.
+  Hook: VerticalWingSpeeds (manual) — ascentWhenRising *= 1f + totalValue
+  Stacking: Additive
+  Tooltip: e.g. "+20% wing vertical acceleration"
+
+AGGRO
+  Adds or subtracts from player.aggro, affecting how strongly nearby NPCs prefer to
+  target this player in multiplayer. Large positive values draw attention;
+  large negative values reduce targeting.
+  Hook: PostUpdateEquips — player.aggro += (int)totalValue
+  Stacking: Additive
+  Tooltip: signed integer, e.g. "+500 aggro" or "−500 aggro"
+
+COIN DROP ON HIT
+  Causes enemies to drop coins each time they are hit, in addition to their death drops.
+  Calls CombatUtils.DropCoins(totalValue, target) on each hit.
+  Hook: OnHitNPC
+  Stacking: Additive
+  Tooltip: e.g. "+1 coin drop on hit"
+
+COIN DROP MUL  [passive — no own hook]
+  A passive multiplier intended to scale coin drop quantities.
+  Does not apply any coin multiplier by itself; external code must read the stat value.
+  Hook: None (passive read-only)
+  Stacking: Additive
+  Tooltip: e.g. "+50% coin drops"
+
+CHARM LUCK  [passive — no own hook]
+  Improves charm quality outcomes (drop rates, reroll results, etc.).
+  Does not apply anything directly; the charm system reads this stat value externally.
+  Hook: None (passive read-only)
+  Stacking: Additive
+  Tooltip: e.g. "+30% charm luck"
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+TEMPORARY / ABILITY STATS (3)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+INVINCIBILITY
+  Grants full invulnerability while active: sets player.immune, locks immuneTime to at
+  least 2 ticks, grants lava immunity, and grants fire-block walk immunity.
+  FreeDodge returns true while this stat is nonzero — all incoming hits are cancelled.
+  Intended for use as a temporary stat (ticking timer), not a persistent equip stat.
+  Hook: PostUpdateEquips + FreeDodge
+  Stacking: Max (only the highest active value matters)
+  Tooltip: e.g. "+1.00 invincibility" (rarely shown directly)
+
+CLEAR ARMOR COOLDOWN  [ability flag stat]
+  Immediately removes the ArmorAbilityCooldownBuff from the player when active.
+  Used by armor set abilities (Phalanx, Reinforced, etc.) to bypass cooldown — the
+  mechanic allows skipping the buff system's icon/timer requirements by adding this stat
+  as a temporary stat instead of dealing with cooldown buffs directly.
+  Has no tooltip (FormatTooltip returns empty string).
+  Hook: UpdateEquips — removes ArmorAbilityCooldownBuff if present
+  Stacking: Max
+  Tooltip: (hidden — empty string)
+
+PHALANX OVERCLOCK  [hidden ability flag]
+  A flag-only stat that signals to the Phalanx armor ability that it should enter
+  "overclock" mode (bypasses cooldown, applies 2s overclock stat window instead).
+  No tooltip, no direct application — purely read by the Phalanx ability code.
+  HiddenFromDebugAccessory = true, so it does not appear in the debug accessory list.
+  Hook: None
+  Stacking: Max
+  Tooltip: (hidden — empty string)
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+TRICKY / NON-OBVIOUS BEHAVIOURS (summary)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+HEALTH CAP MUL only caps downward (negative values only). Positive values do nothing.
+  Multiple sources compound multiplicatively, so −20% + −10% → cap at 72% max HP, not 70%.
+
+PICK SPEED is inverted: positive value = faster mining. The code divides pickSpeed,
+  so adding 0.15 makes it 15% faster (not 15% slower). Tooltip sign should reflect "faster".
+
+COIN DROP MUL and CHARM LUCK are read-only passive stubs. They have no application hook
+  of their own — the feature is only active if external systems read StatPlayer.GetTotalStat()
+  for those stats. Greedy accessory uses CoinDropMulStat; Lucky accessory uses CharmLuckStat.
+
+PROJECTILE VELOCITY breaks Terraria's 16 px/frame cap intentionally. The GlobalProjectile
+  converts excess speed to extraUpdates so fast projectiles still collide correctly and don't
+  clip through thin tiles or enemies.
+
+USE SPEED sub-frame overflow: if a modifier would require firing more than once per frame,
+  UseSpeedModPlayer distributes the extra shots spatially along the velocity vector rather
+  than firing them all at the same position.
+
+WING STATS (all 4) require a companion GlobalItem per wing type to inject them into the
+  HorizontalWingSpeeds / VerticalWingSpeeds hooks. They are not automatically called by
+  the stat system — any new wing item type needs its own GlobalItem shim to support them.
+
+TRUE DAMAGE MUL has no OnHitNPC. It is a multiplier only — it does nothing if neither
+  TrueDamageFlatStat nor TrueDamagePercentageStat is also present.
+
+INVINCIBILITY + CLEAR ARMOR COOLDOWN are the two stats designed to be added as temporary
+  ticking stats (AddTemporaryStat), not persistent equip stats. Using them as persistent
+  equip stats would make the player permanently invincible or permanently clear the cooldown
+  every tick.
+
+PHALANX OVERCLOCK is the canonical example of using a stat as a pure boolean signal to
+  an ability. It carries no value — its presence (totalValue > 0) is the flag. This pattern
+  can be reused for any armor ability that needs a condition checked without a buff icon.
